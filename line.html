@@ -26,11 +26,11 @@
 <title></title>
 <script type="text/javascript">
 m = Math;
-var TURNINGSPEED = 0.3;
-var MOVINGSPEED = 3;
-var LOOPSPEED = 50;
+var TURNINGSPEED = 0.13;
+var MOVINGSPEED = 2.5;
+var LOOPSPEED = 30;
 var FULLCIRCLE = 2*m.PI;
-var NS = "http://www.w3.org/2000/svg";
+var NS = "http://www.w3.org/2000/svg"; // SVG namespace
 var game;
 var timeout;
 
@@ -48,10 +48,9 @@ function line(name,colour,keyL,keyR) {
     this.polyline.setAttributeNS(null,"fill","none");
     this.polyline.setAttributeNS(null,"stroke",colour);
     game.appendChild(this.polyline);
-    document.getElementsByTagName("body")[0].onkeydown=
-        "return inputKeyDown(event)";
-    document.getElementsByTagName("body")[0].onkeyup=
-        "return inputKeyUp(event)";
+    document.body.addEventListener("keydown",function(e){inputKeyDown(e)},
+        true);
+    document.body.addEventListener("keyup",function(e){inputKeyUp(e)},true);
 }
 function addPoint(lobj,x,y) {
     var points = lobj.polyline.getAttributeNS(null,"points");

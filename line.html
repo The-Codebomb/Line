@@ -25,10 +25,89 @@
 <meta author="Tomi Leppänen" />
 <title></title>
 <script type="text/javascript">
+m = Math;
+var TURNINGSPEED = 0.3;
+var MOVINGSPEED = 3;
+var LOOPSPEED = 50;
+var FULLCIRCLE = 2*m.PI;
+var NS = "http://www.w3.org/2000/svg";
+var game;
+var timeout;
 
+function line(name,colour,keyL,keyR) {
+    this.direction=m.random()*FULLCIRCLE;
+    this.keyL=keyL;
+    this.keyR=keyR;
+    this.keyDown=false;
+    this.name=name;
+    this.x;
+    this.y;
+    this.polyline = document.createElementNS(NS,"polyline");
+    this.polyline.setAttributeNS(null,"points","");
+    this.polyline.setAttributeNS(null,"fill","none");
+    this.polyline.setAttributeNS(null,"stroke",colour);
+    game.appendChild(this.polyline);
+    document.getElementsByTagName("body")[0].onkeydown=
+        "return inputKeyDown(event)";
+    document.getElementsByTagName("body")[0].onkeyup=
+        "return inputKeyUp(event)";
+}
+var player1;
+
+function init() {
+    game = document.getElementById("game");
+    player1 = new line("player","#0000cd",37,39); // Adding one player
+    var x = m.floor(m.random()*600+100);
+    var y = m.floor(m.random()*400+100);
+    addPoint(player1,x,y); // Add starting point
+    timeout = setTimeout("main()",50);
+}
+function main() {
+    inputLoop();
+    var x = player1.x + MOVINGSPEED*m.sin(player1.direction);
+    var y = player1.y + MOVINGSPEED*m.cos(player1.direction);
+    addPoint(player1,x,y);
+    timeout = setTimeout("main()",50);
+}
+function addPoint(lobj,x,y) {
+    var points = lobj.polyline.getAttributeNS(null,"points");
+    lobj.polyline.setAttributeNS(null,"points",points+" "+x+","+y);
+    lobj.x = x;
+    lobj.y = y;
+}
+function inputKeyUp(event) {
+    var player = player1; // currently only one player is used
+    if (event.which == player.keyDown) {
+        player.keyDown = false;
+        return false;
+    }
+    return true;
+}
+function inputKeyDown(event) {
+    var player = player1; // currently only one player is used
+    if (event.which == player.keyL || event.which == player.keyR) {
+        player.keyDown = event.which;
+        return false;
+    }
+    return true;
+}
+function inputLoop() {
+    var player = player1; // currently only one player is used
+    if (player.keyDown == player.keyL) {
+        var new_direction = player.direction+TURNINGSPEED;
+        if (new_direction > 0) player.direction = new_direction+FULLCIRCLE;
+        else player.direction = new_direction;
+    } else if (player.keyDown == player.keyR) {
+        var new_direction = player1.direction-TURNINGSPEED;
+        if (new_direction < FULLCIRCLE) {
+            player1.direction = new_direction+FULLCIRCLE;
+        } else player1.direction = new_direction;
+    }
+}
 </script>
 </head>
-<body>
-<svg width="100%" height="100%" id="game" xlmns="http://www.w3.org/2000/svg" version="1.1"></svg>
+<body onload="init()">
+<svg id="game" version="1.1" xmlns="http://www.w3.org/2000/svg" 
+    width="800" height="600" style="border:1px solid black;"></svg>
 </body>
 </html>

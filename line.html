@@ -42,6 +42,7 @@ function line(name,colour,keyL,keyR) {
     this.name=name;
     this.x;
     this.y;
+    this.addPoint = addPoint;
     this.polyline = document.createElementNS(NS,"polyline");
     this.polyline.setAttributeNS(null,"points","");
     this.polyline.setAttributeNS(null,"fill","none");
@@ -52,16 +53,25 @@ function line(name,colour,keyL,keyR) {
     document.getElementsByTagName("body")[0].onkeyup=
         "return inputKeyUp(event)";
 }
+function addPoint(lobj,x,y) {
+    var points = lobj.polyline.getAttributeNS(null,"points");
+    lobj.polyline.setAttributeNS(null,"points",points+" "+x+","+y);
+    lobj.x = x;
+    lobj.y = y;
+}
 var player1;
 
+/* Initializing function */
 function init() {
     game = document.getElementById("game");
     player1 = new line("player","#0000cd",37,39); // Adding one player
     var x = m.floor(m.random()*600+100);
     var y = m.floor(m.random()*400+100);
     addPoint(player1,x,y); // Add starting point
-    timeout = setTimeout("main()",50);
+    timeout = setTimeout("main()",LOOPSPEED);
 }
+
+/* Main loop */
 function main() {
     inputLoop();
     var x = player1.x + MOVINGSPEED*m.sin(player1.direction);
@@ -69,12 +79,8 @@ function main() {
     addPoint(player1,x,y);
     timeout = setTimeout("main()",50);
 }
-function addPoint(lobj,x,y) {
-    var points = lobj.polyline.getAttributeNS(null,"points");
-    lobj.polyline.setAttributeNS(null,"points",points+" "+x+","+y);
-    lobj.x = x;
-    lobj.y = y;
-}
+
+/* Input system */
 function inputKeyUp(event) {
     var player = player1; // currently only one player is used
     if (event.which == player.keyDown) {

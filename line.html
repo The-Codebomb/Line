@@ -75,8 +75,33 @@ function main() {
     inputLoop();
     var x = player1.x + MOVINGSPEED*m.sin(player1.direction);
     var y = player1.y + MOVINGSPEED*m.cos(player1.direction);
+    if (checkForCollision(x,y)) {
+        gameOver();
+        addPoint(player1,x,y);
+        return;
+    }
     addPoint(player1,x,y);
     timeout = setTimeout("main()",50);
+}
+
+/* Check for a collision */
+function checkForCollision(x,y) {
+    var rect = game.createSVGRect();
+    rect.height=1;
+    rect.width=1;
+    rect.x=x;
+    rect.y=y;
+    if (game.getIntersectionList(rect,null).length != 0) return true;
+    else return false;
+}
+
+/* When a collision happens */
+function gameOver() {
+    clearTimeout(timeout);
+    document.body.removeEventListener("keyup",function(e){inputKeyUp(e)},true);
+    document.body.removeEventListener("keydown",function(e){inputKeyDown(e)},
+        true);
+    // Add printing Game over text
 }
 
 /* Input system */

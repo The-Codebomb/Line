@@ -31,6 +31,9 @@ var MOVINGSPEED = 2.5;
 var LOOPSPEED = 30;
 var FULLCIRCLE = 2*m.PI;
 var NS = "http://www.w3.org/2000/svg"; // SVG namespace
+
+var wallMode = "deadly"; // valid values are "deadly" and "warp"
+
 var game;
 var timeout;
 
@@ -85,14 +88,24 @@ function main() {
 }
 
 /* Check for a collision */
-function checkForCollision(x,y) {
+function checkForCollision(x,y,lobj) {
     var rect = game.createSVGRect();
     rect.height=1;
     rect.width=1;
     rect.x=x;
     rect.y=y;
     if (game.getIntersectionList(rect,null).length != 0) return true;
-    else return false;
+    if (wallMode == "deadly") {
+        if (x < 0 || x > 800 || y < 0 || y > 600) {
+            return true;
+        }
+    } else if (wallMode == "warp") {
+        if (x < 0) lobj.x = 800;
+        else if (x > 800) lobj.x = 0;
+        else if (y < 0) lobj.y = 600;
+        else if (y > 600) lobj.y = 0;
+    }
+    return false;
 }
 
 /* When a collision happens */
@@ -101,7 +114,12 @@ function gameOver() {
     document.body.removeEventListener("keyup",function(e){inputKeyUp(e)},true);
     document.body.removeEventListener("keydown",function(e){inputKeyDown(e)},
         true);
-    // Add printing Game over text
+    var text = document.createElementNS(NS,"text");
+    text.setAttributeNS(null,"x","100");
+    text.setAttributeNS(null,"y","100");
+    text.setAttributeNS(null,"fill","red");
+    text.textContent="Game Over!";
+    game.appendChild(text);
 }
 
 /* Input system */

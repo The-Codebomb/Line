@@ -78,17 +78,22 @@ function main() {
     inputLoop();
     var x = player1.x + MOVINGSPEED*m.sin(player1.direction);
     var y = player1.y + MOVINGSPEED*m.cos(player1.direction);
-    if (checkForCollision(x,y)) {
+    if (checkForCollision(x,y,player1)) {
         gameOver();
         addPoint(player1,x,y);
         return;
+    } else if (wallMode == "warp") { // MUST BE REIMPLEMENTED!
+        if (x <= 0) x = 800;
+        else if (x >= 800) x = 0;
+        else if (y <= 0) y = 600;
+        else if (y >= 600) y = 0;
     }
     addPoint(player1,x,y);
     timeout = setTimeout("main()",50);
 }
 
 /* Check for a collision */
-function checkForCollision(x,y,lobj) {
+function checkForCollision(x,y) {
     var rect = game.createSVGRect();
     rect.height=1;
     rect.width=1;
@@ -96,14 +101,9 @@ function checkForCollision(x,y,lobj) {
     rect.y=y;
     if (game.getIntersectionList(rect,null).length != 0) return true;
     if (wallMode == "deadly") {
-        if (x < 0 || x > 800 || y < 0 || y > 600) {
+        if (x <= 0 || x >= 800 || y <= 0 || y >= 600) {
             return true;
         }
-    } else if (wallMode == "warp") {
-        if (x < 0) lobj.x = 800;
-        else if (x > 800) lobj.x = 0;
-        else if (y < 0) lobj.y = 600;
-        else if (y > 600) lobj.y = 0;
     }
     return false;
 }

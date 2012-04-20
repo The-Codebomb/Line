@@ -31,7 +31,6 @@ var MOVINGSPEED = 2.5;
 var LOOPSPEED = 30;
 var FULLCIRCLE = 2*m.PI;
 var NS = "http://www.w3.org/2000/svg"; // SVG namespace
-
 var wallMode = "deadly"; // valid values are "deadly" and "warp"
 
 var game;
@@ -39,6 +38,7 @@ var timeout;
 
 function line(name,colour,keyL,keyR) {
     this.direction=m.random()*FULLCIRCLE;
+    this.oldDirection;
     this.keyL=keyL;
     this.keyR=keyR;
     this.keyDown=false;
@@ -51,13 +51,14 @@ function line(name,colour,keyL,keyR) {
     this.polyline.setAttributeNS(null,"fill","none");
     this.polyline.setAttributeNS(null,"stroke",colour);
     game.appendChild(this.polyline);
-    document.body.addEventListener("keydown",function(e){inputKeyDown(e)},
-        true);
-    document.body.addEventListener("keyup",function(e){inputKeyUp(e)},true);
 }
-function addPoint(lobj,x,y) {
+function addPoint(lobj,x,y,replOld) {
     var points = lobj.polyline.getAttributeNS(null,"points");
-    lobj.polyline.setAttributeNS(null,"points",points+" "+x+","+y);
+    if (replOld == true) {
+        points = points.replace(/\d+,\d+$/,"");
+        lobj.polyline.setAttributeNS(null,"points",points);
+    }
+        lobj.polyline.setAttributeNS(null,"points",points+" "+x+","+y);
     lobj.x = x;
     lobj.y = y;
 }
@@ -69,18 +70,25 @@ function init() {
     player1 = new line("player","#0000cd",37,39); // Adding one player
     var x = m.floor(m.random()*600+100);
     var y = m.floor(m.random()*400+100);
-    addPoint(player1,x,y); // Add starting point
+    addPoint(player1,x,y,false); // Add starting point
     timeout = setTimeout("main()",LOOPSPEED);
+    document.body.addEventListener("keydown",function(e){inputKeyDown(e)},
+        true);
+    document.body.addEventListener("keyup",function(e){inputKeyUp(e)},true);
 }
 
 /* Main loop */
 function main() {
     inputLoop();
-    var x = player1.x + MOVINGSPEED*m.sin(player1.direction);
-    var y = player1.y + MOVINGSPEED*m.cos(player1.direction);
+    var direction = player1.direction;
+    var sameDirection = false;
+    if (direction == player1.oldDirection) sameDirection = true;
+    player1.oldDirection = direction;
+    var x = player1.x + MOVINGSPEED*m.sin(direction);
+    var y = player1.y + MOVINGSPEED*m.cos(direction);
     if (checkForCollision(x,y,player1)) {
         gameOver();
-        addPoint(player1,x,y);
+        addPoint(player1,x,y,sameDirection);
         return;
     } else if (wallMode == "warp") { // MUST BE REIMPLEMENTED!
         if (x <= 0) x = 800;
@@ -88,7 +96,7 @@ function main() {
         else if (y <= 0) y = 600;
         else if (y >= 600) y = 0;
     }
-    addPoint(player1,x,y);
+    addPoint(player1,x,y,sameDirection);
     timeout = setTimeout("main()",50);
 }
 
@@ -99,7 +107,7 @@ function checkForCollision(x,y) {
     rect.width=1;
     rect.x=x;
     rect.y=y;
-    if (game.getIntersectionList(rect,null).length != 0) return true;
+    /*if (game.getIntersectionList(rect,null).length != 0) return true;*/
     if (wallMode == "deadly") {
         if (x <= 0 || x >= 800 || y <= 0 || y >= 600) {
             return true;

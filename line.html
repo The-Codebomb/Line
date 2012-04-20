@@ -30,7 +30,9 @@ var TURNINGSPEED = 0.13;
 var MOVINGSPEED = 2.5;
 var LOOPSPEED = 30;
 var FULLCIRCLE = 2*m.PI;
+var BETWEENBREAKS = 100;
 var NS = "http://www.w3.org/2000/svg"; // SVG namespace
+var breaksOn = true; // is breaking used or not
 var wallMode = "deadly"; // valid values are "deadly" and "warp"
 
 var game;
@@ -44,6 +46,8 @@ function line(name,colour,keyL,keyR) {
     this.keyDown=false;
     this.name=name;
     this.colour=colour;
+    this.breakcounter=0;
+    this.break=false;
     this.x;
     this.y;
     this.addPoint = addPoint;
@@ -89,19 +93,19 @@ function init() {
 
 /* Main loop */
 function main() {
-    inputLoop();
+    inputLoop(); // Check input system
     var player = player1;
-    var direction = player.direction;
+    var direction = player.direction; // New cordinates ->
     var sameDirection = false;
     if (direction == player.oldDirection) sameDirection = true;
     player.oldDirection = direction;
     var x = player.x + MOVINGSPEED*m.sin(direction);
     var y = player.y + MOVINGSPEED*m.cos(direction);
-    if (checkForCollision(x,y,player)) {
+    if (checkForCollision(x,y,player)) { // Collision detection ->
         gameOver();
         addPoint(player,x,y,sameDirection);
         return;
-    } else if (wallMode == "warp" && 
+    } else if (wallMode == "warp" && // Warping ->
         (x <= 0 || x >= 800 || y <= 0 || y >= 600)) {
         addPoint(player,x,y,sameDirection);
         if (x <= 0) { x = 800; }
@@ -111,8 +115,23 @@ function main() {
         splitLine(player);
         player.oldDirection="";
     }
-    addPoint(player,x,y,sameDirection);
-    timeout = setTimeout("main()",50);
+    if (breaksOn) { // Breaking ->
+        if (!player.break && player.breakcounter >= BETWEENBREAKS) {
+            addPoint(player,x,y,sameDirection);
+            player.break = true;
+            player.breakcounter=0;
+        } else if (player.break && player.breakcounter >= BETWEENBREAKS/10) {
+            splitLine(player);
+            player.break = false;
+            player.breakcounter=0;
+        } else if (!player.break) addPoint(player,x,y,sameDirection);
+        else {
+            player.x = x;
+            player.y = y;
+        }
+        player.breakcounter++;
+    } else addPoint(player,x,y,sameDirection); // Normally drawing
+    timeout = setTimeout("main()",50); // Looping
 }
 
 /* Check for a collision */
@@ -122,7 +141,7 @@ function checkForCollision(x,y) {
     rect.width=1;
     rect.x=x;
     rect.y=y;
-    /*if (game.getIntersectionList(rect,null).length != 0) return true;*/
+    if (game.getIntersectionList(rect,null).length != 0) return true;
     if (wallMode == "deadly") {
         if (x <= 0 || x >= 800 || y <= 0 || y >= 600) {
             return true;

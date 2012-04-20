@@ -43,6 +43,7 @@ function line(name,colour,keyL,keyR) {
     this.keyR=keyR;
     this.keyDown=false;
     this.name=name;
+    this.colour=colour;
     this.x;
     this.y;
     this.addPoint = addPoint;
@@ -62,6 +63,14 @@ function addPoint(lobj,x,y,replOld) {
         lobj.polyline.setAttributeNS(null,"points",points+" "+x+","+y);
     lobj.x = x;
     lobj.y = y;
+}
+function splitLine(lobj) {
+    lobj.polyline = document.createElementNS(NS,"polyline");
+    lobj.polyline.setAttributeNS(null,"points","");
+    lobj.polyline.setAttributeNS(null,"fill","none");
+    lobj.polyline.setAttributeNS(null,"stroke",lobj.colour);
+    lobj.polyline.setAttributeNS(null,"class",lobj.name);
+    game.appendChild(lobj.polyline);
 }
 var player1;
 
@@ -92,11 +101,15 @@ function main() {
         gameOver();
         addPoint(player,x,y,sameDirection);
         return;
-    } else if (wallMode == "warp") { // MUST BE REIMPLEMENTED!
-        if (x <= 0) x = 800;
-        else if (x >= 800) x = 0;
-        else if (y <= 0) y = 600;
-        else if (y >= 600) y = 0;
+    } else if (wallMode == "warp" && 
+        (x <= 0 || x >= 800 || y <= 0 || y >= 600)) {
+        addPoint(player,x,y,sameDirection);
+        if (x <= 0) { x = 800; }
+        else if (x >= 800) { x = 0; }
+        else if (y <= 0) { y = 600; }
+        else if (y >= 600) { y = 0; }
+        splitLine(player);
+        player.oldDirection="";
     }
     addPoint(player,x,y,sameDirection);
     timeout = setTimeout("main()",50);

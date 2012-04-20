@@ -50,6 +50,7 @@ function line(name,colour,keyL,keyR) {
     this.polyline.setAttributeNS(null,"points","");
     this.polyline.setAttributeNS(null,"fill","none");
     this.polyline.setAttributeNS(null,"stroke",colour);
+    this.polyline.setAttributeNS(null,"class",name);
     game.appendChild(this.polyline);
 }
 function addPoint(lobj,x,y,replOld) {
@@ -80,15 +81,16 @@ function init() {
 /* Main loop */
 function main() {
     inputLoop();
-    var direction = player1.direction;
+    var player = player1;
+    var direction = player.direction;
     var sameDirection = false;
-    if (direction == player1.oldDirection) sameDirection = true;
-    player1.oldDirection = direction;
-    var x = player1.x + MOVINGSPEED*m.sin(direction);
-    var y = player1.y + MOVINGSPEED*m.cos(direction);
-    if (checkForCollision(x,y,player1)) {
+    if (direction == player.oldDirection) sameDirection = true;
+    player.oldDirection = direction;
+    var x = player.x + MOVINGSPEED*m.sin(direction);
+    var y = player.y + MOVINGSPEED*m.cos(direction);
+    if (checkForCollision(x,y,player)) {
         gameOver();
-        addPoint(player1,x,y,sameDirection);
+        addPoint(player,x,y,sameDirection);
         return;
     } else if (wallMode == "warp") { // MUST BE REIMPLEMENTED!
         if (x <= 0) x = 800;
@@ -96,7 +98,7 @@ function main() {
         else if (y <= 0) y = 600;
         else if (y >= 600) y = 0;
     }
-    addPoint(player1,x,y,sameDirection);
+    addPoint(player,x,y,sameDirection);
     timeout = setTimeout("main()",50);
 }
 

@@ -26,12 +26,15 @@
 <title></title>
 <script type="text/javascript">
 m = Math;
-var TURNINGSPEED = 0.13;
-var MOVINGSPEED = 2.5;
-var LOOPSPEED = 30;
+var TURNINGSPEED = 0.1;
+var MOVINGSPEED = 2;
+var LOOPSPEED = 10;
 var FULLCIRCLE = 2*m.PI;
 var BETWEENBREAKS = 100;
+var BREAKLENGTH = 10;
 var NS = "http://www.w3.org/2000/svg"; // SVG namespace
+
+// Some configs
 var breaksOn = true; // is breaking used or not
 var wallMode = "deadly"; // valid values are "deadly" and "warp"
 
@@ -61,10 +64,10 @@ function line(name,colour,keyL,keyR) {
 function addPoint(lobj,x,y,replOld) {
     var points = lobj.polyline.getAttributeNS(null,"points");
     if (replOld == true) {
-        points = points.replace(/\d+,\d+$/,"");
+        points = points.replace(/[\d\.]+,[\d\.]+$/,"");
         lobj.polyline.setAttributeNS(null,"points",points);
     }
-        lobj.polyline.setAttributeNS(null,"points",points+" "+x+","+y);
+    lobj.polyline.setAttributeNS(null,"points",points+" "+x+","+y);
     lobj.x = x;
     lobj.y = y;
 }
@@ -120,7 +123,7 @@ function main() {
             addPoint(player,x,y,sameDirection);
             player.break = true;
             player.breakcounter=0;
-        } else if (player.break && player.breakcounter >= BETWEENBREAKS/10) {
+        } else if (player.break && player.breakcounter >= BREAKLENGTH) {
             splitLine(player);
             player.break = false;
             player.breakcounter=0;
@@ -135,13 +138,16 @@ function main() {
 }
 
 /* Check for a collision */
-function checkForCollision(x,y) {
+function checkForCollision(x,y,player) {
     var rect = game.createSVGRect();
-    rect.height=1;
-    rect.width=1;
+    rect.height=0;
+    rect.width=0;
     rect.x=x;
     rect.y=y;
-    if (game.getIntersectionList(rect,null).length != 0) return true;
+    var list = document.getElementsByTagName("polyline");
+    for (var i = 0; i < list.length; i++) {
+        if (game.checkIntersection(list[i],rect)) return true;
+    }
     if (wallMode == "deadly") {
         if (x <= 0 || x >= 800 || y <= 0 || y >= 600) {
             return true;

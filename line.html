@@ -40,6 +40,7 @@ var wallMode = "deadly"; // valid values are "deadly" and "warp"
 
 var game;
 var timeout;
+var collDetectMethod; // Because some browsers doesn't follow standards (yet)
 
 function line(name,colour,keyL,keyR) {
     this.direction=m.random()*FULLCIRCLE;
@@ -84,6 +85,19 @@ var player1;
 /* Initializing function */
 function init() {
     game = document.getElementById("game");
+    if (collDetectMethod == undefined) {
+        try { // Selecting collision detection method ->
+            game.getIntersectionList(game.createSVGRect(),null);
+            collDetectMethod = "standard";
+        } catch (e) {
+            try {
+                document.elementFromPoint(null,null);
+                collDetectMethod = "mozilla";
+            } catch (e) {
+                collDetectMethod = "none";
+            }
+        }
+    }
     player1 = new line("player","#0000cd",37,39); // Adding one player
     var x = m.floor(m.random()*600+100);
     var y = m.floor(m.random()*400+100);
@@ -139,14 +153,16 @@ function main() {
 
 /* Check for a collision */
 function checkForCollision(x,y,player) {
-    var rect = game.createSVGRect();
-    rect.height=0;
-    rect.width=0;
-    rect.x=x;
-    rect.y=y;
-    var list = document.getElementsByTagName("polyline");
-    for (var i = 0; i < list.length; i++) {
-        if (game.checkIntersection(list[i],rect)) return true;
+    if (collDetectMethod == "standard") { // Buggy 
+        var rect = game.createSVGRect();
+        rect.height=1;
+        rect.width=1;
+        rect.x=x;
+        rect.y=y;
+        if (game.getIntersectionList(rect,null).length != 0) return true;
+    } else if (collDetectMethod == "mozilla") { // Still buggy!
+        var element = document.elementFromPoint(x,y);
+        if (element.tagName == "polyline") return true;
     }
     if (wallMode == "deadly") {
         if (x <= 0 || x >= 800 || y <= 0 || y >= 600) {

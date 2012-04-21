@@ -25,6 +25,11 @@
 <meta author="Tomi Leppänen" />
 <title></title>
 <script type="text/javascript">
+/* Some configs */
+var breaksOn = true; // is breaking used or not
+var wallMode = "deadly"; // valid values are "deadly" and "warp"
+
+/* Constants */
 m = Math;
 var TURNINGSPEED = 0.1;
 var MOVINGSPEED = 2;
@@ -34,16 +39,14 @@ var BETWEENBREAKS = 75;
 var BREAKLENGTH = 10;
 var NS = "http://www.w3.org/2000/svg"; // SVG namespace
 
-// Some configs
-var breaksOn = true; // is breaking used or not
-var wallMode = "deadly"; // valid values are "deadly" and "warp"
-
+/* Global variables */
 var game;
 var border;
 var timeout;
 var cDM; /* Collision Detection Method 
     Because some browsers doesn't follow svg standard completely (yet) */
-
+    
+/* Line object (each player has one) */
 function line(name,colour,keyL,keyR) {
     this.direction=m.random()*FULLCIRCLE;
     this.oldDirection;
@@ -119,7 +122,7 @@ function main() {
         border.setAttributeNS(null,"stroke-dasharray","");
     else if (wallMode == "warp") 
         border.setAttributeNS(null,"stroke-dasharray","4 4");
-    var player = player1;
+    var player = player1; // As only one player is used
     var sameDirection = false; // New cordinates ->
     if (player.direction == player.oldDirection) sameDirection = true;
     var x = player.x + MOVINGSPEED*m.sin(player.direction);

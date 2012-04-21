@@ -209,7 +209,7 @@ function checkForCollision(x,y,player) {
             var points = polylines[i].getAttributeNS(null,"points");
             points = points.split(" ");
             if (polylines[i] == player.polyline) { // Working around the 
-                if (points.length > 2) { // players own segments
+                if (points.length > 2) { // player's own segments
                     points = points.splice(0,points.length-2);
                 } else points = points.splice(0,0);
             }

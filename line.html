@@ -43,8 +43,6 @@ var NS = "http://www.w3.org/2000/svg"; // SVG namespace
 var game;
 var border;
 var timeout;
-var cDM = "custom"; /* Collision Detection Method 
-    Because some browsers doesn't follow svg standard completely (yet) */
     
 /* Line object (each player has one) */
 function line(name,colour,keyL,keyR) {
@@ -93,19 +91,6 @@ var player1;
 function init() {
     game = document.getElementById("game");
     border = game.getElementById("border");
-    if (cDM == undefined) {
-        try { // Selecting collision detection method ->
-            game.getIntersectionList(game.createSVGRect(),null);
-            cDM = "standard";
-        } catch (e) {
-            try {
-                document.elementFromPoint(null,null);
-                cDM = "mozilla";
-            } catch (e) {
-                cDM = "custiom";
-            }
-        }
-    }
     player1 = new line("player","#0000cd",37,39); // Adding one player ->
     var x = m.floor(m.random()*600+100);
     var y = m.floor(m.random()*400+100);
@@ -175,57 +160,40 @@ function main() {
 
 /* Check for a collision */
 function checkForCollision(x,y,player) {
-    if (cDM == "custom") { // Own custom method, may use a lot of cpu
-        var cline = player.polyline.getAttributeNS(null,"points");
-        cline = cline.match(/[\d\.]+,[\d\.]+ [\d\.]+,[\d\.]+$/);
-        if (cline != null)  {
-            cline = cline[0].split(" ");
-            var xy = cline[0].split(",");
-            var cx = xy.slice(0,1)[0];
-            var cy = xy.slice(1,2)[0];
-            var dx = x;
-            var dy = y;
-            var polylines = game.getElementsByTagName("polyline");
-            for (var i = 0; i < polylines.length; i++) {
-                var points = polylines[i].getAttributeNS(null,"points");
-                points = points.split(" ");
-                if (polylines[i] == player.polyline) {
-                    if (points.length > 2) {
-                        points = points.splice(0,points.length-2);
-                    } else points = points.splice(0,0);
-                }
-                for (var j = 0; j < points.length-1; j++) {
-                    var eline = new Array(points[j], points[j+1]);
-                    var xy = eline[0].split(",");
-                    var ex = xy.slice(0,1)[0];
-                    var ey = xy.slice(1,2)[0];
-                    var xy = eline[1].split(",");
-                    var fx = xy.slice(0,1)[0];
-                    var fy = xy.slice(1,2)[0];
-                    var res = (((cx*dy-cy*dx)*(ex-fx)-(cx-dx)*(ex*fy-ey*fx))/
-                        ((cx-dx)*(ey-fy)-(cy-dy)*(ex-fx)));
-                    if ((cx <= res && res <= dx)||(cx >= res && res >= dx)) {
-                        if ((ex <= res && res <= fx)||(ex >= res && res >= fx))
-                            return true;
-                    }
+    var cline = player.polyline.getAttributeNS(null,"points");
+    cline = cline.match(/[\d\.]+,[\d\.]+ [\d\.]+,[\d\.]+$/);
+    if (cline != null)  {
+        cline = cline[0].split(" ");
+        var xy = cline[0].split(",");
+        var cx = xy.slice(0,1)[0];
+        var cy = xy.slice(1,2)[0];
+        var dx = x;
+        var dy = y;
+        var polylines = game.getElementsByTagName("polyline");
+        for (var i = 0; i < polylines.length; i++) {
+            var points = polylines[i].getAttributeNS(null,"points");
+            points = points.split(" ");
+            if (polylines[i] == player.polyline) {
+                if (points.length > 2) {
+                    points = points.splice(0,points.length-2);
+                } else points = points.splice(0,0);
+            }
+            for (var j = 0; j < points.length-1; j++) {
+                var eline = new Array(points[j], points[j+1]);
+                var xy = eline[0].split(",");
+                var ex = xy.slice(0,1)[0];
+                var ey = xy.slice(1,2)[0];
+                var xy = eline[1].split(",");
+                var fx = xy.slice(0,1)[0];
+                var fy = xy.slice(1,2)[0];
+                var res = (((cx*dy-cy*dx)*(ex-fx)-(cx-dx)*(ex*fy-ey*fx))/
+                    ((cx-dx)*(ey-fy)-(cy-dy)*(ex-fx)));
+                if ((cx <= res && res <= dx)||(cx >= res && res >= dx)) {
+                    if ((ex <= res && res <= fx)||(ex >= res && res >= fx))
+                        return true;
                 }
             }
         }
-    } else if (cDM == "standard") { // Works fine on Opera
-        var rect = game.createSVGRect();
-        rect.height=1;
-        rect.width=1;
-        rect.x=x;
-        rect.y=y;
-        var list = game.getIntersectionList(rect,null);
-        if (list.length == 1) { // Working around border
-            if (list[0] != border) return true;
-        } else if (list.lenght > 1) {
-            return true;
-        }
-    } else if (cDM == "mozilla") { // for Mozilla Firefox but it's very buggy
-        var element = document.elementFromPoint(x,y);
-        if (element && element.tagName == "polyline") return true;
     }
     if (wallMode == "deadly") {
         if (x <= 0 || x >= 800 || y <= 0 || y >= 600) {

@@ -63,15 +63,16 @@ function line(name,colour,keyL,keyR) {
     this.polyline.setAttributeNS(null,"points","");
     this.polyline.setAttributeNS(null,"fill","none");
     this.polyline.setAttributeNS(null,"stroke",colour);
+    this.polyline.setAttributeNS(null,"stroke-width",this.r);
     this.polyline.setAttributeNS(null,"class",name);
     this.circle = document.createElementNS(NS,"circle");
-    this.circle.setAttributeNS(null,"r",this.r);
+    this.circle.setAttributeNS(null,"r",m.round(this.r/2));
     this.circle.setAttributeNS(null,"fill",colour);
     this.circle.setAttributeNS(null,"class",name);
     game.appendChild(this.polyline);
     game.appendChild(this.circle);
 }
-function addPoint(lobj,x,y,replOld) {
+function addPoint(lobj,x,y,replOld) { // Adds a point and moves the circle
     var points = lobj.polyline.getAttributeNS(null,"points");
     if (replOld == true) {
         points = points.replace(/ [\d\.]+,[\d\.]+$/,"");
@@ -81,17 +82,18 @@ function addPoint(lobj,x,y,replOld) {
     else lobj.polyline.setAttributeNS(null,"points",points+x+","+y);
     moveCircle(lobj,x,y);
 }
-function moveCircle(lobj,x,y) {
+function moveCircle(lobj,x,y) { // Just moves the circle
     lobj.circle.setAttributeNS(null,"cx",x);
     lobj.circle.setAttributeNS(null,"cy",y);
     lobj.x = x;
     lobj.y = y;
 }
-function splitLine(lobj) {
+function splitLine(lobj) { // Begins a new line
     lobj.polyline = document.createElementNS(NS,"polyline");
     lobj.polyline.setAttributeNS(null,"points","");
     lobj.polyline.setAttributeNS(null,"fill","none");
     lobj.polyline.setAttributeNS(null,"stroke",lobj.colour);
+    lobj.polyline.setAttributeNS(null,"stroke-width",lobj.r);
     lobj.polyline.setAttributeNS(null,"class",lobj.name);
     game.appendChild(lobj.polyline);
 }
@@ -113,7 +115,7 @@ function init() {
 
 /* Main "loop" */
 function main() {
-    var time = (new Date()).getTime();
+    var time = (new Date()).getTime(); // To count time of one loop
     var warped = 0;
     inputLoop(); // Check input system
     if (wallMode == "deadly") 
@@ -128,7 +130,6 @@ function main() {
     if (checkForCollision(x,y,player)) { // Collision detection ->
         if (!breaksOn || !player.break) {
             gameOver();
-            addPoint(player,x,y,sameDirection);
             return;
         }
     } else if (wallMode == "warp" && // Warping ->
@@ -167,14 +168,27 @@ function main() {
         if (warped <= 0) player.oldDirection = player.direction;
         else if (warped > 0) warped--; 
     }
-    time = (new Date()).getTime()-time;
+    time = (new Date()).getTime()-time; // Looping ->
     looptime = LOOPSPEED - time;
     if (looptime < 0) looptime = 0;
-    if (timeout) timeout = setTimeout("main()",looptime); // Looping
+    if (timeout) timeout = setTimeout("main()",looptime);
 }
 
 /* Check for a collision */
 function checkForCollision(x,y,player) {
+    /*
+     * Collision between lines is detected by calculating 
+     * points that are common to two segments. 
+     *
+     * So we repeat this to nearly all segments of all lines:
+     *  - Calculate x-cordinate that is common to two segments
+     *  - Check that the cordinate is part of both segments
+     *    - If it is return false
+     *    - If it isn't continue
+     * 
+     * The calculations and checks are last lines of this part
+     * and all boring stuff is before them
+     */
     var cline = player.polyline.getAttributeNS(null,"points");
     cline = cline.match(/[\d\.]+,[\d\.]+ [\d\.]+,[\d\.]+$/);
     if (cline != null)  {
@@ -210,7 +224,7 @@ function checkForCollision(x,y,player) {
             }
         }
     }
-    if (wallMode == "deadly") {
+    if (wallMode == "deadly") { // Check if player hit the wall
         if (x <= 0 || x >= 800 || y <= 0 || y >= 600) {
             return true;
         }
@@ -218,7 +232,7 @@ function checkForCollision(x,y,player) {
     return false;
 }
 
-/* When a collision happens */
+/* When a collision happens (cleaning up and informing user) */
 function gameOver() {
     timeout = clearTimeout(timeout);
     document.body.removeEventListener("keyup",function(e){inputKeyUp(e)},true);

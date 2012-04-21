@@ -210,7 +210,7 @@ function checkForCollision(x,y,player) {
                 }
             }
         }
-    } else if (cDM == "standard") { // Buggy on Chrome/Chromium
+    } else if (cDM == "standard") { // Works fine on Opera
         var rect = game.createSVGRect();
         rect.height=1;
         rect.width=1;
@@ -222,7 +222,7 @@ function checkForCollision(x,y,player) {
         } else if (list.lenght > 1) {
             return true;
         }
-    } else if (cDM == "mozilla") { // Still buggy!
+    } else if (cDM == "mozilla") { // for Mozilla Firefox but it's very buggy
         var element = document.elementFromPoint(x,y);
         if (element && element.tagName == "polyline") return true;
     }

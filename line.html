@@ -30,7 +30,7 @@ var TURNINGSPEED = 0.1;
 var MOVINGSPEED = 2;
 var LOOPSPEED = 10;
 var FULLCIRCLE = 2*m.PI;
-var BETWEENBREAKS = 100;
+var BETWEENBREAKS = 75;
 var BREAKLENGTH = 10;
 var NS = "http://www.w3.org/2000/svg"; // SVG namespace
 
@@ -50,7 +50,7 @@ function line(name,colour,keyL,keyR) {
     this.keyDown=false;
     this.name=name;
     this.colour=colour;
-    this.breakcounter=0;
+    this.breakcounter=BETWEENBREAKS+m.floor(m.random()*BETWEENBREAKS);
     this.break=false;
     this.x;
     this.y;
@@ -132,16 +132,17 @@ function main() {
         player.oldDirection="";
     }
     if (breaksOn) { // Breaking ->
-        if (!player.break && player.breakcounter >= BETWEENBREAKS) {
+        if (!player.break && player.breakcounter <= 0) {
             addPoint(player,x,y,sameDirection);
             player.break = true;
-            player.breakcounter=0;
-        } else if (player.break && player.breakcounter >= BREAKLENGTH) {
+            player.breakcounter=BREAKLENGTH;
+        } else if (player.break && player.breakcounter <= 0) {
             splitLine(player);
             addPoint(player,x,y,false);
             player.oldDirection="";
             player.break = false;
-            player.breakcounter=0;
+            player.breakcounter=BETWEENBREAKS+m.floor(
+                m.random()*BETWEENBREAKS);
         } else if (!player.break) { 
             addPoint(player,x,y,sameDirection);
             player.oldDirection = direction;
@@ -149,7 +150,7 @@ function main() {
             player.x = x;
             player.y = y;
         }
-        player.breakcounter++;
+        player.breakcounter--;
     } else { // Normally drawing ->
         addPoint(player,x,y,sameDirection);
         player.oldDirection = direction;

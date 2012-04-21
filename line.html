@@ -43,7 +43,7 @@ var NS = "http://www.w3.org/2000/svg"; // SVG namespace
 var game;
 var border;
 var timeout;
-var cDM; /* Collision Detection Method 
+var cDM = "custom"; /* Collision Detection Method 
     Because some browsers doesn't follow svg standard completely (yet) */
     
 /* Line object (each player has one) */
@@ -73,7 +73,9 @@ function addPoint(lobj,x,y,replOld) {
         points = points.replace(/ [\d\.]+,[\d\.]+$/,"");
         lobj.polyline.setAttributeNS(null,"points",points);
     }
-    lobj.polyline.setAttributeNS(null,"points",points+" "+x+","+y);
+    if (points) lobj.polyline.setAttributeNS(null,"points",points+" "+x+","+y);
+    else  lobj.polyline.setAttributeNS(null,"points",points+x+","+y);
+        
     lobj.x = x;
     lobj.y = y;
 }
@@ -168,35 +170,43 @@ function main() {
         if (warped <= 0) player.oldDirection = player.direction;
         else if (warped > 0) warped--; 
     }
-    timeout = setTimeout("main()",50); // Looping
+    if (timeout) timeout = setTimeout("main()",50); // Looping
 }
 
 /* Check for a collision */
 function checkForCollision(x,y,player) {
-    if (cDM == "custom") { // Own custom method, unusable slow
+    if (cDM == "custom") { // Own custom method, quite slow and unreliable
         var cline = player.polyline.getAttributeNS(null,"points");
         cline = cline.match(/[\d\.]+,[\d\.]+ [\d\.]+,[\d\.]+$/);
         if (cline != null)  {
             cline = cline[0].split(" ");
-            var ck = getSlope(cline);
             var xy = cline[0].split(",");
-            var cx = xy[0];
-            var cy = xy[1];
+            var cx = m.round(xy.slice(0,1)[0]);
+            var cy = m.round(xy.slice(1,2)[0]);
+            var dx = m.round(x);
+            var dy = m.round(y);
             var polylines = game.getElementsByTagName("polyline");
             for (var i = 0; i < polylines.length; i++) {
                 var points = polylines[i].getAttributeNS(null,"points");
-                points = points.split(" ").slice(1);
+                points = points.split(" ");
+                if (polylines[i] == player.polyline) 
+                    points = points.splice(0,points.length-1);
                 for (var j = 0; j < points.length-1; j++) {
                     var eline = new Array(points[j], points[j+1]);
-                    var ek = getSlope(eline);
                     var xy = eline[0].split(",");
-                    var ex = xy[0];
-                    var ey = xy[1];
-                    var res = ( (ek*ex-ey) - (ck*cx-cy) ) / ( ck - ek )
-                    if (!isNaN(res)) {
-                        if (res > ex && res < x) return true;
-                        if (res < ex && res > x) return true;
-                    } 
+                    var ex = m.round(xy.slice(0,1)[0]);
+                    var ey = m.round(xy.slice(1,2)[0]);
+                    var xy = eline[1].split(",");
+                    var fx = m.round(xy.slice(0,1)[0]);
+                    var fy = m.round(xy.slice(1,2)[0]);
+                    var res = (((cx*dy-cy*dx)*(ex-fx)-(cx-dx)*(ex*fy-ey*fx))/
+                        ((cx-dx)*(ey-fy)-(cy-dy)*(ex-fx)));
+                    if (!isNaN(res) && res != Infinity && res != -Infinity) {
+                        if (cx < res && res < x && ex < res && res < fx)
+                            return true;
+                        if (cx > res && res > x && ex > res && res > fx)
+                            return true;
+                    }
                 }
             }
         }
@@ -224,20 +234,9 @@ function checkForCollision(x,y,player) {
     return false;
 }
 
-/* Maths for collision */
-function getSlope(line) {
-    var xy = line[0].split(",");
-    var x1 = xy[0];
-    var y1 = xy[1];
-    var xy = line[1].split(",");
-    var x2 = xy[0];
-    var y2 = xy[1];
-    return (y2-y1)/(x2-x1)
-}
-
 /* When a collision happens */
 function gameOver() {
-    clearTimeout(timeout);
+    timeout = clearTimeout(timeout);
     document.body.removeEventListener("keyup",function(e){inputKeyUp(e)},true);
     document.body.removeEventListener("keydown",function(e){inputKeyDown(e)},
         true);
@@ -247,7 +246,6 @@ function gameOver() {
     text.setAttributeNS(null,"fill","red");
     text.textContent="Game Over!";
     game.appendChild(text);
-    console.log("dead");
 }
 
 /* Input system */
@@ -256,8 +254,7 @@ function inputKeyUp(event) {
     if (event.which == player.keyDown) {
         player.keyDown = false;
         return false;
-    }
-    return true;
+    } return true;
 }
 function inputKeyDown(event) {
     var player = player1; // currently only one player is used
@@ -271,8 +268,10 @@ function inputKeyDown(event) {
     } if (event.which == 66) {
         breaksOn = !breaksOn;
         return false;
-    }
-    return true;
+    } if (event.which == 75) {
+        gameOver();
+        return false;
+    } return true;
 }
 function inputLoop() {
     var player = player1; // currently only one player is used

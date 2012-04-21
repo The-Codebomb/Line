@@ -178,7 +178,13 @@ function main() {
 function checkForCollision(x,y,player) {
     /*
      * Collision between lines is detected by calculating 
-     * points that are common to two segments. 
+     * points that are common to two segments. Segment means
+     * here the part of line between two points.
+     *
+     * The first segment is the one we just have drawn.
+     * To get the other one we must get all lines,
+     * then split their points and now we get two points
+     * for each segment.
      *
      * So we repeat this to nearly all segments of all lines:
      *  - Calculate x-cordinate that is common to two segments
@@ -187,7 +193,7 @@ function checkForCollision(x,y,player) {
      *    - If it isn't continue
      * 
      * The calculations and checks are last lines of this part
-     * and all boring stuff is before them
+     * and all boring stuff is before them.
      */
     var cline = player.polyline.getAttributeNS(null,"points");
     cline = cline.match(/[\d\.]+,[\d\.]+ [\d\.]+,[\d\.]+$/);
@@ -202,8 +208,8 @@ function checkForCollision(x,y,player) {
         for (var i = 0; i < polylines.length; i++) {
             var points = polylines[i].getAttributeNS(null,"points");
             points = points.split(" ");
-            if (polylines[i] == player.polyline) {
-                if (points.length > 2) {
+            if (polylines[i] == player.polyline) { // Working around the 
+                if (points.length > 2) { // players own segments
                     points = points.splice(0,points.length-2);
                 } else points = points.splice(0,0);
             }

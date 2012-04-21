@@ -33,7 +33,7 @@ var wallMode = "deadly"; // valid values are "deadly" and "warp"
 m = Math;
 var TURNINGSPEED = 0.1;
 var MOVINGSPEED = 2;
-var LOOPSPEED = 10;
+var LOOPSPEED = 30;
 var FULLCIRCLE = 2*m.PI;
 var BETWEENBREAKS = 75;
 var BREAKLENGTH = 10;
@@ -57,9 +57,9 @@ function line(name,colour,keyL,keyR) {
     this.colour=colour;
     this.breakcounter=BETWEENBREAKS+m.floor(m.random()*BETWEENBREAKS);
     this.break=false;
+    this.speed=MOVINGSPEED;
     this.x;
     this.y;
-    this.addPoint = addPoint;
     this.polyline = document.createElementNS(NS,"polyline");
     this.polyline.setAttributeNS(null,"points","");
     this.polyline.setAttributeNS(null,"fill","none");
@@ -127,8 +127,8 @@ function main() {
     var player = player1; // As only one player is used
     var sameDirection = false; // New cordinates ->
     if (player.direction == player.oldDirection) sameDirection = true;
-    var x = player.x + MOVINGSPEED*m.sin(player.direction);
-    var y = player.y + MOVINGSPEED*m.cos(player.direction);
+    var x = player.x + player.speed*m.sin(player.direction);
+    var y = player.y + player.speed*m.cos(player.direction);
     if (checkForCollision(x,y,player)) { // Collision detection ->
         gameOver();
         addPoint(player,x,y,sameDirection);
@@ -170,41 +170,42 @@ function main() {
         if (warped <= 0) player.oldDirection = player.direction;
         else if (warped > 0) warped--; 
     }
-    if (timeout) timeout = setTimeout("main()",50); // Looping
+    if (timeout) timeout = setTimeout("main()",LOOPSPEED); // Looping
 }
 
 /* Check for a collision */
 function checkForCollision(x,y,player) {
-    if (cDM == "custom") { // Own custom method, quite slow and unreliable
+    if (cDM == "custom") { // Own custom method, may use a lot of cpu
         var cline = player.polyline.getAttributeNS(null,"points");
         cline = cline.match(/[\d\.]+,[\d\.]+ [\d\.]+,[\d\.]+$/);
         if (cline != null)  {
             cline = cline[0].split(" ");
             var xy = cline[0].split(",");
-            var cx = m.round(xy.slice(0,1)[0]);
-            var cy = m.round(xy.slice(1,2)[0]);
-            var dx = m.round(x);
-            var dy = m.round(y);
+            var cx = xy.slice(0,1)[0];
+            var cy = xy.slice(1,2)[0];
+            var dx = x;
+            var dy = y;
             var polylines = game.getElementsByTagName("polyline");
             for (var i = 0; i < polylines.length; i++) {
                 var points = polylines[i].getAttributeNS(null,"points");
                 points = points.split(" ");
-                if (polylines[i] == player.polyline) 
-                    points = points.splice(0,points.length-1);
+                if (polylines[i] == player.polyline) {
+                    if (points.length > 2) {
+                        points = points.splice(0,points.length-2);
+                    } else points = points.splice(0,0);
+                }
                 for (var j = 0; j < points.length-1; j++) {
                     var eline = new Array(points[j], points[j+1]);
                     var xy = eline[0].split(",");
-                    var ex = m.round(xy.slice(0,1)[0]);
-                    var ey = m.round(xy.slice(1,2)[0]);
+                    var ex = xy.slice(0,1)[0];
+                    var ey = xy.slice(1,2)[0];
                     var xy = eline[1].split(",");
-                    var fx = m.round(xy.slice(0,1)[0]);
-                    var fy = m.round(xy.slice(1,2)[0]);
+                    var fx = xy.slice(0,1)[0];
+                    var fy = xy.slice(1,2)[0];
                     var res = (((cx*dy-cy*dx)*(ex-fx)-(cx-dx)*(ex*fy-ey*fx))/
                         ((cx-dx)*(ey-fy)-(cy-dy)*(ex-fx)));
-                    if (!isNaN(res) && res != Infinity && res != -Infinity) {
-                        if (cx < res && res < x && ex < res && res < fx)
-                            return true;
-                        if (cx > res && res > x && ex > res && res > fx)
+                    if ((cx <= res && res <= dx)||(cx >= res && res >= dx)) {
+                        if ((ex <= res && res <= fx)||(ex >= res && res >= fx))
                             return true;
                     }
                 }

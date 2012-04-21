@@ -36,7 +36,7 @@ var NS = "http://www.w3.org/2000/svg"; // SVG namespace
 
 // Some configs
 var breaksOn = true; // is breaking used or not
-var wallMode = "warp"; // valid values are "deadly" and "warp"
+var wallMode = "deadly"; // valid values are "deadly" and "warp"
 
 var game;
 var timeout;
@@ -213,6 +213,13 @@ function inputKeyDown(event) {
     var player = player1; // currently only one player is used
     if (event.which == player.keyL || event.which == player.keyR) {
         player.keyDown = event.which;
+        return false;
+    } if (event.which == 87) {
+        if (wallMode == "deadly") wallMode = "warp";
+        else if (wallMode == "warp") wallMode = "deadly";
+        return false;
+    } if (event.which == 66) {
+        breaksOn = !breaksOn;
         return false;
     }
     return true;

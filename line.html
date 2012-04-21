@@ -115,7 +115,6 @@ function main() {
     var direction = player.direction; // New cordinates ->
     var sameDirection = false;
     if (direction == player.oldDirection) sameDirection = true;
-    player.oldDirection = direction;
     var x = player.x + MOVINGSPEED*m.sin(direction);
     var y = player.y + MOVINGSPEED*m.cos(direction);
     if (checkForCollision(x,y,player)) { // Collision detection ->
@@ -139,15 +138,22 @@ function main() {
             player.breakcounter=0;
         } else if (player.break && player.breakcounter >= BREAKLENGTH) {
             splitLine(player);
+            addPoint(player,x,y,false);
+            player.oldDirection="";
             player.break = false;
             player.breakcounter=0;
-        } else if (!player.break) addPoint(player,x,y,sameDirection);
-        else {
+        } else if (!player.break) { 
+            addPoint(player,x,y,sameDirection);
+            player.oldDirection = direction;
+        } else {
             player.x = x;
             player.y = y;
         }
         player.breakcounter++;
-    } else addPoint(player,x,y,sameDirection); // Normally drawing
+    } else { // Normally drawing ->
+        addPoint(player,x,y,sameDirection);
+        player.oldDirection = direction;
+    }
     timeout = setTimeout("main()",50); // Looping
 }
 

@@ -36,7 +36,7 @@ var NS = "http://www.w3.org/2000/svg"; // SVG namespace
 
 // Some configs
 var breaksOn = true; // is breaking used or not
-var wallMode = "deadly"; // valid values are "deadly" and "warp"
+var wallMode = "warp"; // valid values are "deadly" and "warp"
 
 var game;
 var timeout;
@@ -110,13 +110,16 @@ function init() {
 
 /* Main loop */
 function main() {
+    var warped = 0;
     inputLoop(); // Check input system
+    if (wallMode == "deadly") game.style.borderStyle="solid";
+    else if (wallMode == "warp") game.style.borderStyle="dashed";
+    console.log(game.style);
     var player = player1;
-    var direction = player.direction; // New cordinates ->
-    var sameDirection = false;
-    if (direction == player.oldDirection) sameDirection = true;
-    var x = player.x + MOVINGSPEED*m.sin(direction);
-    var y = player.y + MOVINGSPEED*m.cos(direction);
+    var sameDirection = false; // New cordinates ->
+    if (player.direction == player.oldDirection) sameDirection = true;
+    var x = player.x + MOVINGSPEED*m.sin(player.direction);
+    var y = player.y + MOVINGSPEED*m.cos(player.direction);
     if (checkForCollision(x,y,player)) { // Collision detection ->
         gameOver();
         addPoint(player,x,y,sameDirection);
@@ -130,22 +133,24 @@ function main() {
         else if (y >= 600) { y = 0; }
         splitLine(player);
         player.oldDirection="";
+        warped = 2;
     }
     if (breaksOn) { // Breaking ->
         if (!player.break && player.breakcounter <= 0) {
             addPoint(player,x,y,sameDirection);
+            player.oldDirection="";
             player.break = true;
             player.breakcounter=BREAKLENGTH;
         } else if (player.break && player.breakcounter <= 0) {
             splitLine(player);
             addPoint(player,x,y,false);
-            player.oldDirection="";
             player.break = false;
             player.breakcounter=BETWEENBREAKS+m.floor(
                 m.random()*BETWEENBREAKS);
         } else if (!player.break) { 
             addPoint(player,x,y,sameDirection);
-            player.oldDirection = direction;
+            if (warped <= 0) player.oldDirection = player.direction;
+            else if (warped > 0) warped--; 
         } else {
             player.x = x;
             player.y = y;
@@ -153,7 +158,8 @@ function main() {
         player.breakcounter--;
     } else { // Normally drawing ->
         addPoint(player,x,y,sameDirection);
-        player.oldDirection = direction;
+        if (warped <= 0) player.oldDirection = player.direction;
+        else if (warped > 0) warped--; 
     }
     timeout = setTimeout("main()",50); // Looping
 }

@@ -104,17 +104,17 @@ function init() {
             }
         }
     }
-    player1 = new line("player","#0000cd",37,39); // Adding one player
+    player1 = new line("player","#0000cd",37,39); // Adding one player ->
     var x = m.floor(m.random()*600+100);
     var y = m.floor(m.random()*400+100);
     addPoint(player1,x,y,false); // Add starting point
-    timeout = setTimeout("main()",LOOPSPEED);
+    timeout = setTimeout("main()",LOOPSPEED); // Start "loop", input =>
     document.body.addEventListener("keydown",function(e){inputKeyDown(e)},
         true);
     document.body.addEventListener("keyup",function(e){inputKeyUp(e)},true);
 }
 
-/* Main loop */
+/* Main "loop" */
 function main() {
     var warped = 0;
     inputLoop(); // Check input system

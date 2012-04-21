@@ -169,6 +169,7 @@ function main() {
     }
     time = (new Date()).getTime()-time;
     looptime = LOOPSPEED - time;
+    if (looptime < 0) looptime = 0;
     if (timeout) timeout = setTimeout("main()",looptime); // Looping
 }
 

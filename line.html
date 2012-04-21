@@ -113,6 +113,7 @@ function init() {
 
 /* Main "loop" */
 function main() {
+    var time = (new Date()).getTime();
     var warped = 0;
     inputLoop(); // Check input system
     if (wallMode == "deadly") 
@@ -166,7 +167,9 @@ function main() {
         if (warped <= 0) player.oldDirection = player.direction;
         else if (warped > 0) warped--; 
     }
-    if (timeout) timeout = setTimeout("main()",LOOPSPEED); // Looping
+    time = (new Date()).getTime()-time;
+    looptime = LOOPSPEED - time/1000;
+    if (timeout) timeout = setTimeout("main()",looptime); // Looping
 }
 
 /* Check for a collision */

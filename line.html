@@ -168,7 +168,7 @@ function main() {
         else if (warped > 0) warped--; 
     }
     time = (new Date()).getTime()-time;
-    looptime = LOOPSPEED - time/1000;
+    looptime = LOOPSPEED - time;
     if (timeout) timeout = setTimeout("main()",looptime); // Looping
 }
 

@@ -70,7 +70,7 @@ function line(name,colour,keyL,keyR) {
 function addPoint(lobj,x,y,replOld) {
     var points = lobj.polyline.getAttributeNS(null,"points");
     if (replOld == true) {
-        points = points.replace(/[\d\.]+,[\d\.]+$/,"");
+        points = points.replace(/ [\d\.]+,[\d\.]+$/,"");
         lobj.polyline.setAttributeNS(null,"points",points);
     }
     lobj.polyline.setAttributeNS(null,"points",points+" "+x+","+y);
@@ -100,7 +100,7 @@ function init() {
                 document.elementFromPoint(null,null);
                 cDM = "mozilla";
             } catch (e) {
-                cDM = "none";
+                cDM = "custiom";
             }
         }
     }
@@ -173,7 +173,34 @@ function main() {
 
 /* Check for a collision */
 function checkForCollision(x,y,player) {
-    if (cDM == "standard") { // Buggy 
+    if (cDM == "custom") { // Own custom method, unusable slow
+        var cline = player.polyline.getAttributeNS(null,"points");
+        cline = cline.match(/[\d\.]+,[\d\.]+ [\d\.]+,[\d\.]+$/);
+        if (cline != null)  {
+            cline = cline[0].split(" ");
+            var ck = getSlope(cline);
+            var xy = cline[0].split(",");
+            var cx = xy[0];
+            var cy = xy[1];
+            var polylines = game.getElementsByTagName("polyline");
+            for (var i = 0; i < polylines.length; i++) {
+                var points = polylines[i].getAttributeNS(null,"points");
+                points = points.split(" ").slice(1);
+                for (var j = 0; j < points.length-1; j++) {
+                    var eline = new Array(points[j], points[j+1]);
+                    var ek = getSlope(eline);
+                    var xy = eline[0].split(",");
+                    var ex = xy[0];
+                    var ey = xy[1];
+                    var res = ( (ek*ex-ey) - (ck*cx-cy) ) / ( ck - ek )
+                    if (!isNaN(res)) {
+                        if (res > ex && res < x) return true;
+                        if (res < ex && res > x) return true;
+                    } 
+                }
+            }
+        }
+    } else if (cDM == "standard") { // Buggy on Chrome/Chromium
         var rect = game.createSVGRect();
         rect.height=1;
         rect.width=1;
@@ -187,7 +214,7 @@ function checkForCollision(x,y,player) {
         }
     } else if (cDM == "mozilla") { // Still buggy!
         var element = document.elementFromPoint(x,y);
-        if (element.tagName == "polyline") return true;
+        if (element && element.tagName == "polyline") return true;
     }
     if (wallMode == "deadly") {
         if (x <= 0 || x >= 800 || y <= 0 || y >= 600) {
@@ -195,6 +222,17 @@ function checkForCollision(x,y,player) {
         }
     }
     return false;
+}
+
+/* Maths for collision */
+function getSlope(line) {
+    var xy = line[0].split(",");
+    var x1 = xy[0];
+    var y1 = xy[1];
+    var xy = line[1].split(",");
+    var x2 = xy[0];
+    var y2 = xy[1];
+    return (y2-y1)/(x2-x1)
 }
 
 /* When a collision happens */
@@ -209,6 +247,7 @@ function gameOver() {
     text.setAttributeNS(null,"fill","red");
     text.textContent="Game Over!";
     game.appendChild(text);
+    console.log("dead");
 }
 
 /* Input system */

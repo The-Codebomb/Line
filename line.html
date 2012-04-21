@@ -40,7 +40,8 @@ var wallMode = "warp"; // valid values are "deadly" and "warp"
 
 var game;
 var timeout;
-var collDetectMethod; // Because some browsers doesn't follow standards (yet)
+var cDM; /* Collision Detection Method 
+    Because some browsers doesn't follow svg standard completely (yet) */
 
 function line(name,colour,keyL,keyR) {
     this.direction=m.random()*FULLCIRCLE;
@@ -85,16 +86,16 @@ var player1;
 /* Initializing function */
 function init() {
     game = document.getElementById("game");
-    if (collDetectMethod == undefined) {
+    if (cDM == undefined) {
         try { // Selecting collision detection method ->
             game.getIntersectionList(game.createSVGRect(),null);
-            collDetectMethod = "standard";
+            cDM = "standard";
         } catch (e) {
             try {
                 document.elementFromPoint(null,null);
-                collDetectMethod = "mozilla";
+                cDM = "mozilla";
             } catch (e) {
-                collDetectMethod = "none";
+                cDM = "none";
             }
         }
     }
@@ -166,14 +167,14 @@ function main() {
 
 /* Check for a collision */
 function checkForCollision(x,y,player) {
-    if (collDetectMethod == "standard") { // Buggy 
+    if (cDM == "standard") { // Buggy 
         var rect = game.createSVGRect();
         rect.height=1;
         rect.width=1;
         rect.x=x;
         rect.y=y;
         if (game.getIntersectionList(rect,null).length != 0) return true;
-    } else if (collDetectMethod == "mozilla") { // Still buggy!
+    } else if (cDM == "mozilla") { // Still buggy!
         var element = document.elementFromPoint(x,y);
         if (element.tagName == "polyline") return true;
     }

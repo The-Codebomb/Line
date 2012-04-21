@@ -189,7 +189,7 @@ function checkForCollision(x,y,player) {
      * So we repeat this to nearly all segments of all lines:
      *  - Calculate x-cordinate that is common to two segments
      *  - Check that the cordinate is part of both segments
-     *    - If it is return false
+     *    - If it is return true (player collided)
      *    - If it isn't continue
      * 
      * The calculations and checks are last lines of this part

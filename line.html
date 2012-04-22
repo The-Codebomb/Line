@@ -281,13 +281,14 @@ function inputLoop() {
     var player = player1; // currently only one player is used
     if (player.keyDown == player.keyL) {
         var new_direction = player.direction+TURNINGSPEED;
-        if (new_direction > 0) player.direction = new_direction+FULLCIRCLE;
+        if (new_direction > FULLCIRCLE) 
+            player.direction = new_direction-FULLCIRCLE;
         else player.direction = new_direction;
     } else if (player.keyDown == player.keyR) {
         var new_direction = player1.direction-TURNINGSPEED;
-        if (new_direction < FULLCIRCLE) {
+        if (new_direction < 0)
             player1.direction = new_direction+FULLCIRCLE;
-        } else player1.direction = new_direction;
+        else player1.direction = new_direction;
     }
 }
 </script>

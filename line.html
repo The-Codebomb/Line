@@ -100,7 +100,7 @@ function splitLine(lobj) { // Begins a new line
 var player1;
 
 /* Initializing function */
-function init() {
+function init() { // Will be mostly redone when menus are implemented
     game = document.getElementById("game");
     border = game.getElementById("border");
     player1 = new line("player","#0000cd",37,39); // Adding one player ->
@@ -109,7 +109,7 @@ function init() {
     addPoint(player1,x,y,false); // Add starting point
     timeout = setTimeout("main()",LOOPSPEED); // Start "loop", input =>
     document.body.addEventListener("keydown",function(e){inputKeyDown(e)},
-        true);
+        true); // Menus should implement their own menuInput-system functions
     document.body.addEventListener("keyup",function(e){inputKeyUp(e)},true);
 }
 

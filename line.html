@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="author" content="Tomi Leppänen" />
-<title></title>
+<title>Line!</title>
 <!--
    Copyright (c) 2012, Tomi Leppänen
    
@@ -58,15 +58,15 @@ function line(name,colour,keyL,keyR) {
     this.speed=MOVINGSPEED;
     this.x;
     this.y;
-    this.r=1;
+    this.d=1;
     this.polyline = document.createElementNS(NS,"polyline");
     this.polyline.setAttributeNS(null,"points","");
     this.polyline.setAttributeNS(null,"fill","none");
     this.polyline.setAttributeNS(null,"stroke",colour);
-    this.polyline.setAttributeNS(null,"stroke-width",this.r);
+    this.polyline.setAttributeNS(null,"stroke-width",this.d);
     this.polyline.setAttributeNS(null,"class",name);
     this.circle = document.createElementNS(NS,"circle");
-    this.circle.setAttributeNS(null,"r",m.round(this.r/2));
+    this.circle.setAttributeNS(null,"r",m.round(this.d/2));
     this.circle.setAttributeNS(null,"fill",colour);
     this.circle.setAttributeNS(null,"class",name);
     game.appendChild(this.polyline);

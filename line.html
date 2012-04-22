@@ -129,6 +129,7 @@ function main() {
     var y = player.y + player.speed*m.cos(player.direction);
     if (checkForCollision(x,y,player)) { // Collision detection ->
         if (!breaksOn || !player.break) {
+            spillBlood(x,y);
             gameOver();
             return;
         }
@@ -243,8 +244,27 @@ function checkForCollision(x,y,player) {
     return false;
 }
 
+/* The blood effet */
+function spillBlood(x,y) {
+    var spills = new Array();
+    for (var i = 0; i < 30; i++) {
+        var nx = m.random()*30+x-15; // Trying to make some randomness
+        if (nx < x-5) var ny = m.random()*10+y-10; // and a circular shape
+        else if (nx > x+5) var ny = m.random()*10+y;
+        else var ny = m.random()*30+y-15;
+        spills.push(document.createElementNS(NS,"rect"));
+        spills[i].setAttributeNS(null,"width",m.ceil(m.random()*2));
+        spills[i].setAttributeNS(null,"height",m.ceil(m.random()*2));
+        spills[i].setAttributeNS(null,"fill","red");
+        spills[i].setAttributeNS(null,"class","blood");
+        spills[i].setAttributeNS(null,"x",nx);
+        spills[i].setAttributeNS(null,"y",ny);
+        game.appendChild(spills[i]);
+    }
+}
+
 /* When a collision happens (cleaning up and informing user) */
-function gameOver() {
+function gameOver() { // Will be rewritten when multiplayer mode is implemented
     timeout = clearTimeout(timeout);
     document.body.removeEventListener("keyup",function(e){inputKeyUp(e)},true);
     document.body.removeEventListener("keydown",function(e){inputKeyDown(e)},

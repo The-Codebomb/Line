@@ -221,6 +221,11 @@ function checkForCollision(x,y,player) {
                 var xy = eline[1].split(",");
                 var fx = xy.slice(0,1)[0];
                 var fy = xy.slice(1,2)[0];
+                if ((ex > cx && fx > cx && ex > dx && fx > dx) || 
+                    (ex < cx && fx < cx && ex < dx && fx < dx) ||
+                    (ey < cy && fy < cy && ey < dy && fy < dy) ||
+                    (ey < cy && fy < cy && ey < dy && fy < dy))
+                    continue; // Don't calculate unuseful ones
                 var res = (((cx*dy-cy*dx)*(ex-fx)-(cx-dx)*(ex*fy-ey*fx))/
                     ((cx-dx)*(ey-fy)-(cy-dy)*(ex-fx)));
                 if ((cx <= res && res <= dx)||(cx >= res && res >= dx)) {

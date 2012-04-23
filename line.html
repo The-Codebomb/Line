@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="author" content="Tomi Leppänen" />
-<title></title>
+<title>Line!</title>
 <!--
    Copyright (c) 2012, Tomi Leppänen
    
@@ -58,15 +58,15 @@ function line(name,colour,keyL,keyR) {
     this.speed=MOVINGSPEED;
     this.x;
     this.y;
-    this.r=1;
+    this.d=1;
     this.polyline = document.createElementNS(NS,"polyline");
     this.polyline.setAttributeNS(null,"points","");
     this.polyline.setAttributeNS(null,"fill","none");
     this.polyline.setAttributeNS(null,"stroke",colour);
-    this.polyline.setAttributeNS(null,"stroke-width",this.r);
+    this.polyline.setAttributeNS(null,"stroke-width",this.d);
     this.polyline.setAttributeNS(null,"class",name);
     this.circle = document.createElementNS(NS,"circle");
-    this.circle.setAttributeNS(null,"r",m.round(this.r/2));
+    this.circle.setAttributeNS(null,"r",m.round(this.d/2));
     this.circle.setAttributeNS(null,"fill",colour);
     this.circle.setAttributeNS(null,"class",name);
     game.appendChild(this.polyline);
@@ -97,58 +97,19 @@ function splitLine(lobj) { // Begins a new line
     lobj.polyline.setAttributeNS(null,"class",lobj.name);
     game.appendChild(lobj.polyline);
 }
-function powerUp(type,x,y,lifetime) {	//Object for bonuses in level
-	
-}
-function menu() {	//menu for the game
-	crtBtn(350, 250, 100, 50, "Play", "play");
-}
-//create button with text and eventlistener
-function crtBtn(x,y,width,height,text,btnType) {
-	btn = document.createElementNS(NS,"rect");
-	btn.setAttributeNS(null, "x", x);
-	btn.setAttributeNS(null, "y", y);
-	btn.setAttributeNS(null, "width", width);
-	btn.setAttributeNS(null, "height", height);
-	btn.setAttributeNS(null, "fill", "#FFFFFF");
-	btn.setAttributeNS(null, "stroke", "black");
-	btn.setAttributeNS(null, "stroke-width", 2);
-	
-	
-	fontSize = 25;
-	font = "Courier New";
-	btnText = document.createElementNS(NS,"text");
-	btnText.setAttributeNS(null, "x", x + width / 2);
-	btnText.setAttributeNS(null, "y", y + height / 2 + fontSize / 4);
-	btnText.setAttributeNS(null, "font-family", font);
-	btnText.setAttributeNS(null, "font-size", fontSize);
-	btnText.textContent = text;		//Can screw up in other browsers than FF.
-	btnText.setAttributeNS(null, "text-anchor", "middle");
-	
-	game.appendChild(btn);
-	game.appendChild(btnText);
-	
-	btn.addEventListener("click",function(e){btnClick(e,btnType,btn,btnText)},true);	// two listeners, fix this.
-	btnText.addEventListener("click",function(e){btnClick(e,btnType,btn,btnText)},true);
-}
-
 var player1;
-var GOtext; //game over text
 
 /* Initializing function */
-function init() {
+function init() { // Will be mostly redone when menus are implemented
     game = document.getElementById("game");
     border = game.getElementById("border");
-	menu();
-}
-function startGame() {	//starts game
-	player1 = new line("player","#0000cd",37,39); // Adding one player ->
+    player1 = new line("player","#0000cd",37,39); // Adding one player ->
     var x = m.floor(m.random()*600+100);
     var y = m.floor(m.random()*400+100);
     addPoint(player1,x,y,false); // Add starting point
     timeout = setTimeout("main()",LOOPSPEED); // Start "loop", input =>
     document.body.addEventListener("keydown",function(e){inputKeyDown(e)},
-        true);
+        true); // Menus should implement their own menuInput-system functions
     document.body.addEventListener("keyup",function(e){inputKeyUp(e)},true);
 }
 
@@ -168,6 +129,7 @@ function main() {
     var y = player.y + player.speed*m.cos(player.direction);
     if (checkForCollision(x,y,player)) { // Collision detection ->
         if (!breaksOn || !player.break) {
+            spillBlood(x,y);
             gameOver();
             return;
         }
@@ -260,6 +222,11 @@ function checkForCollision(x,y,player) {
                 var xy = eline[1].split(",");
                 var fx = xy.slice(0,1)[0];
                 var fy = xy.slice(1,2)[0];
+                if ((ex > cx && fx > cx && ex > dx && fx > dx) || 
+                    (ex < cx && fx < cx && ex < dx && fx < dx) ||
+                    (ey < cy && fy < cy && ey < dy && fy < dy) ||
+                    (ey < cy && fy < cy && ey < dy && fy < dy))
+                    continue; // Don't calculate unuseful ones
                 var res = (((cx*dy-cy*dx)*(ex-fx)-(cx-dx)*(ex*fy-ey*fx))/
                     ((cx-dx)*(ey-fy)-(cy-dy)*(ex-fx)));
                 if ((cx <= res && res <= dx)||(cx >= res && res >= dx)) {
@@ -277,32 +244,36 @@ function checkForCollision(x,y,player) {
     return false;
 }
 
+/* The blood effect */
+function spillBlood(x,y) {
+    var spills = new Array();
+    for (var i = 0; i < 50; i++) {
+        var nx = m.random()*30+x-15; // Trying to make some randomness
+        if (nx < x-5) var ny = m.random()*10+y-10; // and a circular shape
+        else if (nx > x+5) var ny = m.random()*10+y;
+        else var ny = m.random()*30+y-15;
+        spills.push(document.createElementNS(NS,"circle"));
+        spills[i].setAttributeNS(null,"r",m.random());
+        spills[i].setAttributeNS(null,"fill","red");
+        spills[i].setAttributeNS(null,"class","blood");
+        spills[i].setAttributeNS(null,"cx",nx);
+        spills[i].setAttributeNS(null,"cy",ny);
+        game.appendChild(spills[i]);
+    }
+}
+
 /* When a collision happens (cleaning up and informing user) */
-function gameOver() {
+function gameOver() { // Will be rewritten when multiplayer mode is implemented
     timeout = clearTimeout(timeout);
     document.body.removeEventListener("keyup",function(e){inputKeyUp(e)},true);
     document.body.removeEventListener("keydown",function(e){inputKeyDown(e)},
         true);
-    GOtext = document.createElementNS(NS,"text");
-    GOtext.setAttributeNS(null,"x","100");
-    GOtext.setAttributeNS(null,"y","100");
-    GOtext.setAttributeNS(null,"fill","red");
-    GOtext.textContent="Game Over!";
-    game.appendChild(GOtext);
-	menu();
-}
-
-function btnClick(e,btnType,btn,btnText) {	// handles clicks on buttons
-	if (btnType == "play") {
-		game.removeChild(btn);
-		game.removeChild(btnText);
-		if (player1) {		// CHANGE FOR MANY PLAYERS!
-			game.removeChild(player1.polyline);
-			game.removeChild(player1.circle);
-			game.removeChild(GOtext);
-		}
-		startGame();
-	}
+    var text = document.createElementNS(NS,"text");
+    text.setAttributeNS(null,"x","100");
+    text.setAttributeNS(null,"y","100");
+    text.setAttributeNS(null,"fill","red");
+    text.textContent="Game Over!";
+    game.appendChild(text);
 }
 
 /* Input system */
@@ -334,13 +305,14 @@ function inputLoop() {
     var player = player1; // currently only one player is used
     if (player.keyDown == player.keyL) {
         var new_direction = player.direction+TURNINGSPEED;
-        if (new_direction > 0) player.direction = new_direction+FULLCIRCLE;
+        if (new_direction > FULLCIRCLE) 
+            player.direction = new_direction-FULLCIRCLE;
         else player.direction = new_direction;
     } else if (player.keyDown == player.keyR) {
         var new_direction = player1.direction-TURNINGSPEED;
-        if (new_direction < FULLCIRCLE) {
+        if (new_direction < 0)
             player1.direction = new_direction+FULLCIRCLE;
-        } else player1.direction = new_direction;
+        else player1.direction = new_direction;
     }
 }
 </script>

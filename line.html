@@ -43,7 +43,8 @@ var NS = "http://www.w3.org/2000/svg"; // SVG namespace
 var game;
 var border;
 var timeout;
-    
+var bots = true;
+
 /* Line object (each player has one) */
 function line(name,colour,keyL,keyR) {
     this.direction=m.random()*FULLCIRCLE;
@@ -53,6 +54,7 @@ function line(name,colour,keyL,keyR) {
     this.keyDown=false;
     this.name=name;
     this.colour=colour;
+    this.alive=true;
     this.breakcounter=BETWEENBREAKS+m.floor(m.random()*BETWEENBREAKS);
     this.break=false;
     this.speed=MOVINGSPEED;
@@ -93,7 +95,7 @@ function splitLine(lobj) { // Begins a new line
     lobj.polyline.setAttributeNS(null,"points","");
     lobj.polyline.setAttributeNS(null,"fill","none");
     lobj.polyline.setAttributeNS(null,"stroke",lobj.colour);
-    lobj.polyline.setAttributeNS(null,"stroke-width",lobj.r);
+    lobj.polyline.setAttributeNS(null,"stroke-width",lobj.d);
     lobj.polyline.setAttributeNS(null,"class",lobj.name);
     game.appendChild(lobj.polyline);
 }
@@ -103,7 +105,8 @@ var player1;
 function init() { // Will be mostly redone when menus are implemented
     game = document.getElementById("game");
     border = game.getElementById("border");
-    player1 = new line("player","#0000cd",37,39); // Adding one player ->
+    if (bots) player1 = new line("player","#0000cd","",""); // Adding bot ->
+    else player1 = new line("player","#0000cd",37,39); // Adding one player ->
     var x = m.floor(m.random()*600+100);
     var y = m.floor(m.random()*400+100);
     addPoint(player1,x,y,false); // Add starting point
@@ -117,21 +120,28 @@ function init() { // Will be mostly redone when menus are implemented
 function main() {
     var time = (new Date()).getTime(); // To count time of one loop
     var warped = 0;
-    inputLoop(); // Check input system
     if (wallMode == "deadly") 
         border.setAttributeNS(null,"stroke-dasharray","");
     else if (wallMode == "warp") 
         border.setAttributeNS(null,"stroke-dasharray","4 4");
     var player = player1; // As only one player is used
+    if (bots) { // If just bots are playing
+        botControl(player);
+        if (!player.alive) {
+            timeout = setTimeout("botGameOver()",1000);
+            return;
+        }
+    } else inputLoop(player); // Check input system
     var sameDirection = false; // New cordinates ->
     if (player.direction == player.oldDirection) sameDirection = true;
     var x = player.x + player.speed*m.sin(player.direction);
     var y = player.y + player.speed*m.cos(player.direction);
     if (checkForCollision(x,y,player)) { // Collision detection ->
         if (!breaksOn || !player.break) {
+            player.alive=false;
             spillBlood(x,y);
             gameOver();
-            return;
+            if (!bots) return; else timeout=true;
         }
     } else if (wallMode == "warp" && // Warping ->
         (x <= 0 || x >= 800 || y <= 0 || y >= 600)) {
@@ -244,6 +254,48 @@ function checkForCollision(x,y,player) {
     return false;
 }
 
+/* inputLoop replacement for bot players */
+function botControl(bot) {
+    var keypress=m.random();
+    if (bot.bot_direction == undefined) bot.bot_direction=0;
+    //console.log(bot.bot_direction);
+    if ((bot.bot_direction > 0 && bot.bot_direction < 10) 
+            || keypress < 0.4) {
+        bot.bot_direction++;
+        var new_direction = bot.direction+TURNINGSPEED;
+        if (new_direction > FULLCIRCLE) 
+            bot.direction = new_direction-FULLCIRCLE;
+        else bot.direction = new_direction;
+    } else if ((bot.bot_direction < 0 && bot.bot_direction > -10) 
+            || keypress > 0.6) {
+        bot.bot_direction--;
+        var new_direction = bot.direction-TURNINGSPEED;
+        if (new_direction < 0)
+            bot.direction = new_direction+FULLCIRCLE;
+        else bot.direction = new_direction;
+    }
+    if (bot.bot_direction >= 10 || bot.bot_direction <= -10) 
+        bot.bot_direction=0;
+}
+
+/* When all bots are dead */
+function botGameOver() {
+            var i=0;
+            var lines = game.getElementsByTagName("polyline");
+            var lines_length = lines.length;
+            for (i = 0; i < lines_length; i++) {
+                game.removeChild(lines[0]);
+            }
+            var circles = game.getElementsByTagName("circle");
+            var circles_length = circles.length;
+            for (i = 0; i < circles_length; i++) {
+                game.removeChild(circles[0]);
+            }
+            game.removeChild(game.getElementById("gameover_text"));
+            timeout = setTimeout("init()",1000);
+            return;
+}
+
 /* The blood effect */
 function spillBlood(x,y) {
     var spills = new Array();
@@ -272,6 +324,7 @@ function gameOver() { // Will be rewritten when multiplayer mode is implemented
     text.setAttributeNS(null,"x","100");
     text.setAttributeNS(null,"y","100");
     text.setAttributeNS(null,"fill","red");
+    text.setAttributeNS(null,"id","gameover_text");
     text.textContent="Game Over!";
     game.appendChild(text);
 }
@@ -301,18 +354,17 @@ function inputKeyDown(event) {
         return false;
     } return true;
 }
-function inputLoop() {
-    var player = player1; // currently only one player is used
+function inputLoop(player) {
     if (player.keyDown == player.keyL) {
         var new_direction = player.direction+TURNINGSPEED;
         if (new_direction > FULLCIRCLE) 
             player.direction = new_direction-FULLCIRCLE;
         else player.direction = new_direction;
     } else if (player.keyDown == player.keyR) {
-        var new_direction = player1.direction-TURNINGSPEED;
+        var new_direction = player.direction-TURNINGSPEED;
         if (new_direction < 0)
-            player1.direction = new_direction+FULLCIRCLE;
-        else player1.direction = new_direction;
+            player.direction = new_direction+FULLCIRCLE;
+        else player.direction = new_direction;
     }
 }
 </script>

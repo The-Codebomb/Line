@@ -255,40 +255,83 @@ function checkForCollision(x,y,player) {
 }
 
 /* inputLoop replacement for bot players */
-function botControl(bot) {
+function botControl(bot) { // Needs more intelligent AI(s)
     var keypress=m.random();
     if (bot.bot_direction == undefined) bot.bot_direction=0;
-    //console.log(bot.bot_direction);
-    if ((bot.bot_direction > 0 && bot.bot_direction < 10) 
-            || keypress < 0.4) {
-        bot.bot_direction++;
-        var new_direction = bot.direction+TURNINGSPEED;
-        if (new_direction > FULLCIRCLE) 
-            bot.direction = new_direction-FULLCIRCLE;
-        else bot.direction = new_direction;
-    } else if ((bot.bot_direction < 0 && bot.bot_direction > -10) 
-            || keypress > 0.6) {
-        bot.bot_direction--;
-        var new_direction = bot.direction-TURNINGSPEED;
-        if (new_direction < 0)
-            bot.direction = new_direction+FULLCIRCLE;
-        else bot.direction = new_direction;
+    if (bot.bot_intelligence == "idiot") {
+        if ((bot.bot_direction > 0 && bot.bot_direction < 10) 
+                || keypress < 0.4) {
+            bot.bot_direction++;
+            bot.direction = botInputLeft(bot.direction);
+        } else if ((bot.bot_direction < 0 && bot.bot_direction > -10) 
+                || keypress > 0.6) {
+            bot.bot_direction--;
+            bot.direction = botInputRight(bot.direction);
+        }
+        if (bot.bot_direction >= 10 || bot.bot_direction <= -10) 
+            bot.bot_direction=0;
+    } else if (bot.bot_intelligence == "stupid") {
+        if (bot.bot_phase == undefined) bot.bot_phase=0;
+        if (bot.x < 50) {
+            if (bot.bot_phase == 0)
+                bot.direction = botInputRight(bot.direction);
+            else bot.direction = botInputLeft(bot.direction);
+            return;
+        } else if (bot.x > 750) {
+            if (bot.bot_phase == 0)
+                bot.direction = botInputRight(bot.direction);
+            else bot.direction = botInputLeft(bot.direction);
+            return;
+        } else if (bot.y < 50) {
+            if (bot.bot_phase == 0)
+                bot.direction = botInputRight(bot.direction);
+            else bot.direction = botInputLeft(bot.direction);
+            return;
+        } else if (bot.y > 550) {
+            if (bot.bot_phase == 0)
+                bot.direction = botInputRight(bot.direction);
+            else bot.direction = botInputLeft(bot.direction);
+            return;
+        }
+        if (bot.bot_phase == 0) {
+            bot.bot_direction++;
+            bot.direction = botInputLeft(bot.direction);
+            if (bot.bot_direction > 40) { 
+                bot.bot_phase=1;
+                bot.bot_direction=0;
+            }
+        } else {
+            bot.bot_direction++;
+            bot.direction = botInputRight(bot.direction);
+            if (bot.bot_direction > 40) { 
+                bot.bot_phase=0;
+                bot.bot_direction=0;
+            }
+        }
+    } else {
+        bot.bot_intelligence=(m.random()>=0.5)?"stupid":"idiot";
+        bot.bot_intelligence="stupid";
     }
-    if (bot.bot_direction >= 10 || bot.bot_direction <= -10) 
-        bot.bot_direction=0;
+}
+function botInputLeft(old_direction) {
+    var new_direction = old_direction+TURNINGSPEED;
+    if (new_direction > FULLCIRCLE) return new_direction-FULLCIRCLE;
+    else return new_direction;
+}
+function botInputRight(old_direction) {
+    var new_direction = old_direction-TURNINGSPEED;
+    if (new_direction < 0) return new_direction+FULLCIRCLE;
+    else return new_direction;
 }
 
 /* When all bots are dead */
 function botGameOver() {
-            var i=0;
             var lines = game.getElementsByTagName("polyline");
-            var lines_length = lines.length;
-            for (i = 0; i < lines_length; i++) {
+            for (var i = lines.length-1; i >= 0; i--) {
                 game.removeChild(lines[0]);
             }
             var circles = game.getElementsByTagName("circle");
-            var circles_length = circles.length;
-            for (i = 0; i < circles_length; i++) {
+            for (var i = circles.length-1; i >= 0; i--) {
                 game.removeChild(circles[0]);
             }
             game.removeChild(game.getElementById("gameover_text"));

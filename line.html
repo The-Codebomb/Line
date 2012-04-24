@@ -258,7 +258,7 @@ function checkForCollision(x,y,player) {
 function botControl(bot) { // Needs more intelligent AI(s)
     var keypress=m.random();
     if (bot.bot_direction == undefined) bot.bot_direction=0;
-    if (bot.bot_intelligence == "idiot") { // Does what ever she wants
+    if (bot.bot_intelligence == "idiot") { // Does whatever she wants
         if ((bot.bot_direction > 0 && bot.bot_direction < 10) 
                 || keypress < 0.4) {
             bot.bot_direction++;

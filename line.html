@@ -258,7 +258,7 @@ function checkForCollision(x,y,player) {
 function botControl(bot) { // Needs more intelligent AI(s)
     var keypress=m.random();
     if (bot.bot_direction == undefined) bot.bot_direction=0;
-    if (bot.bot_intelligence == "idiot") {
+    if (bot.bot_intelligence == "idiot") { // Does what ever she wants
         if ((bot.bot_direction > 0 && bot.bot_direction < 10) 
                 || keypress < 0.4) {
             bot.bot_direction++;
@@ -270,40 +270,25 @@ function botControl(bot) { // Needs more intelligent AI(s)
         }
         if (bot.bot_direction >= 10 || bot.bot_direction <= -10) 
             bot.bot_direction=0;
-    } else if (bot.bot_intelligence == "stupid") {
+    } else if (bot.bot_intelligence == "stupid") { // Has (?) some intelligence
         if (bot.bot_phase == undefined) bot.bot_phase=0;
-        if (bot.x < 50) {
-            if (bot.bot_phase == 0)
-                bot.direction = botInputRight(bot.direction);
-            else bot.direction = botInputLeft(bot.direction);
-            return;
-        } else if (bot.x > 750) {
-            if (bot.bot_phase == 0)
-                bot.direction = botInputRight(bot.direction);
-            else bot.direction = botInputLeft(bot.direction);
-            return;
-        } else if (bot.y < 50) {
-            if (bot.bot_phase == 0)
-                bot.direction = botInputRight(bot.direction);
-            else bot.direction = botInputLeft(bot.direction);
-            return;
-        } else if (bot.y > 550) {
-            if (bot.bot_phase == 0)
-                bot.direction = botInputRight(bot.direction);
-            else bot.direction = botInputLeft(bot.direction);
-            return;
-        }
+        if ((!bot.bot_wallZone) && ((bot.x < 50) || (bot.x > 750) || 
+                (bot.y < 50) || (bot.y > 550))) {
+            bot.bot_direction = -10;
+            bot.bot_wallZone=true;
+        } else if ((bot.x > 50) && (bot.x < 750) && 
+            (bot.y > 50) && (bot.y < 550)) bot.bot_wallZone=false;
         if (bot.bot_phase == 0) {
             bot.bot_direction++;
             bot.direction = botInputLeft(bot.direction);
-            if (bot.bot_direction > 40) { 
+            if (bot.bot_direction > 20) { 
                 bot.bot_phase=1;
                 bot.bot_direction=0;
             }
         } else {
             bot.bot_direction++;
             bot.direction = botInputRight(bot.direction);
-            if (bot.bot_direction > 40) { 
+            if (bot.bot_direction > 20) { 
                 bot.bot_phase=0;
                 bot.bot_direction=0;
             }

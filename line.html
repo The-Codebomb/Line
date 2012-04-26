@@ -38,22 +38,24 @@ var LOOPSPEED = 30;
 var FULLCIRCLE = 2*m.PI;
 var BETWEENBREAKS = 75;
 var BREAKLENGTH = 10;
-var SIZEX = 800;	//CHANGE THESE IF YOU CHANGE CANVAS SIZE!
-var SIZEY = 600;
+var WIDTH = 800;	// CHANGE THESE IF YOU CHANGE CANVAS SIZE!
+var HEIGHT = 600;
 var NS = "http://www.w3.org/2000/svg"; // SVG namespace
 
-var playerAmount = 1;	// how many players
-var pl1btnL = 37;		// buttons
-var pl1btnR = 39;
-var pl2btnL, pl2btnR;
-var pl3btnL, pl3btnR;
-var pl4btnL, pl4btnR;
+// Don't like
+var playerAmount = 1;	// how many players // vaihda player arrayn pituuteen
+var pl1btnL = 37;		// buttons // löytyy player olioista
+var pl1btnR = 39; // löytyy player olioista
+var pl2btnL, pl2btnR; // löytyy player olioista
+var pl3btnL, pl3btnR; // löytyy player olioista
+var pl4btnL, pl4btnR; // löytyy player olioista
 
 
 /* Global variables */
 var game;
 var border;
 var timeout;
+var player1; // Temporary
     
 /* Line object (each player has one) */
 function line(name,colour,keyL,keyR) {
@@ -108,10 +110,14 @@ function splitLine(lobj) { // Begins a new line
     lobj.polyline.setAttributeNS(null,"class",lobj.name);
     game.appendChild(lobj.polyline);
 }
-function powerUp(type,x,y,lifetime) {	//Object for bonuses in level
-	
+
+/* Bonus objects */
+function powerUp(type,x,y,lifetime) {
+	// FIXME
 }
-function menu() {	//menu for the game
+
+/* Creates the menu */
+function menu() {
 	var playBtn, playBtnT;
 	var plrBtn, plrBtnT;
 	var plr1Set, plr1SetT;
@@ -119,22 +125,32 @@ function menu() {	//menu for the game
 	var plr3Set, plr3SetT;
 	var plr4Set, plr4SetT;
 	
-	crtBtn(SIZEX / 4 - 100, SIZEY / 4 - 50, 200, 100, "Play", "play", playBtn, playBtnT);
-	crtBtn(SIZEX / 3 * 2 - 100, SIZEY / 4 - 25, 200, 50, "1 Player", "plrAmount", plrBtn, plrBtnT);
-	//button setting functios
-	crtBtn(SIZEX / 2 - 105, SIZEY / 2 - 25, 210, 50, "Plr1 Settings", "plr1Set", plr1Set, plr1SetT);
-	crtBtn(SIZEX / 2 - 105, SIZEY / 2 + 30, 210, 50, "Plr2 Settings", "plr2Set", plr2Set, plr2SetT);
-	crtBtn(SIZEX / 2 - 105, SIZEY / 2 + 85, 210, 50, "Plr3 Settings", "plr3Set", plr3Set, plr3SetT);
-	crtBtn(SIZEX / 2 - 105, SIZEY / 2 + 140, 210, 50, "Plr4 Settings", "plr4Set", plr4Set, plr4SetT);
+	createButton(WIDTH / 4-100, HEIGHT/4-50, 200, 100, "Play", "play", playBtn, 
+        playBtnT);
+	createButton(WIDTH / 3*2-100, HEIGHT/4-25, 200, 50, "1 Player", 
+        "plrAmount", plrBtn, plrBtnT);
+	// Setup buttons
+	createButton(WIDTH/2-105, HEIGHT/2-25, 210, 50, "Plr1 Settings", "plr1Set", 
+        plr1Set, plr1SetT);
+	createButton(WIDTH/2-105, HEIGHT/2+30, 210, 50, "Plr2 Settings", "plr2Set", 
+        plr2Set, plr2SetT);
+	createButton(WIDTH/2-105, HEIGHT/2+85, 210, 50, "Plr3 Settings", "plr3Set", 
+        plr3Set, plr3SetT);
+	createButton(WIDTH/2-105, HEIGHT/2+140, 210, 50, "Plr4 Settings", 
+        "plr4Set", plr4Set, plr4SetT);
 }
+/* ??? */
 function retryMenu() {
 	var retryBtn, retryBtnT;
 	var menuBtn, menuBtnT;
-	crtBtn(SIZEX / 2 - 100, SIZEY / 2 - 125, 200, 100, "Play again", "retry", retryBtn, retryBtnT);
-	crtBtn(SIZEX / 2 - 100, SIZEY / 2 + 25, 200, 100, "Main Menu", "rtnMenu", menuBtn, menuBtnT);
+	createButton(WIDTH/2-100, HEIGHT/2-125, 200, 100, "Play again", "retry", 
+        retryBtn, retryBtnT);
+	createButton(WIDTH/2-100, HEIGHT/2+25, 200, 100, "Main Menu", "rtnMenu", 
+        menuBtn, menuBtnT);
 }
-//create button with text and eventlistener
-function crtBtn(x,y,width,height,text,btnType,btn,btnText) {
+
+/* Create button with text and eventlistener */
+function createButton(x,y,width,height,text,btnType,btn,btnText) {
 	btn = document.createElementNS(NS,"rect");
 	btn.setAttributeNS(null, "x", x);
 	btn.setAttributeNS(null, "y", y);
@@ -144,32 +160,34 @@ function crtBtn(x,y,width,height,text,btnType,btn,btnText) {
 	btn.setAttributeNS(null, "stroke", "black");
 	btn.setAttributeNS(null, "stroke-width", 2);
 	
-	
 	fontSize = 25;
-	font = "Courier New";
+	font = "Courier New, monospace";
 	btnText = document.createElementNS(NS,"text");
 	btnText.setAttributeNS(null, "x", x + width / 2);
 	btnText.setAttributeNS(null, "y", y + height / 2 + fontSize / 4);
 	btnText.setAttributeNS(null, "font-family", font);
 	btnText.setAttributeNS(null, "font-size", fontSize);
-	btnText.textContent = text;		//Can screw up in other browsers than FF.
+	btnText.textContent = text;		// Can screw up in other browsers than FF
 	btnText.setAttributeNS(null, "text-anchor", "middle");
 	
 	game.appendChild(btn);
 	game.appendChild(btnText);
 	
-	btn.addEventListener("click",function(e){btnClick(e,btnType,btn,btnText)},false);	// two listeners, fix this.
-	btnText.addEventListener("click",function(e){btnClick(e,btnType,btn,btnText)},false);
+	btn.addEventListener("click",	// needs two listeners, FIXME
+        function(e){buttonClicked(e,btnType,btn,btnText)},false);
+	btnText.addEventListener("click",
+        function(e){buttonClicked(e,btnType,btn,btnText)},false);
 	
-	btn.addEventListener("mouseover",function(e){btnHoverOn(e,btn,btnText)},false);	// for effects when hovering
-	btnText.addEventListener("mouseover",function(e){btnHoverOn(e,btn,btnText)},false);	
-	btn.addEventListener("mouseout",function(e){btnHoverOff(e,btn,btnText)},false);	
-	btnText.addEventListener("mouseout",function(e){btnHoverOff(e,btn,btnText)},false);
+	btn.addEventListener("mouseover",function(e){btnHoverOn(e,btn,btnText)},
+        false);	// for effects when hovering
+	btnText.addEventListener("mouseover",
+        function(e){btnHoverOn(e,btn,btnText)},false);	
+	btn.addEventListener("mouseout",function(e){btnHoverOff(e,btn,btnText)},
+        false);	
+	btnText.addEventListener("mouseout",
+        function(e){btnHoverOff(e,btn,btnText)},false);
 }
 
-
-var player1;
-var GOtext; //game-over text
 
 /* Initializing function */
 function init() {
@@ -178,14 +196,15 @@ function init() {
 	menu();
 }
 
-function startGame() {	//starts game
-	player1 = new line("player","#0000cd",pl1btnL,pl1btnR); // Adding one player ->
-    var x = m.floor(m.random()*(SIZEX - 200)+100);
-    var y = m.floor(m.random()*(SIZEY - 200)+100);
+/* Starts the game */
+function startGame() {
+	player1 = new line("player","#0000cd",pl1btnL,pl1btnR);
+    var x = m.floor(m.random()*(WIDTH - 200)+100);
+    var y = m.floor(m.random()*(HEIGHT - 200)+100);
     addPoint(player1,x,y,false); // Add starting point
-    timeout = setTimeout("main()",LOOPSPEED); // Start "loop", input =>
+    timeout = setTimeout("main()",LOOPSPEED); // Start "loop"
     document.body.addEventListener("keydown",function(e){inputKeyDown(e)},
-        true);
+        true); // Begin input ->
     document.body.addEventListener("keyup",function(e){inputKeyUp(e)},true);
 }
 
@@ -307,7 +326,7 @@ function checkForCollision(x,y,player) {
         }
     }
     if (wallMode == "deadly") { // Check if player hit the wall
-        if (x <= 0 || x >= SIZEX || y <= 0 || y >= SIZEY) {
+        if (x <= 0 || x >= WIDTH || y <= 0 || y >= HEIGHT) {
             return true;
         }
     }
@@ -320,7 +339,7 @@ function gameOver() {
     document.body.removeEventListener("keyup",function(e){inputKeyUp(e)},true);
     document.body.removeEventListener("keydown",function(e){inputKeyDown(e)},
         true);
-    GOtext = document.createElementNS(NS,"text");
+    var GOtext = document.createElementNS(NS,"text");
     GOtext.setAttributeNS(null,"x","100");
     GOtext.setAttributeNS(null,"y","100");
     GOtext.setAttributeNS(null,"fill","red");
@@ -329,16 +348,20 @@ function gameOver() {
 	retryMenu();
 }
 
+/* ??? */
 function btnHoverOn(e,btn,btnText) {
 	btnText.setAttributeNS(null, "font-size", 27);
 	btn.setAttributeNS(null, "stroke-width", 3);
 }
+
+/* ??? */
 function btnHoverOff(e,btn,btnText) {
 	btnText.setAttributeNS(null, "font-size", 25);
 	btn.setAttributeNS(null, "stroke-width", 2);
 }
 
-function btnClick(e,btnType,btn,btnText) {	// handles clicks on buttons
+/* ??? */
+function buttonClicked(e,btnType,btn,btnText) {	// handles clicks on buttons
 	
 	if (btnType == "play") {
 		if (player1) {		// CHANGE FOR MANY PLAYERS!
@@ -383,6 +406,8 @@ function btnClick(e,btnType,btn,btnText) {	// handles clicks on buttons
 	}
 	
 }
+
+/* ??? */
 function clearGround() {
 	var viivat = game.getElementsByTagName("polyline");
 	for (i = viivat.length - 1; i >= 0;i--) {
@@ -394,10 +419,11 @@ function clearGround() {
 		game.removeChild(pallot[i]);
 	}
 }
-function removeBtns() {
 
+/* ??? */
+function removeBtns() {
 	var rects = game.getElementsByTagName("rect");	// remove box buttons
-	for (i = rects.length - 1; i >= 1;i--) {	// Keep first rect, which is border
+	for (i = rects.length - 1; i >= 1;i--) {// Keep first rect, which is border
 		game.removeChild(rects[i]);
 	}		
 	var texts = game.getElementsByTagName("text");	// remove texts
@@ -406,6 +432,7 @@ function removeBtns() {
 	}
 }
 
+/* ??? */
 function setButtons(playerNum) {
 	//asking for buttons here
 	menu();

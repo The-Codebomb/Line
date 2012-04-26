@@ -217,3 +217,11 @@ function gameOver() {
     game.appendChild(GOtext);
 	retryMenu();
 }
+
+/* Adds attributes to an element */
+function elementSetAttributes(element,values) {
+    for (name in values) {
+        element.setAttributeNS(null,name,value[name]);
+    }
+    return element;
+}

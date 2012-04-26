@@ -37,15 +37,11 @@ function line(name,colour,keyL,keyR) {
     this.y;
     this.d=1;
     this.polyline = document.createElementNS(NS,"polyline");
-    this.polyline.setAttributeNS(null,"points","");
-    this.polyline.setAttributeNS(null,"fill","none");
-    this.polyline.setAttributeNS(null,"stroke",colour);
-    this.polyline.setAttributeNS(null,"stroke-width",this.d);
-    this.polyline.setAttributeNS(null,"class",name);
+    this.polyline = elementSetAttributes(this.polyline, {"points":"", 
+        "fill":"none", "stroke":colour, "stroke-width":this.d, "class":name});
     this.circle = document.createElementNS(NS,"circle");
-    this.circle.setAttributeNS(null,"r",m.round(this.d/2));
-    this.circle.setAttributeNS(null,"fill",colour);
-    this.circle.setAttributeNS(null,"class",name);
+    this.circle = elementSetAttributes(this.circle, {"r":m.round(this.d/2), 
+        "fill":colour, "class":name});
     game.appendChild(this.polyline);
     game.appendChild(this.circle);
 }
@@ -70,10 +66,7 @@ function moveCircle(lobj,x,y) {
 /* Begins a new line */
 function splitLine(lobj) { 
     lobj.polyline = document.createElementNS(NS,"polyline");
-    lobj.polyline.setAttributeNS(null,"points","");
-    lobj.polyline.setAttributeNS(null,"fill","none");
-    lobj.polyline.setAttributeNS(null,"stroke",lobj.colour);
-    lobj.polyline.setAttributeNS(null,"stroke-width",lobj.d);
-    lobj.polyline.setAttributeNS(null,"class",lobj.name);
+    lobj.polyline = elementSetAttributes(lobj.polyline, {"points":"", 
+        "fill":"none", "stroke":colour, "stroke-width":lobj.d, "class":name});
     game.appendChild(lobj.polyline);
 }

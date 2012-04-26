@@ -28,11 +28,7 @@ function spillBlood(x,y) {
         else if (nx > x+5) var ny = m.random()*10+y;
         else var ny = m.random()*30+y-15;
         spills.push(document.createElementNS(NS,"circle"));
-        spills[i].setAttributeNS(null,"r",m.random());
-        spills[i].setAttributeNS(null,"fill","red");
-        spills[i].setAttributeNS(null,"class","blood");
-        spills[i].setAttributeNS(null,"cx",nx);
-        spills[i].setAttributeNS(null,"cy",ny);
-        game.appendChild(spills[i]);
+        spills[i] = elementSetAttributes(spills[i],{"r":m.random(), 
+            "fill":"red", "class":"blood", "cx":nx, "cy":ny});
     }
 }

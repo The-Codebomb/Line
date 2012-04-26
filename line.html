@@ -44,6 +44,7 @@ var game;
 var border;
 var timeout;
 var bots = true;
+var players = new Array();
 
 /* Line object (each player has one) */
 function line(name,colour,keyL,keyR) {
@@ -107,6 +108,7 @@ function init() { // Will be mostly redone when menus are implemented
     border = game.getElementById("border");
     if (bots) player1 = new line("player","#0000cd","",""); // Adding bot ->
     else player1 = new line("player","#0000cd",37,39); // Adding one player ->
+    players.push(player1);
     var x = m.floor(m.random()*600+100);
     var y = m.floor(m.random()*400+100);
     addPoint(player1,x,y,false); // Add starting point
@@ -124,60 +126,61 @@ function main() {
         border.setAttributeNS(null,"stroke-dasharray","");
     else if (wallMode == "warp") 
         border.setAttributeNS(null,"stroke-dasharray","4 4");
-    var player = player1; // As only one player is used
-    if (bots) { // If just bots are playing
-        botControl(player);
-        if (!player.alive) {
-            timeout = setTimeout("botGameOver()",1000);
-            return;
-        }
-    } else inputLoop(player); // Check input system
-    var sameDirection = false; // New cordinates ->
-    if (player.direction == player.oldDirection) sameDirection = true;
-    var x = player.x + player.speed*m.sin(player.direction);
-    var y = player.y + player.speed*m.cos(player.direction);
-    if (checkForCollision(x,y,player)) { // Collision detection ->
-        if (!breaksOn || !player.break) {
-            player.alive=false;
-            spillBlood(x,y);
-            gameOver();
-            if (!bots) return; else timeout=true;
-        }
-    } else if (wallMode == "warp" && // Warping ->
-        (x <= 0 || x >= 800 || y <= 0 || y >= 600)) {
-        addPoint(player,x,y,sameDirection);
-        if (x <= 0) { x = 800; }
-        else if (x >= 800) { x = 0; }
-        else if (y <= 0) { y = 600; }
-        else if (y >= 600) { y = 0; }
-        splitLine(player);
-        player.oldDirection="";
-        warped = 2;
-    }
-    if (breaksOn) { // Breaking ->
-        if (!player.break && player.breakcounter <= 0) {
+    for (i in players) {
+        if (bots) { // If just bots are playing
+            botControl(player);
+            if (!player.alive) {
+                timeout = setTimeout("botGameOver()",1000);
+                return;
+            }
+        } else inputLoop(player); // Check input system
+        var player = players[i];
+        var sameDirection = false; // New cordinates ->
+        if (player.direction == player.oldDirection) sameDirection = true;
+        var x = player.x + player.speed*m.sin(player.direction);
+        var y = player.y + player.speed*m.cos(player.direction);
+        if (checkForCollision(x,y,player)) { // Collision detection ->
+            if (!breaksOn || !player.break) {
+                spillBlood(x,y);
+                gameOver();
+                if (!bots) return; else timeout=true;
+            }
+        } else if (wallMode == "warp" && // Warping ->
+            (x <= 0 || x >= 800 || y <= 0 || y >= 600)) {
             addPoint(player,x,y,sameDirection);
-            player.oldDirection="";
-            player.break = true;
-            player.breakcounter=BREAKLENGTH;
-        } else if (player.break && player.breakcounter <= 0) {
+            if (x <= 0) { x = 800; }
+            else if (x >= 800) { x = 0; }
+            else if (y <= 0) { y = 600; }
+            else if (y >= 600) { y = 0; }
             splitLine(player);
-            addPoint(player,x,y,false);
-            player.break = false;
-            player.breakcounter=BETWEENBREAKS+m.floor(
-                m.random()*BETWEENBREAKS);
-        } else if (!player.break) { 
+            player.oldDirection="";
+            warped = 2;
+        }
+        if (breaksOn) { // Breaking ->
+            if (!player.break && player.breakcounter <= 0) {
+                addPoint(player,x,y,sameDirection);
+                player.oldDirection="";
+                player.break = true;
+                player.breakcounter=BREAKLENGTH;
+            } else if (player.break && player.breakcounter <= 0) {
+                splitLine(player);
+                addPoint(player,x,y,false);
+                player.break = false;
+                player.breakcounter=BETWEENBREAKS+m.floor(
+                    m.random()*BETWEENBREAKS);
+            } else if (!player.break) { 
+                addPoint(player,x,y,sameDirection);
+                if (warped <= 0) player.oldDirection = player.direction;
+                else if (warped > 0) warped--; 
+            } else {
+                moveCircle(player,x,y);
+            }
+            player.breakcounter--;
+        } else { // Normally drawing ->
             addPoint(player,x,y,sameDirection);
             if (warped <= 0) player.oldDirection = player.direction;
             else if (warped > 0) warped--; 
-        } else {
-            moveCircle(player,x,y);
         }
-        player.breakcounter--;
-    } else { // Normally drawing ->
-        addPoint(player,x,y,sameDirection);
-        if (warped <= 0) player.oldDirection = player.direction;
-        else if (warped > 0) warped--; 
     }
     time = (new Date()).getTime()-time; // Looping ->
     looptime = LOOPSPEED - time;
@@ -331,28 +334,32 @@ function gameOver() { // Will be rewritten when multiplayer mode is implemented
 
 /* Input system */
 function inputKeyUp(event) {
-    var player = player1; // currently only one player is used
-    if (event.which == player.keyDown) {
-        player.keyDown = false;
-        return false;
-    } return true;
+    for (i in players) {
+        var player = players[i];
+        if (event.which == player.keyDown) {
+            player.keyDown = false;
+            return false;
+        } return true;
+    }
 }
 function inputKeyDown(event) {
-    var player = player1; // currently only one player is used
-    if (event.which == player.keyL || event.which == player.keyR) {
-        player.keyDown = event.which;
-        return false;
-    } if (event.which == 87) {
-        if (wallMode == "deadly") wallMode = "warp";
-        else if (wallMode == "warp") wallMode = "deadly";
-        return false;
-    } if (event.which == 66) {
-        breaksOn = !breaksOn;
-        return false;
-    } if (event.which == 75) {
-        gameOver();
-        return false;
-    } return true;
+    for (i in players) {
+        var player = players[i];
+        if (event.which == player.keyL || event.which == player.keyR) {
+            player.keyDown = event.which;
+            return false;
+        } if (event.which == 87) {
+            if (wallMode == "deadly") wallMode = "warp";
+            else if (wallMode == "warp") wallMode = "deadly";
+            return false;
+        } if (event.which == 66) {
+            breaksOn = !breaksOn;
+            return false;
+        } if (event.which == 75) {
+            gameOver();
+            return false;
+        } return true;
+    }
 }
 function inputLoop(player) {
     if (player.keyDown == player.keyL) {

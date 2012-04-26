@@ -94,7 +94,7 @@ function splitLine(lobj) { // Begins a new line
     lobj.polyline.setAttributeNS(null,"points","");
     lobj.polyline.setAttributeNS(null,"fill","none");
     lobj.polyline.setAttributeNS(null,"stroke",lobj.colour);
-    lobj.polyline.setAttributeNS(null,"stroke-width",lobj.r);
+    lobj.polyline.setAttributeNS(null,"stroke-width",lobj.d);
     lobj.polyline.setAttributeNS(null,"class",lobj.name);
     game.appendChild(lobj.polyline);
 }

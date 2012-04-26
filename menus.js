@@ -22,8 +22,8 @@
 
 /* Creates menu buttons etc. */
 function menu() {
-	// Needed atm for proper buttons!
-	var playBtn, playBtnT;
+	// Needed atm for proper buttons! PLEASE REMOVE THESE
+	var playBtn, playBtnT; // Why are these needed at all?
 	var plrBtn, plrBtnT;
 	var plr1Set, plr1SetT;
 	var plr2Set, plr2SetT;
@@ -32,7 +32,7 @@ function menu() {
 	var plr1Left, plr1Right;
 	var plr2Left, plr2Right;
 	var plr3Left, plr3Right;
-	var plr4Left, plr4Right;
+	var plr4Left, plr4Right; // Why is any of these needed?
 	var nullHolder; // Can be used to make not-changing text/button;
 	createButton(WIDTH/4-100, HEIGHT/4-50, 200, 100, "Play", "play", playBtn,
 		playBtnT);
@@ -73,7 +73,7 @@ function menu() {
         nullHolder);
 }
 
-/* Retry menu, which comes when player(s) die */
+/* Retry menu, which is showed when all players are dead */
 function retryMenu() {
 	var retryBtn, retryBtnT;
 	var menuBtn, menuBtnT;
@@ -120,7 +120,7 @@ function createButton(x,y,width,height,text,btnType,btn,btnText) {
 		btnText)},false);
 }
 
-/* Create new text with given x/y coordinates etc. */
+/* Create new text */
 function createText(x,y,text,writenText) {
 	writenText = document.createElementNS(NS,"text");
 	writenText.setAttributeNS(null, "x", x);
@@ -132,13 +132,13 @@ function createText(x,y,text,writenText) {
 	game.appendChild(writenText);
 }
 
-/* changes rect/text settings back to "bold" when hovering above it */
+/* Changes rect/text settings back to "bold" when hovering above it */
 function buttonHoverOn(e,btn,btnText) {
 	btnText.setAttributeNS(null, "font-size", fontSize + 2);
 	btn.setAttributeNS(null, "stroke-width", 3);
 }
 
-/* changes rect/text settings back to normal when not hovering above it */
+/* Changes rect/text settings back to normal when not hovering above it */
 function buttonHoverOff(e,btn,btnText) {
 	btnText.setAttributeNS(null, "font-size", fontSize);
 	btn.setAttributeNS(null, "stroke-width", 2);

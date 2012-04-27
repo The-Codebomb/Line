@@ -122,7 +122,7 @@ function buttonHoverOff(e,btn,btnText) {
 /* Checks which button was clicked, and handles what should happen */
 function buttonClick(e,btnType,btn,btnText) {
 	if (btnType == "play") {
-        timeout = clearTimeout(timeout);
+        endBotGame();
 		clearGround();
 		removeBtns();
 		startGame();

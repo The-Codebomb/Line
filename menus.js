@@ -22,70 +22,50 @@
 
 /* Creates menu buttons etc. */
 function menu() {
-	// Needed atm for proper buttons! PLEASE REMOVE THESE
-	var playBtn, playBtnT; // Why are these needed at all?
-	var plrBtn, plrBtnT;
-	var plr1Set, plr1SetT;
-	var plr2Set, plr2SetT;
-	var plr3Set, plr3SetT;
-	var plr4Set, plr4SetT;
-	var plr1Left, plr1Right;
-	var plr2Left, plr2Right;
-	var plr3Left, plr3Right;
-	var plr4Left, plr4Right; // Why is any of these needed?
-	var nullHolder; // Can be used to make not-changing text/button;
-	createButton(WIDTH/4-100, HEIGHT/4-50, 200, 100, "Play", "play", playBtn,
-		playBtnT);
-	createButton(WIDTH/3*2-100, HEIGHT/4-25, 200, 50, "1 Player",
-		"plrAmount",plrBtn, plrBtnT);
+    var playButton = createButton(WIDTH/4-100, HEIGHT/4-50, 200, 100, "Play", 
+        "play");
+	var playersButton = createButton(WIDTH/3*2-100, HEIGHT/4-25, 200, 50, 
+        "1 Player", "plrAmount");
 	// Button setting functios
-	createButton(WIDTH/3*2, HEIGHT/2-25, 80, 50, "Set", "plr1Set", plr1Set, 
-        plr1SetT);
-	createButton(WIDTH/3*2, HEIGHT/2+35, 80, 50, "Set", "plr2Set", plr2Set, 
-        plr2SetT);
-	createButton(WIDTH/3*2, HEIGHT/2+95, 80, 50, "Set", "plr3Set", plr3Set, 
-        plr3SetT);
-	createButton(WIDTH/3*2, HEIGHT/2+155, 80, 50, "Set", "plr4Set", plr4Set,
-        plr4SetT);
+	var player1Set = createButton(WIDTH/3*2, HEIGHT/2-25, 80, 50, "Set", 
+        "plr1Set");
+	var player2Set = createButton(WIDTH/3*2, HEIGHT/2+35, 80, 50, "Set", 
+        "plr2Set");
+	var player3Set = createButton(WIDTH/3*2, HEIGHT/2+95, 80, 50, "Set", 
+        "plr3Set");
+	var player4Set = createButton(WIDTH/3*2, HEIGHT/2+155, 80, 50, "Set", 
+        "plr4Set");
 	
-	createText(WIDTH/6, HEIGHT/2 , "Player 1", nullHolder);
-	createText(WIDTH/6, HEIGHT/2+60, "Player 2", nullHolder);
-	createText(WIDTH/6, HEIGHT/2+120, "Player 3", nullHolder);
-	createText(WIDTH/6, HEIGHT/2+180, "Player 4", nullHolder);
+	createText(WIDTH/6, HEIGHT/2 , "Player 1");
+	createText(WIDTH/6, HEIGHT/2+60, "Player 2");
+	createText(WIDTH/6, HEIGHT/2+120, "Player 3");
+	createText(WIDTH/6, HEIGHT/2+180, "Player 4");
 	
-	createText(WIDTH/3+30, HEIGHT/2-45, "Left", nullHolder);
-	createText(WIDTH/2+30, HEIGHT/2-45, "Right", nullHolder);
+	createText(WIDTH/3+30, HEIGHT/2-45, "Left");
+	createText(WIDTH/2+30, HEIGHT/2-45, "Right");
 	
-	createText(WIDTH/3+30, HEIGHT/2, String.fromCharCode(pl1btnL), nullHolder);
-	createText(WIDTH/3+30, HEIGHT/2+60, String.fromCharCode(pl2btnL), 
-        nullHolder);
-	createText(WIDTH/3+30, HEIGHT/2+120, String.fromCharCode(pl3btnL), 
-        nullHolder);
-	createText(WIDTH/3+30, HEIGHT/2+180, String.fromCharCode(pl4btnL), 
-        nullHolder);
+	createText(WIDTH/3+30, HEIGHT/2, String.fromCharCode(players[0].keyL));
+	createText(WIDTH/3+30, HEIGHT/2+60, String.fromCharCode(players[1].keyL));
+	createText(WIDTH/3+30, HEIGHT/2+120, String.fromCharCode(players[2].keyL));
+	createText(WIDTH/3+30, HEIGHT/2+180, String.fromCharCode(players[3].keyL));
 	
-	createText(WIDTH/2+30, HEIGHT/2, String.fromCharCode(pl1btnR), nullHolder);
-	createText(WIDTH/2+30, HEIGHT/2+60, String.fromCharCode(pl2btnR), 
-        nullHolder);
-	createText(WIDTH/2+30, HEIGHT/2+120, String.fromCharCode(pl3btnR), 
-        nullHolder);
-	createText(WIDTH/2+30, HEIGHT/2+180, String.fromCharCode(pl4btnR), 
-        nullHolder);
+	createText(WIDTH/2+30, HEIGHT/2, String.fromCharCode(players[0].keyR));
+	createText(WIDTH/2+30, HEIGHT/2+60, String.fromCharCode(players[0].keyR));
+	createText(WIDTH/2+30, HEIGHT/2+120, String.fromCharCode(players[0].keyR));
+	createText(WIDTH/2+30, HEIGHT/2+180, String.fromCharCode(players[0].keyR));
 }
 
 /* Retry menu, which is showed when all players are dead */
 function retryMenu() {
-	var retryBtn, retryBtnT;
-	var menuBtn, menuBtnT;
-	createButton(WIDTH/2-100, HEIGHT/2-125, 200, 100, "Play again", "retry",
-		retryBtn, retryBtnT);
-	createButton(WIDTH/2-100, HEIGHT/2+25, 200, 100, "Main Menu", "rtnMenu",
-		menuBtn, menuBtnT);
+	var retryButton = createButton(WIDTH/2-100, HEIGHT/2-125, 200, 100, 
+        "Play again", "retry");
+	var menuButton = createButton(WIDTH/2-100, HEIGHT/2+25, 200, 100, 
+        "Main Menu", "rtnMenu");
 }
 
 /* Create button with text and eventlistener */
-function createButton(x,y,width,height,text,btnType,btn,btnText) {
-	btn = document.createElementNS(NS,"rect");
+function createButton(x,y,width,height,text,type) {
+	var btn = document.createElementNS(NS,"rect");
 	btn.setAttributeNS(null, "x", x);
 	btn.setAttributeNS(null, "y", y);
 	btn.setAttributeNS(null, "width", width);
@@ -94,35 +74,36 @@ function createButton(x,y,width,height,text,btnType,btn,btnText) {
 	btn.setAttributeNS(null, "stroke", "black");
 	btn.setAttributeNS(null, "stroke-width", 2);
     
-	btnText = document.createElementNS(NS,"text");
-	btnText.setAttributeNS(null, "x", x + width / 2);
-	btnText.setAttributeNS(null, "y", y + height / 2 + fontSize / 4);
-	btnText.setAttributeNS(null, "font-family", font);
-	btnText.setAttributeNS(null, "font-size", fontSize);
-	btnText.textContent = text;	// Can screw up in other browsers than FF
-	btnText.setAttributeNS(null, "text-anchor", "middle");
+	var btntext = document.createElementNS(NS,"text");
+	btntext.setAttributeNS(null, "x", x + width / 2);
+	btntext.setAttributeNS(null, "y", y + height / 2 + fontSize / 4);
+	btntext.setAttributeNS(null, "font-family", font);
+	btntext.setAttributeNS(null, "font-size", fontSize);
+	btntext.textContent = text;
+	btntext.setAttributeNS(null, "text-anchor", "middle");
 	
 	game.appendChild(btn);
-	game.appendChild(btnText);
+	game.appendChild(btntext);
     
 	btn.addEventListener("click", // two listeners, fix this
-        function(e){buttonClick(e,btnType,btn,btnText)},false);
-	btnText.addEventListener("click",
-		function(e){buttonClick(e,btnType,btn,btnText)},false);
+        function(e){buttonClick(e,type,btn,text)},false);
+	btntext.addEventListener("click",
+		function(e){buttonClick(e,type,btn,text)},false);
 	
-	btn.addEventListener("mouseover",function(e){buttonHoverOn(e,btn,btnText)},
+	btn.addEventListener("mouseover",function(e){buttonHoverOn(e,btn,btntext)},
 		false);	// for effects when hovering
-	btnText.addEventListener("mouseover",
-		function(e){buttonHoverOn(e,btn,btnText)},false);	
-	btn.addEventListener("mouseout",function(e){buttonHoverOff(e,btn,btnText)},
+	btntext.addEventListener("mouseover",
+		function(e){buttonHoverOn(e,btn,btntext)},false);	
+	btn.addEventListener("mouseout",function(e){buttonHoverOff(e,btn,btntext)},
 		false);	
-	btnText.addEventListener("mouseout",function(e){buttonHoverOff(e,btn,
-		btnText)},false);
+	btntext.addEventListener("mouseout",function(e){buttonHoverOff(e,btn,
+		btntext)},false);
+    return {"button":btn,"text":text}
 }
 
 /* Create new text */
-function createText(x,y,text,writenText) {
-	writenText = document.createElementNS(NS,"text");
+function createText(x,y,text) {
+	var writenText = document.createElementNS(NS,"text");
 	writenText.setAttributeNS(null, "x", x);
 	writenText.setAttributeNS(null, "y", y + fontSize / 4);
 	writenText.setAttributeNS(null, "font-family", font);
@@ -130,6 +111,7 @@ function createText(x,y,text,writenText) {
 	writenText.textContent = text;	//Can screw up in other browsers than FF.
 	writenText.setAttributeNS(null, "text-anchor", "middle");
 	game.appendChild(writenText);
+    return writenText;
 }
 
 /* Changes rect/text settings back to "bold" when hovering above it */

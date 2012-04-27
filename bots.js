@@ -61,7 +61,6 @@ function botControl(bot) { // Needs more intelligent AI(s)
         }
     } else {
         bot.bot_intelligence=(m.random()>=0.5)?"stupid":"idiot";
-        bot.bot_intelligence="stupid";
     }
 }
 function botInputLeft(old_direction) {
@@ -85,7 +84,6 @@ function botGameOver() {
             for (var i = circles.length-1; i >= 0; i--) {
                 game.removeChild(circles[0]);
             }
-            game.removeChild(game.getElementById("gameover_text"));
             timeout = setTimeout("init()",1000);
             return;
 }

@@ -66,21 +66,13 @@ function retryMenu() {
 /* Create button with text and eventlistener */
 function createButton(x,y,width,height,text,type) {
 	var btn = document.createElementNS(NS,"rect");
-	btn.setAttributeNS(null, "x", x);
-	btn.setAttributeNS(null, "y", y);
-	btn.setAttributeNS(null, "width", width);
-	btn.setAttributeNS(null, "height", height);
-	btn.setAttributeNS(null, "fill", "#FFFFFF");
-	btn.setAttributeNS(null, "stroke", "black");
-	btn.setAttributeNS(null, "stroke-width", 2);
+    elementSetAttributes(btn,{"x":x, "y":y, "width":width, "height":height, 
+        "fill":"#FFFFFF", "stroke":"black", "stroke-width":2});
     
 	var btnText = document.createElementNS(NS,"text");
-	btnText.setAttributeNS(null, "x", x + width / 2);
-	btnText.setAttributeNS(null, "y", y + height / 2 + fontSize / 4);
-	btnText.setAttributeNS(null, "font-family", font);
-	btnText.setAttributeNS(null, "font-size", fontSize);
+    elementSetAttributes(btnText,{"x":x+width/2, "y":y+height/2+fontSize/4, 
+        "font-family":font, "font-size":fontSize, "text-anchor":"middle"});
 	btnText.textContent = text;
-	btnText.setAttributeNS(null, "text-anchor", "middle");
 	
 	game.appendChild(btn);
 	game.appendChild(btnText);
@@ -103,15 +95,12 @@ function createButton(x,y,width,height,text,type) {
 
 /* Create new text */
 function createText(x,y,text) {
-	var writenText = document.createElementNS(NS,"text");
-	writenText.setAttributeNS(null, "x", x);
-	writenText.setAttributeNS(null, "y", y + fontSize / 4);
-	writenText.setAttributeNS(null, "font-family", font);
-	writenText.setAttributeNS(null, "font-size", fontSize);
-	writenText.textContent = text;	//Can screw up in other browsers than FF.
-	writenText.setAttributeNS(null, "text-anchor", "middle");
-	game.appendChild(writenText);
-    return writenText;
+	var svgText = document.createElementNS(NS,"text");
+    elementSetAttributes(svgText,{"x":x, "y":y, "font-family":font, 
+        "font-size":fontSize, "text-anchor":"middle"});
+	svgText.textContent = text;
+	game.appendChild(svgText);
+    return svgText;
 }
 
 /* Changes rect/text settings back to "bold" when hovering above it */

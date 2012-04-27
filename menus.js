@@ -197,11 +197,31 @@ function setButtons(playerNum) {
 function getKeyFromCode(keycode) {
     if ((keycode >= 48 && keycode <= 58) || (keycode >= 65 && keycode <= 90))
         return String.fromCharCode(keycode); // Alfanumeric keys
-    if (keycode == 37) return "Left"; // Arrow keys
+    if (keycode == 37) return "Left"; // Arrow keys ->
     if (keycode == 38) return "Up";
     if (keycode == 39) return "Right";
     if (keycode == 40) return "Down";
-    if (keycode >= 96 && keycode <= 106) // Numpad
+    if (keycode == 33) return "Page Up"; // Other special keys ->
+    if (keycode == 34) return "Page Down";
+    if (keycode == 35) return "End";
+    if (keycode == 36) return "Home";
+    if (keycode == 45) return "Delete";
+    if (keycode == 46) return "Delete";
+    if (keycode == 16) return "Shift";
+    if (keycode == 17) return "Ctrl";
+    if (keycode == 18) return "Alt";
+    if (keycode == 19) return "Pause";
+    if (keycode == 13) return "Enter";
+    if (keycode == 8) return "Backspace";
+    if (keycode == 188) return ",";
+    if (keycode == 190) return ".";
+    if (keycode == 109) return "-";
+    if (keycode == 61) return "+";
+    if (keycode >= 106 && keycode <= 111) 
+        return String.fromCharCode(keycode-64);
+    if (keycode == 222) return "'";
+    if (keycode == 145) return "ScrollLock";
+    if (keycode >= 96 && keycode <= 106) // Numpad ->
         return "Numpad "+(String.fromCharCode(keycode-48));
-    return String.fromCharCode(keycode);
+    return "BadKey";
 }

@@ -27,7 +27,9 @@ var wallMode = "deadly"; // valid values are "deadly" and "warp"
 /* Constants */
 m = Math;
 var PLAYERS = 4;
-var COLORS = ["#0000CD","#008000","#FF0000","#FFA500"] // Some colors
+var COLORS = ["#0000CD","#008000","#FF0000","#FFA500"]; // Some colors
+var DEFAULT_KEYS_LEFT = [37,null,null,null]; // Default left keys
+var DEFAULT_KEYS_RIGHT = [39,null,null,null]; // Default right keys
 var TURNINGSPEED = 0.1;
 var MOVINGSPEED = 2;
 var LOOPSPEED = 30;
@@ -51,7 +53,8 @@ function init() { // Will be mostly redone when menus are implemented
     game = document.getElementById("game");
     border = game.getElementById("border");
     for (var i = 0; i < PLAYERS; i++) { // Create players
-        players.push(new line("player"+1,COLORS[i]));
+        players.push(new line("player"+1,COLORS[i],DEFAULT_KEYS_LEFT[i],
+        DEFAULT_KEYS_RIGHT[i]));
     }
 	menu();
 }

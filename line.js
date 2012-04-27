@@ -26,6 +26,8 @@ var wallMode = "deadly"; // valid values are "deadly" and "warp"
 
 /* Constants */
 m = Math;
+var PLAYERS = 4;
+var COLORS = ["#0000CD","#008000","#FF0000","#FFA500"] // Some colors
 var TURNINGSPEED = 0.1;
 var MOVINGSPEED = 2;
 var LOOPSPEED = 30;
@@ -49,15 +51,19 @@ var players = new Array(); // Array for line-objects
 function init() { // Will be mostly redone when menus are implemented
     game = document.getElementById("game");
     border = game.getElementById("border");
+    for (var i = 0; i < PLAYERS; i++) { // Create players
+        players.push(new line("player"+1,COLORS[i]));
+    }
 	menu();
 }
 
 /* Starts the game */
-function startGame() { // Adding one player -> FIXME
-	player1 = new line("player","#0000cd",pl1btnL,pl1btnR); 
-    var x = m.floor(m.random()*(WIDTH-200)+100);
-    var y = m.floor(m.random()*(HEIGHT-200)+100);
-    addPoint(player1,x,y,false); // Add starting point
+function startGame() {
+    for (var i = 0; i < players.length; i++) { // Setting up players
+        var x = m.floor(m.random()*(WIDTH-200)+100);
+        var y = m.floor(m.random()*(HEIGHT-200)+100);
+        addPoint(players[i],x,y,false); // Add starting point
+     }
     timeout = setTimeout("main()",LOOPSPEED); // Start "loop"
     document.body.addEventListener("keydown",function(e){inputKeyDown(e)},
         true); // Begin input ->

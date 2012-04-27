@@ -79,6 +79,7 @@ function startGame() {
 
 /* Main "loop" */
 function main(bots) {
+    if (!timeout) return;
     var time = (new Date()).getTime(); // To count time of one loop
     if (wallMode == "deadly") // Set the borders if wallMode has changed
         border.setAttributeNS(null,"stroke-dasharray","");

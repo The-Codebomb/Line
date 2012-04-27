@@ -168,7 +168,7 @@ function buttonClick(e,btnType,btn,btnText) {
 	
 }
 
-/* ??? */
+/* removes ALL polylines and circles from the screen */
 function clearGround() {
 	var lines = game.getElementsByTagName("polyline");
 	for (i = lines.length - 1; i >= 0;i--) {
@@ -181,7 +181,7 @@ function clearGround() {
 	}
 }
 
-/* ??? */
+/* Removes ALL buttons from the screen (and rects and texts) */
 function removeBtns() {
 	var rects = game.getElementsByTagName("rect");	// Remove box buttons
 	// Keep the first rect, which is border
@@ -194,7 +194,7 @@ function removeBtns() {
 	}
 }
 
-/* ??? */
+/* Sets buttons for given player (asks and sets) */
 function setButtons(playerNum) {
 	// Asking for buttons here
 	menu();

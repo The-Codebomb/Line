@@ -70,12 +70,12 @@ function createButton(x,y,width,height,text,type) {
 	var btn = document.createElementNS(NS,"rect");
     btn = elementSetAttributes(btn,{"x":x, "y":y, "width":width, 
         "height":height, "fill":"#FFFFFF", "stroke":"black", 
-        "stroke-width":2});
+        "stroke-width":2, "z-index":50});
     
 	var btnText = document.createElementNS(NS,"text");
     btnText = elementSetAttributes(btnText,{"x":x+width/2, 
         "y":y+height/2+fontSize/4, "font-family":font, "font-size":fontSize, 
-        "text-anchor":"middle"});
+        "text-anchor":"middle", "z-index":50});
 	btnText.textContent = text;
 	
 	game.appendChild(btn);
@@ -101,7 +101,7 @@ function createButton(x,y,width,height,text,type) {
 function createText(x,y,text) {
 	var svgText = document.createElementNS(NS,"text");
     svgText = elementSetAttributes(svgText,{"x":x, "y":y, "font-family":font, 
-        "font-size":fontSize, "text-anchor":"middle"});
+        "font-size":fontSize, "text-anchor":"middle", "z-index":50});
 	svgText.textContent = text;
 	game.appendChild(svgText);
     return svgText;

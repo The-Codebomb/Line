@@ -239,7 +239,7 @@ function gameOver() {
         true);
     var text = document.createElementNS(NS,"text");
     elementSetAttributes(text,{"x":100,"y":100,"fill":"red",
-        "id":"gameover_text"});
+        "id":"gameover_text", "z-index":40});
     text.textContent="Game Over!";
     game.appendChild(text);
 	retryMenu();

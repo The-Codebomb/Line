@@ -23,31 +23,29 @@
 /* Input system */
 function inputKeyUp(event) {
     for (i in players) {
-        var player = players[i];
-        if (event.which == player.keyDown) {
-            player.keyDown = false;
+        if (event.which == players[i].keyDown) {
+            players[i].keyDown = false;
             return false;
         } return true;
     }
 }
 function inputKeyDown(event) {
     for (i in players) {
-        var player = players[i];
-        if (event.which == player.keyL || event.which == player.keyR) {
-            player.keyDown = event.which;
+        if (event.which == players[i].keyL || event.which == players[i].keyR) {
+            players[i].keyDown = event.which;
             return false;
-        } if (event.which == 87) {
-            if (wallMode == "deadly") wallMode = "warp";
-            else if (wallMode == "warp") wallMode = "deadly";
-            return false;
-        } if (event.which == 66) {
-            breaksOn = !breaksOn;
-            return false;
-        } if (event.which == 75) {
-            gameOver();
-            return false;
-        } return true;
-    }
+        } 
+    }if (event.which == 87) {
+        if (wallMode == "deadly") wallMode = "warp";
+        else if (wallMode == "warp") wallMode = "deadly";
+        return false;
+    } if (event.which == 66) {
+        breaksOn = !breaksOn;
+        return false;
+    } if (event.which == 75) {
+        gameOver();
+        return false;
+    } return true;
 }
 function inputLoop(player) {
     if (player.keyDown == player.keyL) {

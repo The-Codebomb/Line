@@ -59,8 +59,7 @@ function addPoint(lobj,x,y,replOld) {
 }
 /* Just moves the circle */
 function moveCircle(lobj,x,y) { 
-    lobj.circle.setAttributeNS(null,"cx",x);
-    lobj.circle.setAttributeNS(null,"cy",y);
+    lobj.circle = elementSetAttributes(lobj.circle,{"cx":x,"cy":y});
     lobj.x = x;
     lobj.y = y;
 }

@@ -67,6 +67,7 @@ function moveCircle(lobj,x,y) {
 function splitLine(lobj) { 
     lobj.polyline = document.createElementNS(NS,"polyline");
     lobj.polyline = elementSetAttributes(lobj.polyline, {"points":"", 
-        "fill":"none", "stroke":colour, "stroke-width":lobj.d, "class":name});
+        "fill":"none", "stroke":lobj.colour, "stroke-width":lobj.d, 
+        "class":name});
     game.appendChild(lobj.polyline);
 }

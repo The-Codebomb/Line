@@ -50,9 +50,9 @@ function menu() {
 	createText(WIDTH/3+30, HEIGHT/2+180, String.fromCharCode(players[3].keyL));
 	
 	createText(WIDTH/2+30, HEIGHT/2, String.fromCharCode(players[0].keyR));
-	createText(WIDTH/2+30, HEIGHT/2+60, String.fromCharCode(players[0].keyR));
-	createText(WIDTH/2+30, HEIGHT/2+120, String.fromCharCode(players[0].keyR));
-	createText(WIDTH/2+30, HEIGHT/2+180, String.fromCharCode(players[0].keyR));
+	createText(WIDTH/2+30, HEIGHT/2+60, String.fromCharCode(players[1].keyR));
+	createText(WIDTH/2+30, HEIGHT/2+120, String.fromCharCode(players[2].keyR));
+	createText(WIDTH/2+30, HEIGHT/2+180, String.fromCharCode(players[3].keyR));
 }
 
 /* Retry menu, which is showed when all players are dead */

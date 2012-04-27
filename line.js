@@ -26,7 +26,7 @@ var wallMode = "deadly"; // valid values are "deadly" and "warp"
 
 /* Constants */
 m = Math;
-var PLAYERS = 4;
+var PLAYERS = 4; // Default amount of players
 var COLORS = ["#0000CD","#008000","#FF0000","#FFA500"]; // Some colors
 var DEFAULT_KEYS_LEFT = [37,null,null,null]; // Default left keys
 var DEFAULT_KEYS_RIGHT = [39,null,null,null]; // Default right keys
@@ -36,8 +36,8 @@ var LOOPSPEED = 30;
 var FULLCIRCLE = 2*m.PI;
 var BETWEENBREAKS = 75;
 var BREAKLENGTH = 10;
-var WIDTH = 800;	// CHANGE THESE IF YOU CHANGE CANVAS SIZE!
-var HEIGHT = 600;
+var WIDTH; // Will be set in init()
+var HEIGHT; // Will be set in init()
 var NS = "http://www.w3.org/2000/svg"; // SVG namespace
 var fontSize = 25;
 var font = "Courier New, monospace";
@@ -49,9 +49,11 @@ var timeout;
 var players = new Array(); // Array for line-objects
 
 /* Initializing function */
-function init() { // Will be mostly redone when menus are implemented
+function init() {
     game = document.getElementById("game");
     border = game.getElementById("border");
+    WIDTH = game.getAttribute("width");
+    HEIGHT = game.getAttribute("height");
     for (var i = 0; i < PLAYERS; i++) { // Create players
         players.push(new line("player"+1,COLORS[i],DEFAULT_KEYS_LEFT[i],
         DEFAULT_KEYS_RIGHT[i]));
@@ -61,7 +63,7 @@ function init() { // Will be mostly redone when menus are implemented
 
 /* Starts the game */
 function startGame() {
-    for (var i = 0; i < players.length; i++) { // Setting up players
+    for (var i = 0; i < players.length; i++) { // Setting up players ->
         players[i] = new line("player"+1,players[i].colour,players[i].keyL,
             players[i].keyR);
         var x = m.floor(m.random()*(WIDTH-200)+100);

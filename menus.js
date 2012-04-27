@@ -125,7 +125,7 @@ function buttonClick(e,btnType,btn,btnText) {
         endBotGame();
 		clearGround();
 		removeBtns();
-		startGame();
+		startGame(false);
 	} else if (btnType == "plrAmount") {
 		playerAmount++;
 		if (playerAmount == 2) {

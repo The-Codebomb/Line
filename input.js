@@ -35,7 +35,7 @@ function inputKeyDown(event) {
             players[i].keyDown = event.which;
             return false;
         } 
-    }if (event.which == 87) {
+    } if (event.which == 87) {
         if (wallMode == "deadly") wallMode = "warp";
         else if (wallMode == "warp") wallMode = "deadly";
         return false;

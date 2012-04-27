@@ -68,12 +68,14 @@ function retryMenu() {
 /* Create button with text and eventlistener */
 function createButton(x,y,width,height,text,type) {
 	var btn = document.createElementNS(NS,"rect");
-    elementSetAttributes(btn,{"x":x, "y":y, "width":width, "height":height, 
-        "fill":"#FFFFFF", "stroke":"black", "stroke-width":2});
+    btn = elementSetAttributes(btn,{"x":x, "y":y, "width":width, 
+        "height":height, "fill":"#FFFFFF", "stroke":"black", 
+        "stroke-width":2});
     
 	var btnText = document.createElementNS(NS,"text");
-    elementSetAttributes(btnText,{"x":x+width/2, "y":y+height/2+fontSize/4, 
-        "font-family":font, "font-size":fontSize, "text-anchor":"middle"});
+    btnText = elementSetAttributes(btnText,{"x":x+width/2, 
+        "y":y+height/2+fontSize/4, "font-family":font, "font-size":fontSize, 
+        "text-anchor":"middle"});
 	btnText.textContent = text;
 	
 	game.appendChild(btn);
@@ -98,7 +100,7 @@ function createButton(x,y,width,height,text,type) {
 /* Create new text */
 function createText(x,y,text) {
 	var svgText = document.createElementNS(NS,"text");
-    elementSetAttributes(svgText,{"x":x, "y":y, "font-family":font, 
+    svgText = elementSetAttributes(svgText,{"x":x, "y":y, "font-family":font, 
         "font-size":fontSize, "text-anchor":"middle"});
 	svgText.textContent = text;
 	game.appendChild(svgText);
@@ -176,8 +178,7 @@ function clearGround() {
 /* Removes ALL buttons from the screen (and rects and texts) */
 function removeBtns() {
 	var rects = game.getElementsByTagName("rect");	// Remove box buttons
-	// Keep the first rect, which is border
-	for (var i = rects.length - 1; i >= 1;i--) {
+	for (var i = rects.length - 1; i >= 1;i--) { // i >= 1 to keep the border
 		game.removeChild(rects[i]);
 	}		
 	var texts = game.getElementsByTagName("text");	// Remove texts

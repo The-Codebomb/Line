@@ -74,30 +74,30 @@ function createButton(x,y,width,height,text,type) {
 	btn.setAttributeNS(null, "stroke", "black");
 	btn.setAttributeNS(null, "stroke-width", 2);
     
-	var btntext = document.createElementNS(NS,"text");
-	btntext.setAttributeNS(null, "x", x + width / 2);
-	btntext.setAttributeNS(null, "y", y + height / 2 + fontSize / 4);
-	btntext.setAttributeNS(null, "font-family", font);
-	btntext.setAttributeNS(null, "font-size", fontSize);
-	btntext.textContent = text;
-	btntext.setAttributeNS(null, "text-anchor", "middle");
+	var btnText = document.createElementNS(NS,"text");
+	btnText.setAttributeNS(null, "x", x + width / 2);
+	btnText.setAttributeNS(null, "y", y + height / 2 + fontSize / 4);
+	btnText.setAttributeNS(null, "font-family", font);
+	btnText.setAttributeNS(null, "font-size", fontSize);
+	btnText.textContent = text;
+	btnText.setAttributeNS(null, "text-anchor", "middle");
 	
 	game.appendChild(btn);
-	game.appendChild(btntext);
+	game.appendChild(btnText);
     
 	btn.addEventListener("click", // two listeners, fix this
         function(e){buttonClick(e,type,btn,text)},false);
-	btntext.addEventListener("click",
+	btnText.addEventListener("click",
 		function(e){buttonClick(e,type,btn,text)},false);
 	
-	btn.addEventListener("mouseover",function(e){buttonHoverOn(e,btn,btntext)},
+	btn.addEventListener("mouseover",function(e){buttonHoverOn(e,btn,btnText)},
 		false);	// for effects when hovering
-	btntext.addEventListener("mouseover",
-		function(e){buttonHoverOn(e,btn,btntext)},false);	
-	btn.addEventListener("mouseout",function(e){buttonHoverOff(e,btn,btntext)},
+	btnText.addEventListener("mouseover",
+		function(e){buttonHoverOn(e,btn,btnText)},false);	
+	btn.addEventListener("mouseout",function(e){buttonHoverOff(e,btn,btnText)},
 		false);	
-	btntext.addEventListener("mouseout",function(e){buttonHoverOff(e,btn,
-		btntext)},false);
+	btnText.addEventListener("mouseout",function(e){buttonHoverOff(e,btn,
+		btnText)},false);
     return {"button":btn,"text":text}
 }
 

@@ -60,6 +60,8 @@ function init() { // Will be mostly redone when menus are implemented
 /* Starts the game */
 function startGame() {
     for (var i = 0; i < players.length; i++) { // Setting up players
+        players[i] = new line("player"+1,COLORS[i],players[i].keyL,
+            players[i].keyR);
         var x = m.floor(m.random()*(WIDTH-200)+100);
         var y = m.floor(m.random()*(HEIGHT-200)+100);
         addPoint(players[i],x,y,false); // Add starting point
@@ -93,9 +95,8 @@ function main() {
         var y = player.y + player.speed*m.cos(player.direction);
         if (checkForCollision(x,y,player)) { // Collision detection ->
             if (!breaksOn || !player.break) {
+                player.alive = false;
                 spillBlood(x,y);
-                gameOver();
-                if (!bots) return; else timeout=true;
             }
         } else if (wallMode == "warp" && // Warping ->
             (x <= 0 || x >= 800 || y <= 0 || y >= 600)) {
@@ -133,6 +134,10 @@ function main() {
             if (warped <= 0) player.oldDirection = player.direction;
             else if (warped > 0) warped--; 
         }
+    }
+    if (isGameOver()) { // When the game is over ->
+        gameOver();
+        if (!bots) return; else timeout=true;
     }
     time = (new Date()).getTime()-time; // Looping ->
     looptime = LOOPSPEED - time;
@@ -207,6 +212,13 @@ function checkForCollision(x,y,player) {
         }
     }
     return false;
+}
+
+/* Check if the game is over */
+function isGameOver() {
+    for (var i = 0; i < players.length; i++) {
+        if (players[i].alive) return false;
+    } return true;
 }
 
 /* When a collision happens (cleaning up and informing user) */

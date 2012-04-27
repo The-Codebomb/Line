@@ -128,10 +128,8 @@ function buttonHoverOff(e,btn,btnText) {
 
 /* Checks which button was clicked, and handles what should happen */
 function buttonClick(e,btnType,btn,btnText) {
-	if (btnType == "play") {/*
-		if (player1) {		// CHANGE FOR MANY PLAYERS!
-			clearGround();
-		}*/
+	if (btnType == "play") {
+		clearGround();
 		removeBtns();
 		startGame();
 	} else if (btnType == "plrAmount") {
@@ -146,10 +144,8 @@ function buttonClick(e,btnType,btn,btnText) {
 			playerAmount = 1;
 			btnText.textContent = "1 Player";
 		}
-	} else if (btnType == "retry") {/*
-		if (player1) {		// CHANGE FOR MANY PLAYERS!
-			clearGround();
-		}*/
+	} else if (btnType == "retry") {
+        clearGround();
 		removeBtns();
 		startGame();
 	} else if (btnType == "rtnMenu") {

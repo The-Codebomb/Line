@@ -88,14 +88,14 @@ function botInputRight(old_direction) {
 
 /* When all bots are dead */
 function botGameOver() {
-            var lines = game.getElementsByTagName("polyline");
-            for (var i = lines.length-1; i >= 0; i--) {
-                game.removeChild(lines[0]);
-            }
-            var circles = game.getElementsByTagName("circle");
-            for (var i = circles.length-1; i >= 0; i--) {
-                game.removeChild(circles[0]);
-            }
-            timeout = setTimeout("startGameWithBots()",1000);
-            return;
+    timeout = clearTimeout(timeout);
+    var lines = game.getElementsByTagName("polyline");
+    for (var i = lines.length-1; i >= 0; i--) {
+        game.removeChild(lines[0]);
+    }
+    var circles = game.getElementsByTagName("circle");
+    for (var i = circles.length-1; i >= 0; i--) {
+        game.removeChild(circles[0]);
+    }
+    timeout = setTimeout("startGameWithBots()",1000);
 }

@@ -102,12 +102,12 @@ function main(bots) {
                     spillBlood(x,y);
                 }
             } else if ((wallMode == "warp") && // Warping ->
-                    (x <= 0 || x >= 800 || y <= 0 || y >= 600)) {
+                    (x <= 0 || x >= WIDTH || y <= 0 || y >= HEIGHT)) {
                 addPoint(players[i],x,y,sameDirection);
-                if (x <= 0) { x = 800; }
-                else if (x >= 800) { x = 0; }
-                else if (y <= 0) { y = 600; }
-                else if (y >= 600) { y = 0; }
+                if (x <= 0) { x = WIDTH; }
+                else if (x >= WIDTH) { x = 0; }
+                else if (y <= 0) { y = HEIGHT; }
+                else if (y >= HEIGHT) { y = 0; }
                 splitLine(players[i]);
                 players[i].oldDirection="";
                 warped = true;

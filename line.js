@@ -47,6 +47,7 @@ var font = "Courier New, monospace";
 var game; // SVG element
 var border; // Border's SVGrect element
 var timeout;
+var mainMenuOn;
 var players = new Array(); // Array for line-objects
 
 /* Initializing function */
@@ -64,6 +65,7 @@ function init() {
 
 /* Starts the game */
 function startGame() {
+    mainMenuOn = false;
     for (var i = 0; i < players.length; i++) { // Setting up players ->
         players[i] = new line("player"+i,players[i].colour,players[i].keyL,
             players[i].keyR);
@@ -79,7 +81,6 @@ function startGame() {
 
 /* Main "loop" */
 function main(bots) {
-    if (!timeout) return;
     var time = (new Date()).getTime(); // To count time of one loop
     if (wallMode == "deadly") // Set the borders if wallMode has changed
         border.setAttributeNS(null,"stroke-dasharray","");
@@ -148,7 +149,8 @@ function main(bots) {
     time = (new Date()).getTime()-time; // Looping ->
     looptime = LOOPSPEED - time;
     if (looptime < 0) looptime = 0;
-    if (timeout && bots) timeout = setTimeout("main(true)",looptime);
+    if (bots && timeout && mainMenuOn) timeout = setTimeout("main(true)",
+        looptime);
     else if (timeout) timeout = setTimeout("main()",looptime);
 }
 

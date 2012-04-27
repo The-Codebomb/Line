@@ -22,6 +22,7 @@
 
 /* Creates menu buttons etc. */
 function menu() {
+    mainMenuOn = true;
     clearGround();
     startGameWithBots();
     var playButton = createButton(WIDTH/4-100, HEIGHT/4-50, 200, 100, "Play", 

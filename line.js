@@ -180,8 +180,8 @@ function checkForCollision(x,y,player) {
         var cy = xy.slice(1,2)[0];
         var dx = x;
         var dy = y;
-        var length = m.sqrt(m.pow(dx-cx,2)+m.pow(dy-cy,2));
-        if (length > 2*MOVINGSPEED) {
+        var length = m.pow(dx-cx,2)+m.pow(dy-cy,2); // m.sqrt is too cpu 
+        if (length > 2*m.pow(MOVINGSPEED,2)) { // intensive, so m.pow is used
             cx = dx - player.speed*m.sin(player.direction);
             cy = dy - player.speed*m.cos(player.direction);
         }

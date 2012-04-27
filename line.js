@@ -175,6 +175,11 @@ function checkForCollision(x,y,player) {
         var cy = xy.slice(1,2)[0];
         var dx = x;
         var dy = y;
+        var length = m.sqrt(m.pow(dx-cx,2)+m.pow(dy-cy,2));
+        if (length > 2*MOVINGSPEED) {
+            cx = dx - player.speed*m.sin(player.direction);
+            cy = dy - player.speed*m.cos(player.direction);
+        }
         var polylines = game.getElementsByTagName("polyline");
         for (var i = 0; i < polylines.length; i++) {
             var points = polylines[i].getAttributeNS(null,"points");

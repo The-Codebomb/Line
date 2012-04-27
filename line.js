@@ -44,7 +44,6 @@ var font = "Courier New, monospace";
 var game; // SVG element
 var border; // Border's SVGrect element
 var timeout;
-var bots; // Are bots used (for menus) MAY BE REMOVED IN FUTURE
 var players = new Array(); // Array for line-objects
 
 /* Initializing function */
@@ -55,94 +54,103 @@ function init() { // Will be mostly redone when menus are implemented
         players.push(new line("player"+1,COLORS[i]));
     }
 	menu();
+    // startGame(true); // Start running bots on background
 }
 
 /* Starts the game */
-function startGame() {
+function startGame(bots) {
     for (var i = 0; i < players.length; i++) { // Setting up players
-        players[i] = new line("player"+1,COLORS[i],players[i].keyL,
+        players[i] = new line("player"+1,players[i].colour,players[i].keyL,
             players[i].keyR);
         var x = m.floor(m.random()*(WIDTH-200)+100);
         var y = m.floor(m.random()*(HEIGHT-200)+100);
         addPoint(players[i],x,y,false); // Add starting point
-     }
-    timeout = setTimeout("main()",LOOPSPEED); // Start "loop"
+    }
+    if (bots) timeout = setTimeout("main("+bots+")",LOOPSPEED); // Start "loop"
+    else timeout = setTimeout("main()",LOOPSPEED); // Start "loop" w/o bots
     document.body.addEventListener("keydown",function(e){inputKeyDown(e)},
         true); // Begin input ->
     document.body.addEventListener("keyup",function(e){inputKeyUp(e)},true);
 }
 
 /* Main "loop" */
-function main() {
+function main(bots) {
     var time = (new Date()).getTime(); // To count time of one loop
-    var warped = 0;
     if (wallMode == "deadly") // Set the borders if wallMode has changed
         border.setAttributeNS(null,"stroke-dasharray","");
     else if (wallMode == "warp") 
         border.setAttributeNS(null,"stroke-dasharray","4 4");
     for (i in players) {
-        var player = players[i];
-        if (bots) { // If just bots are playing
-            botControl(player);
-            if (!player.alive) {
-                timeout = setTimeout("botGameOver()",1000);
-                return;
+        if (players[i].alive) {
+            var warped = 0;
+            if (bots) botControl(players[i]);
+            else inputLoop(players[i]);
+            var sameDirection = false; // Assume that players direction changed
+            if (players[i].direction == players[i].oldDirection) 
+                sameDirection = true;
+            var x = players[i].x + players[i].speed*m.sin(
+                players[i].direction);
+            var y = players[i].y + players[i].speed*m.cos(
+                players[i].direction);
+            if (checkForCollision(x,y,players[i])) { // Collision detection
+                if (!breaksOn || !players[i].break) {
+                    players[i].alive = false;
+                    spillBlood(x,y);
+                }
+            } else if ((wallMode == "warp") && // Warping ->
+                    (x <= 0 || x >= 800 || y <= 0 || y >= 600)) {
+                addPoint(players[i],x,y,sameDirection);
+                if (x <= 0) { x = 800; }
+                else if (x >= 800) { x = 0; }
+                else if (y <= 0) { y = 600; }
+                else if (y >= 600) { y = 0; }
+                splitLine(players[i]);
+                players[i].oldDirection="";
+                warped = 2;
             }
-        } else inputLoop(player); // Check input system
-        var sameDirection = false; // New cordinates ->
-        if (player.direction == player.oldDirection) sameDirection = true;
-        var x = player.x + player.speed*m.sin(player.direction);
-        var y = player.y + player.speed*m.cos(player.direction);
-        if (checkForCollision(x,y,player)) { // Collision detection ->
-            if (!breaksOn || !player.break) {
-                player.alive = false;
-                spillBlood(x,y);
-            }
-        } else if (wallMode == "warp" && // Warping ->
-            (x <= 0 || x >= 800 || y <= 0 || y >= 600)) {
-            addPoint(player,x,y,sameDirection);
-            if (x <= 0) { x = 800; }
-            else if (x >= 800) { x = 0; }
-            else if (y <= 0) { y = 600; }
-            else if (y >= 600) { y = 0; }
-            splitLine(player);
-            player.oldDirection="";
-            warped = 2;
-        }
-        if (breaksOn) { // Breaking ->
-            if (!player.break && player.breakcounter <= 0) {
-                addPoint(player,x,y,sameDirection);
-                player.oldDirection="";
-                player.break = true;
-                player.breakcounter=BREAKLENGTH;
-            } else if (player.break && player.breakcounter <= 0) {
-                splitLine(player);
-                addPoint(player,x,y,false);
-                player.break = false;
-                player.breakcounter=BETWEENBREAKS+m.floor(
-                    m.random()*BETWEENBREAKS);
-            } else if (!player.break) { 
-                addPoint(player,x,y,sameDirection);
-                if (warped <= 0) player.oldDirection = player.direction;
+            if (breaksOn) { // Breaking ->
+                if (!players[i].break && players[i].breakcounter <= 0) {
+                    addPoint(players[i],x,y,sameDirection);
+                    players[i].oldDirection="";
+                    players[i].break = true;
+                    players[i].breakcounter=BREAKLENGTH;
+                } else if (players[i].break && players[i].breakcounter <= 0) {
+                    splitLine(players[i]);
+                    addPoint(players[i],x,y,false);
+                    players[i].break = false;
+                    players[i].breakcounter=BETWEENBREAKS+m.floor(
+                        m.random()*BETWEENBREAKS);
+                } else if (!players[i].break) { 
+                    addPoint(players[i],x,y,sameDirection);
+                    if (warped <= 0) players[i].oldDirection = 
+                        players[i].direction;
+                    else if (warped > 0) warped--; 
+                } else {
+                    moveCircle(players[i],x,y);
+                }
+                players[i].breakcounter--;
+            } else { // Normally drawing ->
+                addPoint(players[i],x,y,sameDirection);
+                if (warped <= 0) players[i].oldDirection = 
+                    players[i].direction;
                 else if (warped > 0) warped--; 
-            } else {
-                moveCircle(player,x,y);
             }
-            player.breakcounter--;
-        } else { // Normally drawing ->
-            addPoint(player,x,y,sameDirection);
-            if (warped <= 0) player.oldDirection = player.direction;
-            else if (warped > 0) warped--; 
         }
     }
     if (isGameOver()) { // When the game is over ->
         gameOver();
-        if (!bots) return; else timeout=true;
+        if (bots) {
+            botGameOver();
+            timeout = true;
+        } else {
+            return;
+        }
     }
     time = (new Date()).getTime()-time; // Looping ->
     looptime = LOOPSPEED - time;
     if (looptime < 0) looptime = 0;
-    if (timeout) timeout = setTimeout("main()",looptime);
+    if (timeout && bots) timeout = setTimeout("main(true)",looptime);
+    else if (timeout) timeout = setTimeout("main()",looptime);
 }
 
 /* Check for a collision */
@@ -227,12 +235,11 @@ function gameOver() {
     document.body.removeEventListener("keyup",function(e){inputKeyUp(e)},true);
     document.body.removeEventListener("keydown",function(e){inputKeyDown(e)},
         true);
-    var GOtext = document.createElementNS(NS,"text");
-    GOtext.setAttributeNS(null,"x","100");
-    GOtext.setAttributeNS(null,"y","100");
-    GOtext.setAttributeNS(null,"fill","red");
-    GOtext.textContent="Game Over!";
-    game.appendChild(GOtext);
+    var text = document.createElementNS(NS,"text");
+    elementSetAttributes(text,{"x":100,"y":100,"fill":"red",
+        "id":"gameover_text"});
+    text.textContent="Game Over!";
+    game.appendChild(text);
 	retryMenu();
 }
 

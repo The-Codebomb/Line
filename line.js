@@ -54,11 +54,10 @@ function init() { // Will be mostly redone when menus are implemented
         players.push(new line("player"+1,COLORS[i]));
     }
 	menu();
-    // startGame(true); // Start running bots on background
 }
 
 /* Starts the game */
-function startGame(bots) {
+function startGame() {
     for (var i = 0; i < players.length; i++) { // Setting up players
         players[i] = new line("player"+1,players[i].colour,players[i].keyL,
             players[i].keyR);
@@ -66,8 +65,7 @@ function startGame(bots) {
         var y = m.floor(m.random()*(HEIGHT-200)+100);
         addPoint(players[i],x,y,false); // Add starting point
     }
-    if (bots) timeout = setTimeout("main("+bots+")",LOOPSPEED); // Start "loop"
-    else timeout = setTimeout("main()",LOOPSPEED); // Start "loop" w/o bots
+    timeout = setTimeout("main()",LOOPSPEED); // Start "loop"
     document.body.addEventListener("keydown",function(e){inputKeyDown(e)},
         true); // Begin input ->
     document.body.addEventListener("keyup",function(e){inputKeyUp(e)},true);
@@ -82,9 +80,9 @@ function main(bots) {
         border.setAttributeNS(null,"stroke-dasharray","4 4");
     for (i in players) {
         if (players[i].alive) {
-            var warped = 0;
-            if (bots) botControl(players[i]);
-            else inputLoop(players[i]);
+            var warped = false;
+            if (bots) botControl(players[i]); // Control bots
+            else inputLoop(players[i]); // Control players
             var sameDirection = false; // Assume that players direction changed
             if (players[i].direction == players[i].oldDirection) 
                 sameDirection = true;
@@ -106,7 +104,7 @@ function main(bots) {
                 else if (y >= 600) { y = 0; }
                 splitLine(players[i]);
                 players[i].oldDirection="";
-                warped = 2;
+                warped = true;
             }
             if (breaksOn) { // Breaking ->
                 if (!players[i].break && players[i].breakcounter <= 0) {
@@ -122,29 +120,23 @@ function main(bots) {
                         m.random()*BETWEENBREAKS);
                 } else if (!players[i].break) { 
                     addPoint(players[i],x,y,sameDirection);
-                    if (warped <= 0) players[i].oldDirection = 
+                    if (warped == false) players[i].oldDirection = 
                         players[i].direction;
-                    else if (warped > 0) warped--; 
                 } else {
                     moveCircle(players[i],x,y);
                 }
                 players[i].breakcounter--;
             } else { // Normally drawing ->
                 addPoint(players[i],x,y,sameDirection);
-                if (warped <= 0) players[i].oldDirection = 
+                if (warped == false) players[i].oldDirection = 
                     players[i].direction;
-                else if (warped > 0) warped--; 
             }
         }
     }
     if (isGameOver()) { // When the game is over ->
-        gameOver();
-        if (bots) {
-            botGameOver();
-            timeout = true;
-        } else {
-            return;
-        }
+        if (bots) botGameOver();
+        else gameOver();
+        return;
     }
     time = (new Date()).getTime()-time; // Looping ->
     looptime = LOOPSPEED - time;

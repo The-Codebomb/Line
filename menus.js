@@ -22,6 +22,8 @@
 
 /* Creates menu buttons etc. */
 function menu() {
+    clearGround();
+    startGameWithBots();
     var playButton = createButton(WIDTH/4-100, HEIGHT/4-50, 200, 100, "Play", 
         "play");
 	var playersButton = createButton(WIDTH/3*2-100, HEIGHT/4-25, 200, 50, 
@@ -118,6 +120,7 @@ function buttonHoverOff(e,btn,btnText) {
 /* Checks which button was clicked, and handles what should happen */
 function buttonClick(e,btnType,btn,btnText) {
 	if (btnType == "play") {
+        timeout = clearTimeout(timeout);
 		clearGround();
 		removeBtns();
 		startGame();

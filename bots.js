@@ -20,6 +20,18 @@
    MA 02110-1301, USA.
 */
 
+/* Starts the game with bots */
+function startGameWithBots() {
+    for (var i = 0; i < players.length; i++) { // Setting up players
+        players[i] = new line("player"+1,players[i].colour,players[i].keyL,
+            players[i].keyR);
+        var x = m.floor(m.random()*(WIDTH-200)+100);
+        var y = m.floor(m.random()*(HEIGHT-200)+100);
+        addPoint(players[i],x,y,false); // Add starting point
+    }
+    timeout = setTimeout("main(true)",LOOPSPEED); // Start "loop"
+}
+
 /* inputLoop replacement for bot players */
 function botControl(bot) { // Needs more intelligent AI(s)
     var keypress=m.random();
@@ -84,6 +96,6 @@ function botGameOver() {
             for (var i = circles.length-1; i >= 0; i--) {
                 game.removeChild(circles[0]);
             }
-            timeout = setTimeout("init()",1000);
+            timeout = setTimeout("startGameWithBots()",1000);
             return;
 }

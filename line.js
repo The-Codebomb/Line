@@ -161,7 +161,7 @@ function main(bots) {
 }
 
 /* Check for a collision */
-function checkForCollision(dx,dy,cx,cy,player) {
+function checkForCollision(dx,dy,cx,cy,player,dopti) {
     /*
      * Collision between lines is detected by calculating 
      * points that are common to two segments. Segment means
@@ -199,18 +199,18 @@ function checkForCollision(dx,dy,cx,cy,player) {
                 var ey = xy.slice(1,2)[0];
                 var xy = eline[1].split(",");
                 var fx = xy.slice(0,1)[0];
-                var fy = xy.slice(1,2)[0];
+                var fy = xy.slice(1,2)[0]; // Optimization =>
                 if ((ex > cx && fx > cx && ex > dx && fx > dx) || 
                     (ex < cx && fx < cx && ex < dx && fx < dx) ||
                     (ey < cy && fy < cy && ey < dy && fy < dy) ||
                     (ey < cy && fy < cy && ey < dy && fy < dy))
                     continue; // Don't calculate unuseful ones
-                if (length == 0) // Optimization
+                if (length == 0) // Optimization ->
                     var length = m.pow(dx-cx,2)+m.pow(dy-cy,2);
-                if (length > MOVINGSPEED_POW2) { // Optimization
+                if (length > MOVINGSPEED_POW2 && dopti != null) {
                     cx = dx - player.speed*m.sin(player.direction);
                     cy = dy - player.speed*m.cos(player.direction);
-                }
+                } // Calculations =>
                 var res = (((cx*dy-cy*dx)*(ex-fx)-(cx-dx)*(ex*fy-ey*fx))/
                     ((cx-dx)*(ey-fy)-(cy-dy)*(ex-fx)));
                 if ((cx <= res && res <= dx)||(cx >= res && res >= dx)) {

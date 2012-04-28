@@ -211,12 +211,12 @@ function checkForCollision(x,y,player) {
                     (ey < cy && fy < cy && ey < dy && fy < dy) ||
                     (ey < cy && fy < cy && ey < dy && fy < dy))
                     continue; // Don't calculate unuseful ones
-                    if (length == 0) // Optimization
-                        var length = m.pow(dx-cx,2)+m.pow(dy-cy,2);
-                    if (length > MOVINGSPEED_POW2) { // Optimization
-                        cx = dx - player.speed*m.sin(player.direction);
-                        cy = dy - player.speed*m.cos(player.direction);
-                    }
+                if (length == 0) // Optimization
+                    var length = m.pow(dx-cx,2)+m.pow(dy-cy,2);
+                if (length > MOVINGSPEED_POW2) { // Optimization
+                    cx = dx - player.speed*m.sin(player.direction);
+                    cy = dy - player.speed*m.cos(player.direction);
+                }
                 var res = (((cx*dy-cy*dx)*(ex-fx)-(cx-dx)*(ex*fy-ey*fx))/
                     ((cx-dx)*(ey-fy)-(cy-dy)*(ex-fx)));
                 if ((cx <= res && res <= dx)||(cx >= res && res >= dx)) {

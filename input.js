@@ -26,8 +26,8 @@ function inputKeyUp(event) {
         if (event.which == players[i].keyDown) {
             players[i].keyDown = false;
             return false;
-        } return true;
-    }
+        }
+    } return true;
 }
 function inputKeyDown(event) {
     for (i in players) {

@@ -35,8 +35,8 @@ function startGameWithBots() {
 /* inputLoop replacement for bot players */
 function botControl(bot) { // Needs more intelligent AI(s)
     var keypress=m.random();
-    if (bot.bot_direction == undefined) bot.bot_direction=0;
     if (bot.bot_intelligence == "idiot") { // Does whatever she wants
+        if (bot.bot_direction == undefined) bot.bot_direction=0;
         if ((bot.bot_direction > 0 && bot.bot_direction < 10) 
                 || keypress < 0.4) {
             bot.bot_direction++;
@@ -49,6 +49,7 @@ function botControl(bot) { // Needs more intelligent AI(s)
         if (bot.bot_direction >= 10 || bot.bot_direction <= -10) 
             bot.bot_direction=0;
     } else if (bot.bot_intelligence == "stupid") { // Has (?) some intelligence
+        if (bot.bot_direction == undefined) bot.bot_direction=0;
         if (bot.bot_phase == undefined) bot.bot_phase=0;
         if ((!bot.bot_wallZone) && ((bot.x < 50) || (bot.x > 750) || 
                 (bot.y < 50) || (bot.y > 550))) {
@@ -71,53 +72,86 @@ function botControl(bot) { // Needs more intelligent AI(s)
                 bot.bot_direction=0;
             }
         }
-    } else if (bot.bot_intelligence == "clever") { // A smart ass
+    } else if (bot.bot_intelligence == "abitsmart") { // Regonizes obstacles
         if (bot.bot_phase == undefined) bot.bot_phase=0;
         if (bot.bot_phase == 0) { // Straight forward
             // check for future collision and change phase according to that
             var ax = bot.x;
             var ay = bot.y;
-            var bx = ax + 40*m.sin(bot.direction);
-            var by = ay + 40*m.cos(bot.direction);
+            var bx = ax + 30*m.sin(bot.direction);
+            var by = ay + 30*m.cos(bot.direction);
             if (checkForCollision(bx,by,ax,ay,bot,true)) {
-                var bx = ax + 60*m.sin(bot.direction+m.PI/4);
-                var by = ay + 60*m.cos(bot.direction+m.PI/4);
-                if (checkForCollision(bx,by,ax,ay,bot,true)) {
-                    var bx = ax + 60*m.sin(bot.direction+m.PI/2);
-                    var by = ay + 60*m.cos(bot.direction+m.PI/2);
-                    if (checkForCollision(bx,by,ax,ay,bot,true))
-                        bot.bot_phase = 2;
-                } else bot.bot_phase = 1;
+                bx = ax + 60*m.sin(bot.direction+m.PI/4);
+                by = ay + 60*m.cos(bot.direction+m.PI/4);
+                if (checkForCollision(bx,by,ax,ay,bot,true))
+                    bot.bot_phase = 2;
+                else bot.bot_phase = 1;
             }
         } else if (bot.bot_phase == 1) { // Turn left
-            bot.bot_direction++;
             bot.direction = botInputLeft(bot.direction);
-            if (bot.bot_direction > 20) { 
-                bot.bot_phase=0;
-                bot.bot_direction=0;
-            }
+            var ax = bot.x;
+            var ay = bot.y;
+            var bx = ax + 50*m.sin(bot.direction);
+            var by = ay + 50*m.cos(bot.direction);
+            if (!checkForCollision(bx,by,ax,ay,bot,true))
+                bot.bot_phase = 0;
         } else if (bot.bot_phase == 2) { // Turn right
-            bot.bot_direction++;
             bot.direction = botInputRight(bot.direction);
-            if (bot.bot_direction > 20) { 
-                bot.bot_phase=0;
-                bot.bot_direction=0;
+            var ax = bot.x;
+            var ay = bot.y;
+            var bx = ax + 50*m.sin(bot.direction);
+            var by = ay + 50*m.cos(bot.direction);
+            if (!checkForCollision(bx,by,ax,ay,bot,true))
+                bot.bot_phase = 0;
+        }
+    } else if (bot.bot_intelligence == "cheater") { // What do you think
+        if (bot.bot_phase == undefined) bot.bot_phase=0; // she does?
+        if (bot.bot_phase == 0) { // Straight forward
+            // check for future collision and change phase according to that
+            var ax = bot.x;
+            var ay = bot.y;
+            var bx = ax + 30*m.sin(bot.direction);
+            var by = ay + 30*m.cos(bot.direction);
+            if (checkForCollision(bx,by,ax,ay,bot,true)) {
+                bx = ax + 30*m.sin(bot.direction+m.PI/2);
+                by = ay + 30*m.cos(bot.direction+m.PI/2);
+                if (checkForCollision(bx,by,ax,ay,bot,true))
+                    bot.bot_phase = 1;
+                else bot.bot_phase = 2;
             }
+        } else if (bot.bot_phase == 1) { // Turn left
+            bot.direction = botInputLeft(bot.direction,m.PI/2);
+            var ax = bot.x;
+            var ay = bot.y;
+            var bx = ax + 30*m.sin(bot.direction);
+            var by = ay + 30*m.cos(bot.direction);
+            if (!checkForCollision(bx,by,ax,ay,bot,true))
+                bot.bot_phase = 0;
+        } else if (bot.bot_phase == 2) { // Turn right
+            bot.direction = botInputRight(bot.direction,m.PI/2);
+            var ax = bot.x;
+            var ay = bot.y;
+            var bx = ax + 30*m.sin(bot.direction);
+            var by = ay + 30*m.cos(bot.direction);
+            if (!checkForCollision(bx,by,ax,ay,bot,true))
+                bot.bot_phase = 0;
         }
     } else {
         var rnd = m.random();
-        if (rnd <= 0.33) bot.bot_intelligence = "clever";
-        else if (rnd <= 0.63) bot.bot_intelligence = "idiot";
-        else bot.bot_intelligence = "stupid";
+        if (rnd <= 0.20) bot.bot_intelligence = "stupid";
+        else if (rnd <= 0.50) bot.bot_intelligence = "idiot";
+        else bot.bot_intelligence = "abitsmart";
     }
 }
-function botInputLeft(old_direction) {
-    var new_direction = old_direction+TURNINGSPEED;
+function botInputLeft(old_direction,turn) {
+    if (turn == null) var new_direction = old_direction+TURNINGSPEED;
+    else var new_direction = old_direction+turn;
     if (new_direction > FULLCIRCLE) return new_direction-FULLCIRCLE;
     else return new_direction;
 }
-function botInputRight(old_direction) {
-    var new_direction = old_direction-TURNINGSPEED;
+function botInputRight(old_direction,turn) {
+    if (turn == null) var new_direction = old_direction-TURNINGSPEED;
+    else var new_direction = old_direction-turn
     if (new_direction < 0) return new_direction+FULLCIRCLE;
     else return new_direction;
 }

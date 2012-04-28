@@ -109,7 +109,6 @@ function botControl(bot) { // Needs more intelligent AI(s)
         if (rnd <= 0.33) bot.bot_intelligence = "clever";
         else if (rnd <= 0.63) bot.bot_intelligence = "idiot";
         else bot.bot_intelligence = "stupid";
-        console.log(bot.name,bot.bot_intelligence);
     }
 }
 function botInputLeft(old_direction) {

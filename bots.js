@@ -23,7 +23,7 @@
 /* Starts the game with bots */
 function startGameWithBots() {
     for (var i = 0; i < players.length; i++) { // Setting up players
-        players[i] = new line("player"+1,players[i].colour,players[i].keyL,
+        players[i] = new line("player"+(i+1),players[i].colour,players[i].keyL,
             players[i].keyR);
         var x = m.floor(m.random()*(WIDTH-200)+100);
         var y = m.floor(m.random()*(HEIGHT-200)+100);
@@ -80,23 +80,26 @@ function botControl(bot) { // Needs more intelligent AI(s)
             var bx = ax + 40*m.sin(bot.direction);
             var by = ay + 40*m.cos(bot.direction);
             if (checkForCollision(bx,by,ax,ay,bot,true)) {
-                var bx = ax + 40*m.sin(bot.direction-m.PI/2);
-                var by = ay + 40*m.cos(bot.direction-m.PI/2);
-                if (checkForCollision(bx,by,ax,ay,bot,true))
-                    bot.bot_phase = 1;
-                else bot.bot_phase = 2;
+                var bx = ax + 60*m.sin(bot.direction+m.PI/4);
+                var by = ay + 60*m.cos(bot.direction+m.PI/4);
+                if (checkForCollision(bx,by,ax,ay,bot,true)) {
+                    var bx = ax + 60*m.sin(bot.direction+m.PI/2);
+                    var by = ay + 60*m.cos(bot.direction+m.PI/2);
+                    if (checkForCollision(bx,by,ax,ay,bot,true))
+                        bot.bot_phase = 2;
+                } else bot.bot_phase = 1;
             }
         } else if (bot.bot_phase == 1) { // Turn left
             bot.bot_direction++;
             bot.direction = botInputLeft(bot.direction);
-            if (bot.bot_direction > 25) { 
+            if (bot.bot_direction > 20) { 
                 bot.bot_phase=0;
                 bot.bot_direction=0;
             }
         } else if (bot.bot_phase == 2) { // Turn right
             bot.bot_direction++;
             bot.direction = botInputRight(bot.direction);
-            if (bot.bot_direction > 25) { 
+            if (bot.bot_direction > 20) { 
                 bot.bot_phase=0;
                 bot.bot_direction=0;
             }
@@ -106,6 +109,7 @@ function botControl(bot) { // Needs more intelligent AI(s)
         if (rnd <= 0.33) bot.bot_intelligence = "clever";
         else if (rnd <= 0.63) bot.bot_intelligence = "idiot";
         else bot.bot_intelligence = "stupid";
+        console.log(bot.name,bot.bot_intelligence);
     }
 }
 function botInputLeft(old_direction) {

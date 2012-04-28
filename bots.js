@@ -71,8 +71,42 @@ function botControl(bot) { // Needs more intelligent AI(s)
                 bot.bot_direction=0;
             }
         }
+    } else if (bot.bot_intelligence == "clever") { // A smart ass
+        if (bot.bot_phase == undefined) bot.bot_phase=0;
+        if (bot.bot_phase == 0) { // Straight forward
+            // check for future collision and change phase according to that
+            var ax = bot.x;
+            var ay = bot.y;
+            var bx = ax + 40*m.sin(bot.direction);
+            var by = ay + 40*m.cos(bot.direction);
+            if (checkForCollision(bx,by,ax,ay,bot,true)) {
+                var bx = ax + 40*m.sin(bot.direction-m.PI/2);
+                var by = ay + 40*m.cos(bot.direction-m.PI/2);
+                if (checkForCollision(bx,by,ax,ay,bot,true))
+                    bot.bot_phase = 1;
+                else bot.bot_phase = 2;
+            }
+        } else if (bot.bot_phase == 1) { // Turn left
+            bot.bot_direction++;
+            bot.direction = botInputLeft(bot.direction);
+            if (bot.bot_direction > 25) { 
+                bot.bot_phase=0;
+                bot.bot_direction=0;
+            }
+        } else if (bot.bot_phase == 2) { // Turn right
+            bot.bot_direction++;
+            bot.direction = botInputRight(bot.direction);
+            if (bot.bot_direction > 25) { 
+                bot.bot_phase=0;
+                bot.bot_direction=0;
+            }
+        }
     } else {
-        bot.bot_intelligence=(m.random()>=0.5)?"stupid":"idiot";
+        var rnd = m.random();
+        if (rnd <= 0.33) bot.bot_intelligence = "clever";
+        else if (rnd <= 0.63) bot.bot_intelligence = "idiot";
+        else bot.bot_intelligence = "stupid";
+        bot.bot_intelligence = "clever";
     }
 }
 function botInputLeft(old_direction) {

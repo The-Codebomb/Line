@@ -154,7 +154,7 @@ function main(bots) {
     }
     time = (new Date()).getTime()-time; // Looping ->
     looptime = LOOPSPEED - time;
-    if (looptime < 0) looptime = 0;
+    if (looptime < 0) {looptime = 0; console.log("warning: too slow system");}
     if (bots && timeout && mainMenuOn) timeout = setTimeout("main(true)",
         looptime);
     else if (timeout) timeout = setTimeout("main()",looptime);

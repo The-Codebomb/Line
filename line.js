@@ -98,11 +98,13 @@ function main(bots) {
             var sameDirection = false; // Assume that players direction changed
             if (players[i].direction == players[i].oldDirection) 
                 sameDirection = true;
+            var old_x = players[i].x;
             var x = players[i].x + players[i].speed*m.sin(
                 players[i].direction);
+            var old_y = players[i].y;
             var y = players[i].y + players[i].speed*m.cos(
                 players[i].direction);
-            if (checkForCollision(x,y,players[i])) { // Collision detection
+            if (checkForCollision(x,y,old_x,old_y,players[i])) { // Collision
                 if (!breaksOn || !players[i].break) {
                     players[i].alive = false;
                     spillBlood(x,y);
@@ -159,7 +161,7 @@ function main(bots) {
 }
 
 /* Check for a collision */
-function checkForCollision(x,y,player) {
+function checkForCollision(dx,dy,cx,cy,player) {
     /*
      * Collision between lines is detected by calculating 
      * points that are common to two segments. Segment means
@@ -179,15 +181,7 @@ function checkForCollision(x,y,player) {
      * The calculations and checks are last lines of this part
      * and all boring stuff is before them.
      */
-    var cline = player.polyline.getAttributeNS(null,"points");
-    cline = cline.match(/[\d\.]+,[\d\.]+ [\d\.]+,[\d\.]+$/);
-    if (cline != null)  {
-        cline = cline[0].split(" ");
-        var xy = cline[0].split(",");
-        var cx = xy.slice(0,1)[0];
-        var cy = xy.slice(1,2)[0];
-        var dx = x;
-        var dy = y;
+    if (cx != null && cy != null)  {
         var length = 0;
         var polylines = game.getElementsByTagName("polyline");
         for (var i = 0; i < polylines.length; i++) {
@@ -227,7 +221,7 @@ function checkForCollision(x,y,player) {
         }
     }
     if (wallMode == "deadly") { // Check if player hit the wall
-        if (x <= 0 || x >= WIDTH || y <= 0 || y >= HEIGHT) {
+        if (dx <= 0 || dx >= WIDTH || dy <= 0 || dy >= HEIGHT) {
             return true;
         }
     }

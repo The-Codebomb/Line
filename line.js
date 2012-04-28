@@ -57,7 +57,7 @@ function init() {
     WIDTH = game.getAttribute("width");
     HEIGHT = game.getAttribute("height");
     for (var i = 0; i < PLAYERS; i++) { // Create players
-        players.push(new line("player"+1,COLORS[i],DEFAULT_KEYS_LEFT[i],
+        players.push(new line("player"+i,COLORS[i],DEFAULT_KEYS_LEFT[i],
         DEFAULT_KEYS_RIGHT[i]));
     }
 	menu();

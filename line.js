@@ -57,7 +57,7 @@ function init() {
     WIDTH = game.getAttribute("width");
     HEIGHT = game.getAttribute("height");
     for (var i = 0; i < PLAYERS; i++) { // Create players
-        players.push(new line("player"+i,COLORS[i],DEFAULT_KEYS_LEFT[i],
+        players.push(new line("player"+(i+1),COLORS[i],DEFAULT_KEYS_LEFT[i],
         DEFAULT_KEYS_RIGHT[i]));
     }
 	menu();
@@ -68,8 +68,8 @@ function startGame() {
     mainMenuOn = false;
     for (var i = 0; i < players.length; i++) { // Setting up players ->
         if (i < playerAmount) {
-            players[i] = new line("player"+i,players[i].colour,players[i].keyL,
-                players[i].keyR);
+            players[i] = new line("player"+(i+1),players[i].colour,
+                players[i].keyL,players[i].keyR);
             var x = m.floor(m.random()*(WIDTH-200)+100);
             var y = m.floor(m.random()*(HEIGHT-200)+100);
             addPoint(players[i],x,y,false); // Add starting point

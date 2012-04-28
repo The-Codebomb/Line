@@ -188,11 +188,7 @@ function checkForCollision(x,y,player) {
         var cy = xy.slice(1,2)[0];
         var dx = x;
         var dy = y;
-        var length = m.pow(dx-cx,2)+m.pow(dy-cy,2); // m.sqrt is too cpu 
-        if (length > MOVINGSPEED_POW2) { // intensive, so m.pow is used
-            cx = dx - player.speed*m.sin(player.direction);
-            cy = dy - player.speed*m.cos(player.direction);
-        }
+        var length = 0;
         var polylines = game.getElementsByTagName("polyline");
         for (var i = 0; i < polylines.length; i++) {
             var points = polylines[i].getAttributeNS(null,"points");
@@ -215,6 +211,12 @@ function checkForCollision(x,y,player) {
                     (ey < cy && fy < cy && ey < dy && fy < dy) ||
                     (ey < cy && fy < cy && ey < dy && fy < dy))
                     continue; // Don't calculate unuseful ones
+                    if (length == 0) // Optimization
+                        var length = m.pow(dx-cx,2)+m.pow(dy-cy,2);
+                    if (length > MOVINGSPEED_POW2) { // Optimization
+                        cx = dx - player.speed*m.sin(player.direction);
+                        cy = dy - player.speed*m.cos(player.direction);
+                    }
                 var res = (((cx*dy-cy*dx)*(ex-fx)-(cx-dx)*(ex*fy-ey*fx))/
                     ((cx-dx)*(ey-fy)-(cy-dy)*(ex-fx)));
                 if ((cx <= res && res <= dx)||(cx >= res && res >= dx)) {

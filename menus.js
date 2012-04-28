@@ -125,7 +125,7 @@ function buttonClick(e,btnType,btn,btnText) {
 	if (btnType == "play") {
         endBotGame();
 		clearGround();
-		removeBtns();
+		removeButtons();
 		startGame(false);
 	} else if (btnType == "plrAmount") {
 		playerAmount++;
@@ -141,23 +141,23 @@ function buttonClick(e,btnType,btn,btnText) {
 		}
 	} else if (btnType == "retry") {
         clearGround();
-		removeBtns();
+		removeButtons();
 		startGame();
 	} else if (btnType == "rtnMenu") {
-		removeBtns();
+		removeButtons();
 		playerAmount = 1;
 		menu();
 	} else if (btnType == "plr1Set") {
-		removeBtns();
+		removeButtons();
 		setButtons(1);
 	} else if (btnType == "plr2Set") {
-		removeBtns();
+		removeButtons();
 		setButtons(2);
 	} else if (btnType == "plr3Set") {
-		removeBtns();
+		removeButtons();
 		setButtons(3);
 	} else if (btnType == "plr4Set") {
-		removeBtns();
+		removeButtons();
 		setButtons(4);
 	}
 	
@@ -177,7 +177,7 @@ function clearGround() {
 }
 
 /* Removes ALL buttons from the screen (and rects and texts) */
-function removeBtns() {
+function removeButtons() {
 	var rects = game.getElementsByTagName("rect");	// Remove box buttons
 	for (var i = rects.length - 1; i >= 1;i--) { // i >= 1 to keep the border
 		game.removeChild(rects[i]);

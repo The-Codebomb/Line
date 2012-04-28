@@ -67,11 +67,15 @@ function init() {
 function startGame() {
     mainMenuOn = false;
     for (var i = 0; i < players.length; i++) { // Setting up players ->
-        players[i] = new line("player"+i,players[i].colour,players[i].keyL,
-            players[i].keyR);
-        var x = m.floor(m.random()*(WIDTH-200)+100);
-        var y = m.floor(m.random()*(HEIGHT-200)+100);
-        addPoint(players[i],x,y,false); // Add starting point
+        if (i < playerAmount) {
+            players[i] = new line("player"+i,players[i].colour,players[i].keyL,
+                players[i].keyR);
+            var x = m.floor(m.random()*(WIDTH-200)+100);
+            var y = m.floor(m.random()*(HEIGHT-200)+100);
+            addPoint(players[i],x,y,false); // Add starting point
+        } else { // Hack for non-playing players FIXME
+            players[i].alive = false;
+        }
     }
     timeout = setTimeout("main()",LOOPSPEED); // Start "loop"
     document.body.addEventListener("keydown",function(e){inputKeyDown(e)},

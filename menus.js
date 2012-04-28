@@ -20,6 +20,8 @@
    MA 02110-1301, USA.
 */
 
+var playerAmount = 1;
+
 /* Creates menu buttons etc. */
 function menu() {
     mainMenuOn = true;
@@ -83,9 +85,9 @@ function createButton(x,y,width,height,text,type) {
 	game.appendChild(btnText);
     
 	btn.addEventListener("click", // two listeners, fix this
-        function(e){buttonClick(e,type,btn,text)},false);
+        function(e){buttonClick(e,type,btn,btnText)},false);
 	btnText.addEventListener("click",
-		function(e){buttonClick(e,type,btn,text)},false);
+		function(e){buttonClick(e,type,btn,btnText)},false);
 	
 	btn.addEventListener("mouseover",function(e){buttonHoverOn(e,btn,btnText)},
 		false);	// for effects when hovering

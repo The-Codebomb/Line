@@ -97,7 +97,7 @@ function createButton(x,y,width,height,text,type) {
 		false);	
 	btnText.addEventListener("mouseout",function(e){buttonHoverOff(e,btn,
 		btnText)},false);
-    return {"button":btn,"text":text}
+    return {"button":btn,"text":btnText}
 }
 
 /* Create new text */

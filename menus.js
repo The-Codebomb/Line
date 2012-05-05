@@ -19,7 +19,6 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
    MA 02110-1301, USA.
 */
-
 var playerAmount = 1;
 
 /* Creates menu buttons etc. */
@@ -150,19 +149,14 @@ function buttonClick(e,btnType,btn,btnText) {
 		playerAmount = 1;
 		menu();
 	} else if (btnType == "plr1Set") {
-		removeButtons();
-		setButtons(1);
+		setButtons(0);
 	} else if (btnType == "plr2Set") {
-		removeButtons();
-		setButtons(2);
+		setButtons(1);
 	} else if (btnType == "plr3Set") {
-		removeButtons();
-		setButtons(3);
+		setButtons(2);
 	} else if (btnType == "plr4Set") {
-		removeButtons();
-		setButtons(4);
+		setButtons(3);
 	}
-	
 }
 
 /* removes ALL polylines and circles from the screen */
@@ -191,9 +185,29 @@ function removeButtons() {
 }
 
 /* Sets buttons for given player (asks and sets) */
-function setButtons(playerNum) {
-	// Asking for buttons here
-	menu();
+function setButtons(playerNum,e,leftOrRight) {
+	removeButtons();
+	if (leftOrRight == null) {
+		leftOrRight = "left";
+		createText(WIDTH/2,HEIGHT/2, 
+			"Press button for left button for player " + (playerNum+1));
+		document.body.addEventListener("keydown",function(e){
+			setButtons(playerNum,e,leftOrRight)}, true);
+	} else if (leftOrRight == "left") {
+		document.body.removeEventListener("keydown",function(e){
+			setButtons(playerNum,e,leftOrRight)}, true);
+		players[playerNum].keyL = e.which;
+		leftOrRight = "right";
+		createText(WIDTH/2,HEIGHT/2, 
+			"Press button for right button for player " + (playerNum+1));
+		document.body.addEventListener("keydown",function(e){
+			setButtons(playerNum,e,leftOrRight)}, true);
+	} else if (leftOrRight == "right") {
+		document.body.removeEventListener("keydown",function(e){
+			setButtons(playerNum,e,leftOrRight)}, true);
+		players[playerNum].keyR = e.which;
+		menu();
+	}
 }
 
 /* Returns readable string for key */

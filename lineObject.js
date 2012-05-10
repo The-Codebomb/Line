@@ -50,9 +50,9 @@ function line(name,colour,keyL,keyR) {
     game.appendChild(this.circle);
 }
 /* Adds a point and moves the circle */
-function addPoint(x,y,replOld) { 
+function addPoint(x,y,replaceOld) { 
     var points = this.polyline.getAttributeNS(null,"points");
-    if (replOld == true) {
+    if (replaceOld == true) {
         points = points.replace(/ [\d\.]+,[\d\.]+$/,"");
         this.polyline.setAttributeNS(null,"points",points);
     }

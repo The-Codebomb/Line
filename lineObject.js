@@ -22,6 +22,9 @@
 
 /* Line object (each player has one) */
 function line(name,colour,keyL,keyR) {
+    this.addPoint=addPoint;
+    this.moveCircle=moveCircle;
+    this.splitLine=splitLine;
     this.direction=m.random()*FULLCIRCLE;
     this.oldDirection;
     this.keyL=keyL;
@@ -47,27 +50,27 @@ function line(name,colour,keyL,keyR) {
     game.appendChild(this.circle);
 }
 /* Adds a point and moves the circle */
-function addPoint(lobj,x,y,replOld) { 
-    var points = lobj.polyline.getAttributeNS(null,"points");
+function addPoint(x,y,replOld) { 
+    var points = this.polyline.getAttributeNS(null,"points");
     if (replOld == true) {
         points = points.replace(/ [\d\.]+,[\d\.]+$/,"");
-        lobj.polyline.setAttributeNS(null,"points",points);
+        this.polyline.setAttributeNS(null,"points",points);
     }
-    if (points) lobj.polyline.setAttributeNS(null,"points",points+" "+x+","+y);
-    else lobj.polyline.setAttributeNS(null,"points",points+x+","+y);
-    moveCircle(lobj,x,y);
+    if (points) this.polyline.setAttributeNS(null,"points",points+" "+x+","+y);
+    else this.polyline.setAttributeNS(null,"points",points+x+","+y);
+    this.moveCircle(x,y);
 }
 /* Just moves the circle */
-function moveCircle(lobj,x,y) { 
-    lobj.circle = elementSetAttributes(lobj.circle,{"cx":x,"cy":y});
-    lobj.x = x;
-    lobj.y = y;
+function moveCircle(x,y) { 
+    this.circle = elementSetAttributes(this.circle,{"cx":x,"cy":y});
+    this.x = x;
+    this.y = y;
 }
 /* Begins a new line */
-function splitLine(lobj) { 
-    lobj.polyline = document.createElementNS(NS,"polyline");
-    lobj.polyline = elementSetAttributes(lobj.polyline, {"points":"", 
-        "fill":"none", "stroke":lobj.colour, "stroke-width":lobj.d, 
+function splitLine() { 
+    this.polyline = document.createElementNS(NS,"polyline");
+    this.polyline = elementSetAttributes(this.polyline, {"points":"", 
+        "fill":"none", "stroke":this.colour, "stroke-width":this.d, 
         "class":name, "z-index":20});
-    game.appendChild(lobj.polyline);
+    game.appendChild(this.polyline);
 }

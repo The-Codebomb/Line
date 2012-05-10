@@ -72,7 +72,7 @@ function startGame() {
                 players[i].keyL,players[i].keyR);
             var x = m.floor(m.random()*(WIDTH-200)+100);
             var y = m.floor(m.random()*(HEIGHT-200)+100);
-            addPoint(players[i],x,y,false); // Add starting point
+            players[i].addPoint(x,y,false); // Add starting point
         } else { // Hack for non-playing players FIXME
             players[i].alive = false;
         }
@@ -111,37 +111,37 @@ function main(bots) {
                 }
             } else if ((wallMode == "warp") && // Warping ->
                     (x <= 0 || x >= WIDTH || y <= 0 || y >= HEIGHT)) {
-                addPoint(players[i],x,y,sameDirection);
+                players[i].addPoint(x,y,sameDirection);
                 if (x <= 0) { x = WIDTH; }
                 else if (x >= WIDTH) { x = 0; }
                 else if (y <= 0) { y = HEIGHT; }
                 else if (y >= HEIGHT) { y = 0; }
-                splitLine(players[i]);
+                players[i].splitLine();
                 players[i].oldDirection="";
                 warped = true;
             }
             if (breaksOn) { // Breaking ->
                 if (!players[i].break && players[i].breakcounter <= 0) {
-                    addPoint(players[i],x,y,sameDirection);
+                    players[i].addPoint(x,y,sameDirection);
                     players[i].oldDirection="";
                     players[i].break = true;
                     players[i].breakcounter=BREAKLENGTH;
                 } else if (players[i].break && players[i].breakcounter <= 0) {
-                    splitLine(players[i]);
-                    addPoint(players[i],x,y,false);
+                    players[i].splitLine();
+                    players[i].addPoint(x,y,false);
                     players[i].break = false;
                     players[i].breakcounter=BETWEENBREAKS+m.floor(
                         m.random()*BETWEENBREAKS);
                 } else if (!players[i].break) { 
-                    addPoint(players[i],x,y,sameDirection);
+                    players[i].addPoint(x,y,sameDirection);
                     if (warped == false) players[i].oldDirection = 
                         players[i].direction;
                 } else {
-                    moveCircle(players[i],x,y);
+                    players[i].moveCircle(x,y);
                 }
                 players[i].breakcounter--;
             } else { // Normally drawing ->
-                addPoint(players[i],x,y,sameDirection);
+                players[i].addPoint(x,y,sameDirection);
                 if (warped == false) players[i].oldDirection = 
                     players[i].direction;
             }

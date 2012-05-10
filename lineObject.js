@@ -21,7 +21,7 @@
 */
 
 /* Line object (each player has one) */
-function line(name,colour,keyL,keyR) {
+function line(name,colour,keyL,keyR,isBot) {
     this.addPoint=addPoint;
     this.moveCircle=moveCircle;
     this.splitLine=splitLine;
@@ -40,6 +40,7 @@ function line(name,colour,keyL,keyR) {
     this.y;
     this.d=1;
     this.bonus=new Array(); // [{"type":type_of_bonus,"time":time_left}, ...]
+    this.bot=(isBot)?true:false;
     this.polyline = document.createElementNS(NS,"polyline");
     this.polyline = elementSetAttributes(this.polyline, {"points":"", 
         "fill":"none", "stroke":colour, "stroke-width":this.d, "class":name, 

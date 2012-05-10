@@ -81,6 +81,14 @@ function startGame() {
             players[i].alive = false;
         }
     }
+    if (playerAmount == 1) { // On one player game, add one bot
+        players[1] = new line("player2",players[1].colour,
+            players[1].keyL,players[1].keyR,true);
+        var x = m.floor(m.random()*(WIDTH-200)+100);
+        var y = m.floor(m.random()*(HEIGHT-200)+100);
+        players[1].addPoint(x,y,false); // Add starting point
+        players[1].alive = true;
+    }
     timeout = setTimeout("main()",LOOPSPEED); // Start "loop"
     document.body.addEventListener("keydown",function(e){inputKeyDown(e)},
         true); // Begin input ->
@@ -97,7 +105,7 @@ function main(bots) {
     for (i in players) {
         if (players[i].alive) {
             var warped = false;
-            if (bots) botControl(players[i]); // Control bots
+            if (players[i].bot) botControl(players[i]); // Control bots
             else inputLoop(players[i]); // Control players
             var sameDirection = false; // Assume that players direction changed
             if (players[i].direction == players[i].oldDirection) 
@@ -262,8 +270,12 @@ function checkForCollision(dx,dy,cx,cy,player,dopti) {
 
 /* Check if the game is over */
 function isGameOver() {
+    skippedOne = false
     for (var i = 0; i < players.length; i++) {
-        if (players[i].alive) return false;
+        if (players[i].alive) {
+            if (!skippedOne) skippedOne = true;
+            else return false;
+        }
     } return true;
 }
 

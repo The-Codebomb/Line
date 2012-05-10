@@ -184,27 +184,25 @@ function removeButtons() {
 	}
 }
 
+var setButtonsHandler; // Saves event handler
 /* Sets buttons for given player (asks and sets) */
 function setButtons(playerNum,e,leftOrRight) {
 	removeButtons();
 	if (leftOrRight == null) {
-		leftOrRight = "left";
 		createText(WIDTH/2,HEIGHT/2, 
-			"Press button for left button for player " + (playerNum+1));
-		document.body.addEventListener("keydown",function(e){
-			setButtons(playerNum,e,leftOrRight)}, true);
+			"Press button for left button for player "+(playerNum+1));
+        setButtonsHandler = function(event){setButtons(playerNum,event,"left")}
+		document.body.addEventListener("keydown",setButtonsHandler,true);
 	} else if (leftOrRight == "left") {
-		document.body.removeEventListener("keydown",function(e){
-			setButtons(playerNum,e,leftOrRight)}, true);
+		document.body.removeEventListener("keydown",setButtonsHandler,true);
 		players[playerNum].keyL = e.which;
-		leftOrRight = "right";
 		createText(WIDTH/2,HEIGHT/2, 
-			"Press button for right button for player " + (playerNum+1));
-		document.body.addEventListener("keydown",function(e){
-			setButtons(playerNum,e,leftOrRight)}, true);
+			"Press button for right button for player "+(playerNum+1));
+        setButtonsHandler = function(event){setButtons(playerNum,event,
+            "right")}
+		document.body.addEventListener("keydown",setButtonsHandler,true);
 	} else if (leftOrRight == "right") {
-		document.body.removeEventListener("keydown",function(e){
-			setButtons(playerNum,e,leftOrRight)}, true);
+		document.body.removeEventListener("keydown",setButtonsHandler,true);
 		players[playerNum].keyR = e.which;
 		menu();
 	}

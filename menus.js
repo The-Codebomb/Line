@@ -24,6 +24,7 @@ var playerAmount = 1;
 /* Creates menu buttons etc. */
 function menu() {
     mainMenuOn = true;
+    timeout = clearTimeout(timeout);
     clearGround();
     startGameWithBots();
     var playButton = createButton(WIDTH/4-100, HEIGHT/4-50, 200, 100, "Play", 

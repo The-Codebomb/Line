@@ -39,6 +39,7 @@ function line(name,colour,keyL,keyR) {
     this.x;
     this.y;
     this.d=1;
+    this.bonus=new Array(); // [{"type":type_of_bonus,"time":time_left}, ...]
     this.polyline = document.createElementNS(NS,"polyline");
     this.polyline = elementSetAttributes(this.polyline, {"points":"", 
         "fill":"none", "stroke":colour, "stroke-width":this.d, "class":name, 

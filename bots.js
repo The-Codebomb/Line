@@ -181,4 +181,5 @@ function endBotGame() {
     for (var i = circles.length-1; i >= 0; i--) {
         game.removeChild(circles[0]);
     }
+    bonuses = new Array();
 }

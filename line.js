@@ -34,14 +34,14 @@ var TURNINGSPEED = 0.1;
 var MOVINGSPEED = 2;
 var LOOPSPEED = 30;
 var FULLCIRCLE = 2*m.PI;
-var MOVINGSPEED_POW2 = m.pow(MOVINGSPEED,2);
-var BETWEENBREAKS = 75;
+var MOVINGSPEED_POW2 = m.pow(MOVINGSPEED,2); // Optimization
+var TIME_BETWEEN_BREAKS = 75;
 var BREAKLENGTH = 10;
 var MAX_TIME_BETWEEN_BONUSES = 800;
 var MAX_BONUSES = 5;
 var BONUS_TIME = 50; // How many loops bonuses affect
-var WIDTH; // Will be set in init()
-var HEIGHT; // Will be set in init()
+var WIDTH; // Will be set in init() // Gamearea width
+var HEIGHT; // Will be set in init() // Gamearea height
 var NS = "http://www.w3.org/2000/svg"; // SVG namespace
 var fontSize = 25;
 var font = "Courier New, monospace";
@@ -50,7 +50,7 @@ var font = "Courier New, monospace";
 var game; // SVG element
 var border; // Border's SVGrect element
 var timeout;
-var mainMenuOn;
+var mainMenuOn; // If main menu is on or not
 var next_bonus_in = m.floor(m.random()*MAX_TIME_BETWEEN_BONUSES);
 var players = new Array(); // Array for line-objects
 
@@ -166,8 +166,8 @@ function main(bots) {
                     players[i].splitLine();
                     players[i].addPoint(x,y,false);
                     players[i].break = false;
-                    players[i].breakcounter=BETWEENBREAKS+m.floor(
-                        m.random()*BETWEENBREAKS);
+                    players[i].breakcounter=TIME_BETWEEN_BREAKS+m.floor(
+                        m.random()*TIME_BETWEEN_BREAKS);
                 } else if (!players[i].break) { 
                     players[i].addPoint(x,y,sameDirection);
                     if (warped == false) players[i].oldDirection = 

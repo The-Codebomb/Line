@@ -33,7 +33,8 @@ function line(name,colour,keyL,keyR,isBot) {
     this.name=name;
     this.colour=colour;
     this.alive=true;
-    this.breakcounter=BETWEENBREAKS+m.floor(m.random()*BETWEENBREAKS);
+    this.breakcounter=TIME_BETWEEN_BREAKS+m.floor(
+        m.random()*TIME_BETWEEN_BREAKS);
     this.break=false;
     this.speed=MOVINGSPEED;
     this.x;

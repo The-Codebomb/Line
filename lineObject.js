@@ -44,11 +44,10 @@ function line(name,colour,keyL,keyR,isBot) {
     this.bot=(isBot)?true:false;
     this.polyline = document.createElementNS(NS,"polyline");
     this.polyline = elementSetAttributes(this.polyline, {"points":"", 
-        "fill":"none", "stroke":colour, "stroke-width":this.d, "class":name, 
-        "z-index":20});
+        "fill":"none", "stroke":colour, "stroke-width":this.d, "class":name});
     this.circle = document.createElementNS(NS,"circle");
     this.circle = elementSetAttributes(this.circle, {"r":m.round(this.d/2), 
-        "fill":colour, "class":name, "z-index":20});
+        "fill":colour, "class":name});
     gamearea.appendChild(this.polyline);
     gamearea.appendChild(this.circle);
 }
@@ -74,6 +73,6 @@ function splitLine() {
     this.polyline = document.createElementNS(NS,"polyline");
     this.polyline = elementSetAttributes(this.polyline, {"points":"", 
         "fill":"none", "stroke":this.colour, "stroke-width":this.d, 
-        "class":name, "z-index":20});
+        "class":name});
     gamearea.appendChild(this.polyline);
 }

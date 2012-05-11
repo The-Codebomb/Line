@@ -27,44 +27,52 @@ function menu() {
     timeout = clearTimeout(timeout);
     clearGround();
     startGameWithBots();
-    var playButton = createButton(WIDTH/4-100, HEIGHT/4-50, 200, 100, "Play", 
-        "play");
-	var playersButton = createButton(WIDTH/3*2-100, HEIGHT/4-25, 200, 50, 
-        "1 Player", "plrAmount");
+    var playButton = createButton(game_width/4-100, game_height/4-50, 200, 
+        100, "Play", "play");
+	var playersButton = createButton(game_width/3*2-100, game_height/4-25, 
+        200, 50, "1 Player", "plrAmount");
 	// Button setting functios
-	var player1Set = createButton(WIDTH/3*2, HEIGHT/2-25, 80, 50, "Set", 
-        "plr1Set");
-	var player2Set = createButton(WIDTH/3*2, HEIGHT/2+35, 80, 50, "Set", 
-        "plr2Set");
-	var player3Set = createButton(WIDTH/3*2, HEIGHT/2+95, 80, 50, "Set", 
-        "plr3Set");
-	var player4Set = createButton(WIDTH/3*2, HEIGHT/2+155, 80, 50, "Set", 
-        "plr4Set");
+	var player1Set = createButton(game_width/3*2, game_height/2-25, 80, 50, 
+        "Set", "plr1Set");
+	var player2Set = createButton(game_width/3*2, game_height/2+35, 80, 50, 
+        "Set", "plr2Set");
+	var player3Set = createButton(game_width/3*2, game_height/2+95, 80, 50, 
+        "Set", "plr3Set");
+	var player4Set = createButton(game_width/3*2, game_height/2+155, 80, 50, 
+        "Set", "plr4Set");
 	
-	createText(WIDTH/6, HEIGHT/2 , "Player 1");
-	createText(WIDTH/6, HEIGHT/2+60, "Player 2");
-	createText(WIDTH/6, HEIGHT/2+120, "Player 3");
-	createText(WIDTH/6, HEIGHT/2+180, "Player 4");
+	createText(game_width/6, game_height/2 , "Player 1");
+	createText(game_width/6, game_height/2+60, "Player 2");
+	createText(game_width/6, game_height/2+120, "Player 3");
+	createText(game_width/6, game_height/2+180, "Player 4");
 	
-	createText(WIDTH/3+30, HEIGHT/2-45, "Left");
-	createText(WIDTH/2+30, HEIGHT/2-45, "Right");
+	createText(game_width/3+30, game_height/2-45, "Left");
+	createText(game_width/2+30, game_height/2-45, "Right");
 	
-	createText(WIDTH/3+30, HEIGHT/2, getKeyFromCode(players[0].keyL));
-	createText(WIDTH/3+30, HEIGHT/2+60, getKeyFromCode(players[1].keyL));
-	createText(WIDTH/3+30, HEIGHT/2+120, getKeyFromCode(players[2].keyL));
-	createText(WIDTH/3+30, HEIGHT/2+180, getKeyFromCode(players[3].keyL));
+	createText(game_width/3+30, game_height/2, 
+        getKeyFromCode(players[0].keyL));
+	createText(game_width/3+30, game_height/2+60, 
+        getKeyFromCode(players[1].keyL));
+	createText(game_width/3+30, game_height/2+120, 
+        getKeyFromCode(players[2].keyL));
+	createText(game_width/3+30, game_height/2+180, 
+        getKeyFromCode(players[3].keyL));
 	
-	createText(WIDTH/2+30, HEIGHT/2, getKeyFromCode(players[0].keyR));
-	createText(WIDTH/2+30, HEIGHT/2+60, getKeyFromCode(players[1].keyR));
-	createText(WIDTH/2+30, HEIGHT/2+120, getKeyFromCode(players[2].keyR));
-	createText(WIDTH/2+30, HEIGHT/2+180, getKeyFromCode(players[3].keyR));
+	createText(game_width/2+30, game_height/2, 
+        getKeyFromCode(players[0].keyR));
+	createText(game_width/2+30, game_height/2+60, 
+        getKeyFromCode(players[1].keyR));
+	createText(game_width/2+30, game_height/2+120, 
+        getKeyFromCode(players[2].keyR));
+	createText(game_width/2+30, game_height/2+180, 
+        getKeyFromCode(players[3].keyR));
 }
 
 /* Retry menu, which is showed when all players are dead */
 function retryMenu() {
-	var retryButton = createButton(WIDTH/2-100, HEIGHT/2-125, 200, 100, 
-        "Play again", "retry");
-	var menuButton = createButton(WIDTH/2-100, HEIGHT/2+25, 200, 100, 
+	var retryButton = createButton(game_width/2-100, game_height/2-125, 200, 
+        100, "Play again", "retry");
+	var menuButton = createButton(game_width/2-100, game_height/2+25, 200, 100, 
         "Main Menu", "rtnMenu");
 }
 
@@ -73,12 +81,12 @@ function createButton(x,y,width,height,text,type) {
 	var btn = document.createElementNS(NS,"rect");
     btn = elementSetAttributes(btn,{"x":x, "y":y, "width":width, 
         "height":height, "fill":"#FFFFFF", "stroke":"black", 
-        "stroke-width":2, "z-index":50});
+        "stroke-width":2});
     
 	var btnText = document.createElementNS(NS,"text");
     btnText = elementSetAttributes(btnText,{"x":x+width/2, 
         "y":y+height/2+fontSize/4, "font-family":font, "font-size":fontSize, 
-        "text-anchor":"middle", "z-index":50});
+        "text-anchor":"middle"});
 	btnText.textContent = text;
 	
 	menuarea.appendChild(btn);
@@ -104,9 +112,9 @@ function createButton(x,y,width,height,text,type) {
 function createText(x,y,text) {
 	var svgText = document.createElementNS(NS,"text");
     svgText = elementSetAttributes(svgText,{"x":x, "y":y, "font-family":font, 
-        "font-size":fontSize, "text-anchor":"middle", "z-index":50});
+        "font-size":fontSize, "text-anchor":"middle"});
 	svgText.textContent = text;
-	game.appendChild(svgText);
+	menuarea.appendChild(svgText);
     return svgText;
 }
 
@@ -176,7 +184,7 @@ function clearGround() {
 /* Removes ALL buttons from the screen (and rects and texts) */
 function removeButtons() {
 	var rects = menuarea.getElementsByTagName("rect");	// Remove box buttons
-	for (var i = rects.length - 1; i >= 1;i--) { // i >= 1 to keep the border
+	for (var i = rects.length - 1; i >= 0;i--) {
 		menuarea.removeChild(rects[i]);
 	}		
 	var texts = menuarea.getElementsByTagName("text");	// Remove texts
@@ -190,14 +198,14 @@ var setButtonsHandler; // Saves event handler
 function setButtons(playerNum,e,leftOrRight) {
 	removeButtons();
 	if (leftOrRight == null) {
-		createText(WIDTH/2,HEIGHT/2, 
+		createText(game_width/2,game_height/2, 
 			"Press button for left button for player "+(playerNum+1));
         setButtonsHandler = function(event){setButtons(playerNum,event,"left")}
 		document.body.addEventListener("keydown",setButtonsHandler,true);
 	} else if (leftOrRight == "left") {
 		document.body.removeEventListener("keydown",setButtonsHandler,true);
 		players[playerNum].keyL = e.which;
-		createText(WIDTH/2,HEIGHT/2, 
+		createText(game_width/2,game_height/2, 
 			"Press button for right button for player "+(playerNum+1));
         setButtonsHandler = function(event){setButtons(playerNum,event,
             "right")}

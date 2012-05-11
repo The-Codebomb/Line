@@ -39,7 +39,7 @@ function bonus(type,x,y) {
     this.type = type;
     this.remove = removeBonus;
     this.circle = elementSetAttributes(this.circle,{"cx":this.x, "cy":this.y, 
-        "r":BONUS_R, "id":"bonus_"+x+"_"+y, "z-index":10});
+        "r":BONUS_R, "id":"bonus_"+x+"_"+y});
     if (type == "widen") {
         this.circle = elementSetAttributes(this.circle, {"fill":"blue"});
     } else if (type == "narrow") {
@@ -57,8 +57,8 @@ function removeBonus() {
 
 /* Adds bonus */
 function addBonus() {
-    var x = m.floor(m.random()*(WIDTH-100)+50);
-    var y = m.floor(m.random()*(HEIGHT-100)+50);
+    var x = m.floor(m.random()*(game_width-100)+50);
+    var y = m.floor(m.random()*(game_height-100)+50);
     var type = m.floor(m.random()*3)
     switch(type) {
         case 1: type = "widen"; break;

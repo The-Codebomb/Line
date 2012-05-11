@@ -40,8 +40,6 @@ var BREAKLENGTH = 10;
 var MAX_TIME_BETWEEN_BONUSES = 800;
 var MAX_BONUSES = 5;
 var BONUS_TIME = 50; // How many loops bonuses affect
-var WIDTH; // Will be set in init() // Gamearea width
-var HEIGHT; // Will be set in init() // Gamearea height
 var NS = "http://www.w3.org/2000/svg"; // SVG namespace
 var fontSize = 25;
 var font = "Courier New, monospace";
@@ -52,6 +50,8 @@ var gamearea; // SVG element
 var menuarea; // SVG element
 var border; // Border's SVGrect element
 var timeout;
+var game_width; // Gamearea width
+var game_height; // Gamearea height
 var mainMenuOn; // If main menu is on or not
 var next_bonus_in = m.floor(m.random()*MAX_TIME_BETWEEN_BONUSES);
 var players = new Array(); // Array for line-objects
@@ -65,8 +65,8 @@ function init() {
     // Setting up correct height for stupid browsers (Opera and Firefox) ->
     if (game.getBoundingClientRect().height > window.innerHeight) 
         game.setAttributeNS(null,"height",m.floor(window.innerHeight*0.95));
-    WIDTH = game.viewBox.baseVal.width;
-    HEIGHT = game.viewBox.baseVal.height;
+    game_width = game.viewBox.baseVal.width;
+    game_height = game.viewBox.baseVal.height;
     for (var i = 0; i < PLAYERS; i++) { // Create players
         players.push(new line("player"+(i+1),COLORS[i],DEFAULT_KEYS_LEFT[i],
         DEFAULT_KEYS_RIGHT[i]));
@@ -81,8 +81,8 @@ function startGame() {
         if (i < playerAmount) {
             players[i] = new line("player"+(i+1),players[i].colour,
                 players[i].keyL,players[i].keyR);
-            var x = m.floor(m.random()*(WIDTH-200)+100);
-            var y = m.floor(m.random()*(HEIGHT-200)+100);
+            var x = m.floor(m.random()*(game_width-200)+100);
+            var y = m.floor(m.random()*(game_height-200)+100);
             players[i].addPoint(x,y,false); // Add starting point
         } else { // Hack for non-playing players FIXME
             players[i].alive = false;
@@ -91,8 +91,8 @@ function startGame() {
     if (playerAmount == 1) { // On one player game, add one bot
         players[1] = new line("player2",players[1].colour,
             players[1].keyL,players[1].keyR,true);
-        var x = m.floor(m.random()*(WIDTH-200)+100);
-        var y = m.floor(m.random()*(HEIGHT-200)+100);
+        var x = m.floor(m.random()*(game_width-200)+100);
+        var y = m.floor(m.random()*(game_height-200)+100);
         players[1].addPoint(x,y,false); // Add starting point
         players[1].alive = true;
     }
@@ -129,12 +129,12 @@ function main(bots) {
                     spillBlood(x,y);
                 }
             } else if ((wallMode == "warp") && // Warping ->
-                    (x <= 0 || x >= WIDTH || y <= 0 || y >= HEIGHT)) {
+                    (x <= 0 || x >= game_width || y <= 0 || y >= game_height)) {
                 players[i].addPoint(x,y,sameDirection);
-                if (x <= 0) { x = WIDTH; }
-                else if (x >= WIDTH) { x = 0; }
-                else if (y <= 0) { y = HEIGHT; }
-                else if (y >= HEIGHT) { y = 0; }
+                if (x <= 0) { x = game_width; }
+                else if (x >= game_width) { x = 0; }
+                else if (y <= 0) { y = game_height; }
+                else if (y >= game_height) { y = 0; }
                 players[i].splitLine();
                 players[i].oldDirection="";
                 warped = true;
@@ -268,7 +268,7 @@ function checkForCollision(dx,dy,cx,cy,player,dopti) {
         }
     }
     if (wallMode == "deadly") { // Check if player hit the wall
-        if (dx <= 0 || dx >= WIDTH || dy <= 0 || dy >= HEIGHT) {
+        if (dx <= 0 || dx >= game_width || dy <= 0 || dy >= game_height) {
             return true;
         }
     }
@@ -294,7 +294,7 @@ function gameOver() {
         true);
     var text = document.createElementNS(NS,"text");
     elementSetAttributes(text,{"x":100,"y":100,"fill":"red",
-        "id":"gameover_text", "z-index":40});
+        "id":"gameover_text"});
     text.textContent="Game Over!";
     game.appendChild(text);
     bonuses = new Array();

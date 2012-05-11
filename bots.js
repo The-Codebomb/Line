@@ -25,8 +25,8 @@ function startGameWithBots() {
     for (var i = 0; i < players.length; i++) { // Setting up players
         players[i] = new line("player"+(i+1),players[i].colour,players[i].keyL,
             players[i].keyR,true);
-        var x = m.floor(m.random()*(WIDTH-200)+100);
-        var y = m.floor(m.random()*(HEIGHT-200)+100);
+        var x = m.floor(m.random()*(game_width-200)+100);
+        var y = m.floor(m.random()*(game_height-200)+100);
         players[i].addPoint(x,y,false); // Add starting point
     }
     timeout = setTimeout("main(true)",LOOPSPEED); // Start "loop"

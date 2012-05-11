@@ -296,7 +296,7 @@ function gameOver() {
     elementSetAttributes(text,{"x":100,"y":100,"fill":"red",
         "id":"gameover_text"});
     text.textContent="Game Over!";
-    game.appendChild(text);
+    menuarea.appendChild(text);
     bonuses = new Array();
 	retryMenu();
 }

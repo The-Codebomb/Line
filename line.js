@@ -58,8 +58,11 @@ var players = new Array(); // Array for line-objects
 function init() {
     game = document.getElementById("game");
     border = game.getElementById("border");
-    WIDTH = game.getAttribute("width");
-    HEIGHT = game.getAttribute("height");
+    // Setting up correct height for stupid browsers (Opera and Firefox)
+    if (game.getBoundingClientRect().height > window.innerHeight) 
+        game.setAttributeNS(null,"height",m.floor(window.innerHeight*0.95));
+    WIDTH = game.viewBox.baseVal.width;
+    HEIGHT = game.viewBox.baseVal.height;
     for (var i = 0; i < PLAYERS; i++) { // Create players
         players.push(new line("player"+(i+1),COLORS[i],DEFAULT_KEYS_LEFT[i],
         DEFAULT_KEYS_RIGHT[i]));

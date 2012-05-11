@@ -48,6 +48,8 @@ var font = "Courier New, monospace";
 
 /* Global variables */
 var game; // SVG element
+var gamearea; // SVG element
+var menuarea; // SVG element
 var border; // Border's SVGrect element
 var timeout;
 var mainMenuOn; // If main menu is on or not
@@ -57,8 +59,10 @@ var players = new Array(); // Array for line-objects
 /* Initializing function */
 function init() {
     game = document.getElementById("game");
+    gamearea = document.getElementById("gamearea");
+    menuarea = document.getElementById("menu");
     border = game.getElementById("border");
-    // Setting up correct height for stupid browsers (Opera and Firefox)
+    // Setting up correct height for stupid browsers (Opera and Firefox) ->
     if (game.getBoundingClientRect().height > window.innerHeight) 
         game.setAttributeNS(null,"height",m.floor(window.innerHeight*0.95));
     WIDTH = game.viewBox.baseVal.width;

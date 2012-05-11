@@ -81,8 +81,8 @@ function createButton(x,y,width,height,text,type) {
         "text-anchor":"middle", "z-index":50});
 	btnText.textContent = text;
 	
-	game.appendChild(btn);
-	game.appendChild(btnText);
+	menuarea.appendChild(btn);
+	menuarea.appendChild(btnText);
     
 	btn.addEventListener("click", // two listeners, fix this
         function(e){buttonClick(e,type,btn,btnText)},false);
@@ -162,26 +162,26 @@ function buttonClick(e,btnType,btn,btnText) {
 
 /* removes ALL polylines and circles from the screen */
 function clearGround() {
-	var lines = game.getElementsByTagName("polyline");
+	var lines = gamearea.getElementsByTagName("polyline");
 	for (i = lines.length - 1; i >= 0;i--) {
-		game.removeChild(lines[i]);
+		gamearea.removeChild(lines[i]);
 	}
 			
-	var circles = game.getElementsByTagName("circle");
+	var circles = gamearea.getElementsByTagName("circle");
 	for (i = circles.length - 1; i >= 0;i--) {
-		game.removeChild(circles[i]);
+		gamearea.removeChild(circles[i]);
 	}
 }
 
 /* Removes ALL buttons from the screen (and rects and texts) */
 function removeButtons() {
-	var rects = game.getElementsByTagName("rect");	// Remove box buttons
+	var rects = menuarea.getElementsByTagName("rect");	// Remove box buttons
 	for (var i = rects.length - 1; i >= 1;i--) { // i >= 1 to keep the border
-		game.removeChild(rects[i]);
+		menuarea.removeChild(rects[i]);
 	}		
-	var texts = game.getElementsByTagName("text");	// Remove texts
+	var texts = menuarea.getElementsByTagName("text");	// Remove texts
 	for (var i = texts.length - 1; i >= 0;i--) {
-		game.removeChild(texts[i]);
+		menuarea.removeChild(texts[i]);
 	}
 }
 

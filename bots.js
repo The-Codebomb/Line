@@ -159,13 +159,13 @@ function botInputRight(old_direction,turn) {
 /* When all bots are dead */
 function botGameOver() {
     timeout = clearTimeout(timeout);
-    var lines = game.getElementsByTagName("polyline");
+    var lines = gamearea.getElementsByTagName("polyline");
     for (var i = lines.length-1; i >= 0; i--) {
-        game.removeChild(lines[0]);
+        gamearea.removeChild(lines[0]);
     }
-    var circles = game.getElementsByTagName("circle");
+    var circles = gamearea.getElementsByTagName("circle");
     for (var i = circles.length-1; i >= 0; i--) {
-        game.removeChild(circles[0]);
+        gamearea.removeChild(circles[0]);
     }
     timeout = setTimeout("startGameWithBots()",1000);
 }
@@ -173,13 +173,13 @@ function botGameOver() {
 /* Force ending bot game */
 function endBotGame() {
     timeout = clearTimeout(timeout);
-    var lines = game.getElementsByTagName("polyline");
+    var lines = gamearea.getElementsByTagName("polyline");
     for (var i = lines.length-1; i >= 0; i--) {
-        game.removeChild(lines[0]);
+        gamearea.removeChild(lines[0]);
     }
-    var circles = game.getElementsByTagName("circle");
+    var circles = gamearea.getElementsByTagName("circle");
     for (var i = circles.length-1; i >= 0; i--) {
-        game.removeChild(circles[0]);
+        gamearea.removeChild(circles[0]);
     }
     bonuses = new Array();
 }

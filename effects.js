@@ -30,6 +30,6 @@ function spillBlood(x,y) {
         spill = document.createElementNS(NS,"circle");
         spill = elementSetAttributes(spill,{"r":m.random(), 
             "fill":"red", "class":"blood", "cx":nx, "cy":ny});
-        game.appendChild(spill);
+        gamearea.appendChild(spill);
     }
 }

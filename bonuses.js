@@ -47,11 +47,11 @@ function bonus(type,x,y) {
     } else if (type == "immortalize") {
         this.circle = elementSetAttributes(this.circle, {"fill":"red"});
     }
-    game.appendChild(this.circle);
+    gamearea.appendChild(this.circle);
 }
 /* Removes (used) bonus */
 function removeBonus() {
-    game.removeChild(this.circle);
+    gamearea.removeChild(this.circle);
     bonuses.splice(bonuses.indexOf(this),1);
 }
 

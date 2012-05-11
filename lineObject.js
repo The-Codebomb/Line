@@ -49,8 +49,8 @@ function line(name,colour,keyL,keyR,isBot) {
     this.circle = document.createElementNS(NS,"circle");
     this.circle = elementSetAttributes(this.circle, {"r":m.round(this.d/2), 
         "fill":colour, "class":name, "z-index":20});
-    game.appendChild(this.polyline);
-    game.appendChild(this.circle);
+    gamearea.appendChild(this.polyline);
+    gamearea.appendChild(this.circle);
 }
 /* Adds a point and moves the circle */
 function addPoint(x,y,replaceOld) { 
@@ -75,5 +75,5 @@ function splitLine() {
     this.polyline = elementSetAttributes(this.polyline, {"points":"", 
         "fill":"none", "stroke":this.colour, "stroke-width":this.d, 
         "class":name, "z-index":20});
-    game.appendChild(this.polyline);
+    gamearea.appendChild(this.polyline);
 }

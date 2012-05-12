@@ -23,36 +23,44 @@
 /* Line object (each player has one) */
 function line(name,colour,keyL,keyR,isBot) {
     this.addPoint=addPoint;
+    this.mirrorKeys=mirrorPlayerKeys;
     this.moveCircle=moveCircle;
+    this.narrow=narrowLine;
+    this.slowdown=slowdownLine;
+    this.speedup=speedupLine;
     this.splitLine=splitLine;
-    this.direction=m.random()*FULLCIRCLE;
-    this.oldDirection;
-    this.keyL=keyL;
-    this.keyR=keyR;
-    this.keyDown=false;
-    this.name=name;
-    this.colour=colour;
+    this.widen=widenLine;
     this.alive=true;
-    this.breakcounter=TIME_BETWEEN_BREAKS+m.floor(
-        m.random()*TIME_BETWEEN_BREAKS);
-    this.break=false;
-    this.speed=MOVINGSPEED;
-    this.x;
-    this.y;
-    this.d=1;
     this.bonus=new Array(); // [{"type":type_of_bonus,"time":time_left}, ...]
     this.bot=(isBot)?true:false;
+    this.break=false;
+    this.breakcounter=TIME_BETWEEN_BREAKS+m.floor(
+        m.random()*TIME_BETWEEN_BREAKS);
+    this.colour=colour;
+    this.d=3;
+    this.direction=m.random()*FULLCIRCLE;
+    this.keyDown=false;
+    this.keyL=keyL;
+    this.keyR=keyR;
+    this.keysMirrored=false;
+    this.name=name;
+    this.speed=MOVINGSPEED;
+    this.oldDirection;
+    this.warp=false;
+    this.x;
+    this.y;
+    this.circle = document.createElementNS(NS,"circle");
+    this.circle = elementSetAttributes(this.circle, {"r":(this.d/2), 
+        "fill":colour, "class":name});
     this.polyline = document.createElementNS(NS,"polyline");
     this.polyline = elementSetAttributes(this.polyline, {"points":"", 
         "fill":"none", "stroke":colour, "stroke-width":this.d, "class":name});
-    this.circle = document.createElementNS(NS,"circle");
-    this.circle = elementSetAttributes(this.circle, {"r":m.round(this.d/2), 
-        "fill":colour, "class":name});
-    gamearea.appendChild(this.polyline);
     gamearea.appendChild(this.circle);
+    gamearea.appendChild(this.polyline);
 }
 /* Adds a point and moves the circle */
 function addPoint(x,y,replaceOld) { 
+    if (x == undefined || y == undefined) return;
     var points = this.polyline.getAttributeNS(null,"points");
     if (replaceOld == true) {
         points = points.replace(/ [\d\.]+,[\d\.]+$/,"");
@@ -75,4 +83,36 @@ function splitLine() {
         "fill":"none", "stroke":this.colour, "stroke-width":this.d, 
         "class":name});
     gamearea.appendChild(this.polyline);
+}
+/* Narrows line */
+function narrowLine(amount) {
+    if (amount) {
+        if (this.d > amount) this.d -= amount;
+    } else if (this.d > 1) this.d--;
+    this.splitLine();
+    return this.d;
+}
+/* Widens line */
+function widenLine(amount) {
+    if (amount) this.d += amount;
+    else this.d++;
+    this.splitLine();
+    return this.d;
+}
+/* Slows down line */
+function slowdownLine(amount) {
+    if (amount) {
+        if (this.speed > amount) this.speed -= amount;
+    } else if (this.speed > 1) this.speed--;
+    return this.speed;
+}
+/* Speeds up line */
+function speedupLine(amount) {
+    this.speed++;
+    return this.speed;
+}
+/* Mirror keys */
+function mirrorPlayerKeys() {
+    this.keysMirrored = !this.keysMirrored;
+    return this.keysMirrored;
 }

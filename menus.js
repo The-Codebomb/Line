@@ -171,12 +171,12 @@ function buttonClick(e,btnType,btn,btnText) {
 /* removes ALL polylines and circles from the screen */
 function clearGround() {
 	var lines = gamearea.getElementsByTagName("polyline");
-	for (i = lines.length - 1; i >= 0;i--) {
+	for (var i = lines.length - 1; i >= 0;i--) {
 		gamearea.removeChild(lines[i]);
 	}
 			
 	var circles = gamearea.getElementsByTagName("circle");
-	for (i = circles.length - 1; i >= 0;i--) {
+	for (var i = circles.length - 1; i >= 0;i--) {
 		gamearea.removeChild(circles[i]);
 	}
 }

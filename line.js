@@ -109,7 +109,7 @@ function main(bots) {
         border.setAttributeNS(null,"stroke-dasharray","");
     else if (wallMode == "warp") 
         border.setAttributeNS(null,"stroke-dasharray","4 4");
-    for (i in players) {
+    for (var i in players) {
         if (players[i].alive) {
             var warped = false;
             if (players[i].bot) botControl(players[i]); // Control bots
@@ -303,7 +303,7 @@ function gameOver() {
 
 /* Adds attributes to an element */
 function elementSetAttributes(element,values) {
-    for (name in values) {
+    for (var name in values) {
         element.setAttributeNS(null,name,values[name]);
     }
     return element;

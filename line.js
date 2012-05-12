@@ -27,7 +27,8 @@ var wallMode = "deadly"; // valid values are "deadly" and "warp"
 /* Constants */
 m = Math;
 var PLAYERS = 4; // Default amount of players
-var COLORS = ["#0000CD","#008000","#FF0000","#FFA500"]; // Some colors
+var COLORS = ["#0000CD","#008000","#FF0000","#FFA500"]; // Colors
+var NAMES = ["Player 1","Player 2","Player 3","Player 4"]; // Names
 var DEFAULT_KEYS_LEFT = [37,65,74,97]; // Default left keys
 var DEFAULT_KEYS_RIGHT = [39,68,76,99]; // Default right keys
 var TURNINGSPEED = 0.1;
@@ -65,8 +66,9 @@ function init() {
     fixGameHeight() // Setting up correct height ->
     game_width = game.viewBox.baseVal.width;
     game_height = game.viewBox.baseVal.height;
+    document.body.addEventListener("risize",function(){fixGameHeight()},false);
     for (var i = 0; i < PLAYERS; i++) { // Create players ->
-        players.push(new line("player"+(i+1),COLORS[i],DEFAULT_KEYS_LEFT[i],
+        players.push(new line(NAMES[i],COLORS[i],DEFAULT_KEYS_LEFT[i],
         DEFAULT_KEYS_RIGHT[i]));
     }
 	menu(); // Display menus
@@ -77,7 +79,7 @@ function startGame() {
     mainMenuOn = false;
     for (var i = 0; i < players.length; i++) { // Setting up players ->
         if (i < playerAmount) {
-            players[i] = new line("player"+(i+1),players[i].colour,
+            players[i] = new line(players[i].name,players[i].colour,
                 players[i].keyL,players[i].keyR);
             var x = m.floor(m.random()*(game_width-200)+100);
             var y = m.floor(m.random()*(game_height-200)+100);
@@ -87,7 +89,7 @@ function startGame() {
         }
     }
     if (playerAmount == 1) { // On one player game, add one bot
-        players[1] = new line("player2",players[1].colour,
+        players[1] = new line(players[1].name,players[1].colour,
             players[1].keyL,players[1].keyR,true);
         var x = m.floor(m.random()*(game_width-200)+100);
         var y = m.floor(m.random()*(game_height-200)+100);

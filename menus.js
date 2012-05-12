@@ -41,10 +41,11 @@ function menu() {
 	var player4Set = createButton(game_width/3*2, game_height/2+155, 80, 50, 
         "Set", "plr4Set");
 	
-	createText(game_width/6, game_height/2 , "Player 1");
-	createText(game_width/6, game_height/2+60, "Player 2");
-	createText(game_width/6, game_height/2+120, "Player 3");
-	createText(game_width/6, game_height/2+180, "Player 4");
+    offset = 0;
+    for (var i in players) {
+        createText(game_width/6, game_height/2+offset , players[i].name);
+        offset += 60;
+    }
 	
 	createText(game_width/3+30, game_height/2-45, "Left");
 	createText(game_width/2+30, game_height/2-45, "Right");

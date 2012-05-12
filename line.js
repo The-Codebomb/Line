@@ -373,8 +373,8 @@ function gameOver() {
     document.body.removeEventListener("keydown",function(e){inputKeyDown(e)},
         true);
     var text = document.createElementNS(NS,"text");
-    elementSetAttributes(text,{"x":100,"y":100,"fill":"red",
-        "id":"gameover_text"});
+    elementSetAttributes(text,{"x":game_width/2-45,"y":game_height/4,
+        "fill":"red","id":"gameover_text"});
     text.textContent="Game Over!";
     menuarea.appendChild(text);
 	retryMenu();

@@ -39,7 +39,7 @@ var TIME_BETWEEN_BREAKS = 75;
 var BREAKLENGTH = 10;
 var MAX_TIME_BETWEEN_BONUSES = 800;
 var MAX_BONUSES = 5;
-var BONUS_TIME = 50; // How many loops bonuses affect
+var BONUS_TIME = 500; // How many loops bonuses affect
 var NS = "http://www.w3.org/2000/svg"; // SVG namespace
 var fontSize = 25;
 var font = "Courier New, monospace";
@@ -58,20 +58,18 @@ var players = new Array(); // Array for line-objects
 
 /* Initializing function */
 function init() {
-    game = document.getElementById("game");
+    game = document.getElementById("game"); // Setting up variables ->
     gamearea = document.getElementById("gamearea");
     menuarea = document.getElementById("menu");
     border = game.getElementById("border");
-    // Setting up correct height for stupid browsers (Opera and Firefox) ->
-    if (game.getBoundingClientRect().height > window.innerHeight) 
-        game.setAttributeNS(null,"height",m.floor(window.innerHeight*0.95));
+    fixGameHeight() // Setting up correct height ->
     game_width = game.viewBox.baseVal.width;
     game_height = game.viewBox.baseVal.height;
-    for (var i = 0; i < PLAYERS; i++) { // Create players
+    for (var i = 0; i < PLAYERS; i++) { // Create players ->
         players.push(new line("player"+(i+1),COLORS[i],DEFAULT_KEYS_LEFT[i],
         DEFAULT_KEYS_RIGHT[i]));
     }
-	menu();
+	menu(); // Display menus
 }
 
 /* Starts the game */
@@ -123,14 +121,13 @@ function main(bots) {
             var old_y = players[i].y;
             var y = players[i].y + players[i].speed*m.cos(
                 players[i].direction);
-            if (checkForCollision(x,y,old_x,old_y,players[i])) { // Collision
-                if (!breaksOn || !players[i].break) {
-                    players[i].alive = false;
-                    spillBlood(x,y);
-                }
-            } else if ((wallMode == "warp") && // Warping ->
-                    (x <= 0 || x >= game_width || y <= 0 || y >= game_height)) {
-                players[i].addPoint(x,y,sameDirection);
+            if (checkForCollision(x,y,old_x,old_y,players[i])) {
+                players[i].alive = false;
+                spillBlood(x,y);
+            }
+            if ((wallMode == "warp" || players[i].warp) && // Warping ->
+                    (x <= 0 || x >= game_width || y <= 0 || y >= game_height)){
+                if (!players[i].break) players[i].addPoint(x,y,sameDirection);
                 if (x <= 0) { x = game_width; }
                 else if (x >= game_width) { x = 0; }
                 else if (y <= 0) { y = game_height; }
@@ -138,29 +135,114 @@ function main(bots) {
                 players[i].splitLine();
                 players[i].oldDirection="";
                 warped = true;
-            }
+            } // Bonus system =>
             var bonus = checkForBonus(x,y); // Check if player hit a bonus ->
-            if (bonus) {
+            if (bonus) { // When a new bonus is used
                 players[i].bonus.push({"type":bonus.type,"time":BONUS_TIME});
+                switch(bonus.type) {
+                    case "immortalize": players[i].break = true; break;
+                    case "narrow": 
+                        players[i].narrow();
+                        players[i].addPoint(old_x,old_y);
+                        break;
+                    case "slowdown": players[i].slowdown(); break;
+                    case "speedup": players[i].speedup(); break;
+                    case "warp": players[i].warp = true; break;
+                    case "widen": 
+                        players[i].widen();
+                        players[i].addPoint(old_x,old_y);
+                        break;
+                    case "mirrorKeys": 
+                        for (var k in players) {
+                            if (k != i) {
+                                players[k].mirrorKeys();
+                                players[k].bonus.push({"type":"keysMirrored",
+                                    "time":BONUS_TIME});
+                            }
+                        }
+                        break;
+                    case "narrowOthers": 
+                        for (var k in players) {
+                            if (k != i && players[k] > 1) {
+                                players[i].narrow();
+                                players[k].addPoint(old_x,old_y);
+                                players[k].bonus.push({"type":"narrow",
+                                    "time":BONUS_TIME});
+                            }
+                        } break;
+                    case "slowdownOthers": 
+                        for (var k in players) {
+                            if (k != i && players[k].speed > 1) 
+                                players[k].slowdown();
+                                players[k].bonus.push({"type":"slowdown",
+                                    "time":BONUS_TIME});
+                        } break;
+                    case "speedupOthers": 
+                        for (var k in players) {
+                            if (k != i) {
+                                players[k].speedup();
+                                players[k].bonus.push({"type":"speedup",
+                                    "time":BONUS_TIME});
+                            }
+                        } break;
+                    case "widenOthers": 
+                        for (var k in players) {
+                            if (k != i) { 
+                                players[k].widen();
+                                players[k].addPoint(old_x,old_y);
+                                players[k].bonus.push({"type":"widen",
+                                    "time":BONUS_TIME});
+                            }
+                        } break;
+                    case "clear": 
+                        var lines = gamearea.getElementsByTagName("polyline");
+                        for (var k = lines.length - 1; k >= 0; k--) {
+                            gamearea.removeChild(lines[k]);
+                        }
+                        for (var k in players) {
+                            players[k].splitLine();
+                        }
+                        break;
+                    case "immortalizeAll": 
+                        for (var k in players) {
+                            players[k].break = true;
+                            players[k].bonus.push({"type":"immortalize",
+                                "time":BONUS_TIME});
+                        } break;
+                }
                 bonus.remove();
             } // Handle bonuses that player has got =>
             for (var j = players[i].bonus.length-1; j >= 0; j--) {
-                if (players[i].bonus[j].time > 0) {
+                if (players[i].bonus[j].time > 0) { // Every iteration
                     switch(players[i].bonus[j].type) {
-                        case "widen": break;
-                        case "narrow": break;
-                        case "immortalize": break;
+                        case "immortalize": players[i].breakcounter++; break;
+                        case "mirrorKeys": break;
+                        case "warpAll": wallMode = "warp"; break;
                     }
                     players[i].bonus[j].time--;
-                } else {
+                } else { // Only when bonus ends
                     switch(players[i].bonus[j].type) {
-                        case "widen": break;
-                        case "narrow": break;
-                        case "immortalize": break;
+                        case "immortalize": 
+                            players[i].break = false;
+                            players[i].splitLine();
+                            players[i].addPoint();
+                            break;
+                        case "narrow": 
+                            players[i].widen();
+                            players[i].addPoint(old_x,old_y);
+                            break;
+                        case "slowdown": players[i].speedup(); break;
+                        case "speedup": players[i].slowdown(); break;
+                        case "warp": players[i].warp = false; break;
+                        case "widen": 
+                            players[i].narrow();
+                            players[i].addPoint(old_x,old_y);
+                            break;
+                        case "keysMirrored": players[i].mirrorKeys(); break;
+                        case "warpAll": wallMode = "deadly"; break;
                     }
                     players[i].bonus.splice(
                         players[i].bonus.indexOf(players[i].bonus[j]),1);
-                    j--;
                 }
             }
             if (breaksOn) { // Breaking ->
@@ -228,7 +310,7 @@ function checkForCollision(dx,dy,cx,cy,player,dopti) {
      * The calculations and checks are last lines of this part
      * and all boring stuff is before them.
      */
-    if (cx != null && cy != null)  {
+    if ((cx != null && cy != null) && !player.break)  {
         var length = 0;
         var polylines = game.getElementsByTagName("polyline");
         for (var i = 0; i < polylines.length; i++) {
@@ -265,14 +347,12 @@ function checkForCollision(dx,dy,cx,cy,player,dopti) {
                         return true;
                 }
             }
-        }
-    }
-    if (wallMode == "deadly") { // Check if player hit the wall
+        } // Check if player hit a wall =>
+    } if (wallMode == "deadly" && !player.warp) {
         if (dx <= 0 || dx >= game_width || dy <= 0 || dy >= game_height) {
             return true;
         }
-    }
-    return false;
+    } return false;
 }
 
 /* Check if the game is over */
@@ -297,7 +377,6 @@ function gameOver() {
         "id":"gameover_text"});
     text.textContent="Game Over!";
     menuarea.appendChild(text);
-    bonuses = new Array();
 	retryMenu();
 }
 
@@ -307,4 +386,10 @@ function elementSetAttributes(element,values) {
         element.setAttributeNS(null,name,values[name]);
     }
     return element;
+}
+
+/* Fixes game height for stupid browser, i.e. Opera and Firefox to name some */
+function fixGameHeight() {
+    if (game.getBoundingClientRect().height > window.innerHeight) 
+        game.setAttributeNS(null,"height",m.floor(window.innerHeight*0.95));
 }

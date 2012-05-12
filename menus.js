@@ -170,13 +170,17 @@ function buttonClick(e,btnType,btn,btnText) {
 
 /* removes ALL polylines and circles from the screen */
 function clearGround() {
-	var lines = gamearea.getElementsByTagName("polyline");
-	for (var i = lines.length - 1; i >= 0;i--) {
+    for (var i = bonuses.length -1; i >= 0; i--) {
+        bonuses[i].remove();
+    }
+	
+    var lines = gamearea.getElementsByTagName("polyline");
+	for (var i = lines.length - 1; i >= 0; i--) {
 		gamearea.removeChild(lines[i]);
 	}
 			
 	var circles = gamearea.getElementsByTagName("circle");
-	for (var i = circles.length - 1; i >= 0;i--) {
+	for (var i = circles.length - 1; i >= 0; i--) {
 		gamearea.removeChild(circles[i]);
 	}
 }

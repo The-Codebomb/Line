@@ -88,7 +88,7 @@ function startGame() {
         } else { // Hack for non-playing players FIXME
             players[i].alive = false;
         }
-    }
+    }/*
     if (playerAmount == 1) { // On one player game, add one bot
         players[1] = new line(players[1].name,players[1].colour,
             players[1].keyL,players[1].keyR,true);
@@ -96,7 +96,7 @@ function startGame() {
         var y = m.floor(m.random()*(game_height-200)+100);
         players[1].addPoint(x,y,false); // Add starting point
         players[1].alive = true;
-    }
+    }*/
     wallMode = "deadly";
     timeout = setTimeout("main()",LOOPSPEED); // Start "loop"
     document.body.addEventListener("keydown",function(e){inputKeyDown(e)},
@@ -149,7 +149,7 @@ function main(bots) {
                 switch(bonus.type) {
                     case "immortalize": players[i].break = true; break;
                     case "narrow": 
-                        players[i].narrow();
+                        players[i].narrow(2);
                         players[i].addPoint(old_x,old_y);
                         break;
                     case "slowdown": players[i].slowdown(); break;
@@ -157,7 +157,7 @@ function main(bots) {
                     case "turnSharply": players[i].sharpTurns = true; break;
                     case "warp": players[i].warp = true; break;
                     case "widen": 
-                        players[i].widen();
+                        players[i].widen(2);
                         players[i].addPoint(old_x,old_y);
                         break;
                     case "mirrorKeys": 
@@ -172,7 +172,7 @@ function main(bots) {
                     case "narrowOthers": 
                         for (var k in players) {
                             if (k != i) {
-                                players[k].narrow();
+                                players[k].narrow(2);
                                 players[k].addPoint(old_x,old_y);
                                 players[k].bonus.push({"type":"narrow",
                                     "time":BONUS_TIME});
@@ -205,7 +205,7 @@ function main(bots) {
                     case "widenOthers": 
                         for (var k in players) {
                             if (k != i) {
-                                players[k].widen();
+                                players[k].widen(2);
                                 players[k].addPoint(old_x,old_y);
                                 players[k].bonus.push({"type":"widen",
                                     "time":BONUS_TIME});
@@ -240,15 +240,15 @@ function main(bots) {
                             players[i].addPoint();
                             break;
                         case "narrow": 
-                            players[i].widen();
+                            players[i].widen(2);
                             players[i].addPoint(old_x,old_y);
                             break;
                         case "slowdown": players[i].speedup(); break;
                         case "speedup": players[i].slowdown(); break;
-                        case "turnSharply": players[i].sharpTurns=true; break;
+                        case "turnSharply": players[i].sharpTurns=false; break;
                         case "warp": players[i].warp = false; break;
                         case "widen": 
-                            players[i].narrow();
+                            players[i].narrow(2);
                             players[i].addPoint(old_x,old_y);
                             break;
                         case "keysMirrored": players[i].mirrorKeys(); break;
@@ -375,7 +375,8 @@ function checkForCollision(dx,dy,cx,cy,player,dopti) {
  * Game ends if only one player is alive
  */
 function isGameOver() {
-    skippedOne = false
+    //skippedOne = false
+    skippedOne = true
     for (var i = 0; i < players.length; i++) {
         if (players[i].alive) {
             if (!skippedOne) skippedOne = true;

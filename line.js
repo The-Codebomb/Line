@@ -170,7 +170,7 @@ function main(bots) {
                     case "narrowOthers": 
                         for (var k in players) {
                             if (k != i && players[k] > 1) {
-                                players[i].narrow();
+                                players[k].narrow();
                                 players[k].addPoint(old_x,old_y);
                                 players[k].bonus.push({"type":"narrow",
                                     "time":BONUS_TIME});
@@ -209,12 +209,6 @@ function main(bots) {
                             players[k].splitLine();
                         }
                         break;
-                    case "immortalizeAll": 
-                        for (var k in players) {
-                            players[k].break = true;
-                            players[k].bonus.push({"type":"immortalize",
-                                "time":BONUS_TIME});
-                        } break;
                 }
                 bonus.remove();
             } // Handle bonuses that player has got =>

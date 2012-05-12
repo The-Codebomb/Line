@@ -93,9 +93,6 @@ function bonus(type,x,y) {
     } else if (type == "clear") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"blue", 
             "fill":"000000"});
-    } else if (type == "immortalizeAll") {
-        this.circle = elementSetAttributes(this.circle, {"stroke":"blue", 
-            "fill":"00CC00"});
     }
     gamearea.appendChild(this.circle);
 }
@@ -109,7 +106,7 @@ function removeBonus() {
 function addBonus() {
     var x = m.floor(m.random()*(game_width-100)+50);
     var y = m.floor(m.random()*(game_height-100)+50);
-    var type = m.ceil(m.random()*14);
+    var type = m.ceil(m.random()*13);
     switch(type) {
         case 1: type = "immortalize"; break;
         case 2: type = "narrow"; break;
@@ -124,7 +121,6 @@ function addBonus() {
         case 11: type = "warpAll"; break;
         case 12: type = "widenOthers"; break;
         case 13: type = "clear"; break;
-        case 14: type = "immortalizeAll"; break;
     }
     bonuses.push(new bonus(type,x,y));
 }

@@ -35,16 +35,6 @@ function inputKeyDown(event) {
             players[i].keyDown = event.which;
             return false;
         } 
-    } if (event.which == 87) {
-        if (wallMode == "deadly") wallMode = "warp";
-        else if (wallMode == "warp") wallMode = "deadly";
-        return false;
-    } if (event.which == 66) {
-        breaksOn = !breaksOn;
-        return false;
-    } if (event.which == 75) {
-        gameOver();
-        return false;
     } return true;
 }
 function inputLoop(player) {

@@ -61,11 +61,13 @@ function init() {
     game = document.getElementById("game"); // Setting up variables ->
     gamearea = document.getElementById("gamearea");
     menuarea = document.getElementById("menu");
-    border = game.getElementById("border");
-    fixGameHeight() // Setting up correct height ->
+    border = game.getElementById("border"); // Setting up correct height =>
+    if (game.getBoundingClientRect().height > window.innerHeight) {
+        window.addEventListener("resize",function(){fixGameHeight()},false);
+        fixGameHeight();
+    }
     game_width = game.viewBox.baseVal.width;
     game_height = game.viewBox.baseVal.height;
-    document.body.addEventListener("risize",function(){fixGameHeight()},false);
     for (var i = 0; i < PLAYERS; i++) { // Create players ->
         players.push(new line(NAMES[i],COLORS[i],DEFAULT_KEYS_LEFT[i],
         DEFAULT_KEYS_RIGHT[i]));
@@ -403,6 +405,5 @@ function elementSetAttributes(element,values) {
 
 /* Fixes game height for stupid browser, i.e. Opera and Firefox to name some */
 function fixGameHeight() {
-    if (game.getBoundingClientRect().height > window.innerHeight) 
-        game.setAttributeNS(null,"height",m.floor(window.innerHeight*0.95));
+    game.setAttributeNS(null,"height",m.floor(window.innerHeight*0.95));
 }

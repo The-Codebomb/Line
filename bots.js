@@ -159,27 +159,12 @@ function botInputRight(old_direction,turn) {
 /* When all bots are dead */
 function botGameOver() {
     timeout = clearTimeout(timeout);
-    var lines = gamearea.getElementsByTagName("polyline");
-    for (var i = lines.length-1; i >= 0; i--) {
-        gamearea.removeChild(lines[0]);
-    }
-    var circles = gamearea.getElementsByTagName("circle");
-    for (var i = circles.length-1; i >= 0; i--) {
-        gamearea.removeChild(circles[0]);
-    }
+    clearGround(); // In menus.js
     timeout = setTimeout("startGameWithBots()",1000);
 }
 
 /* Force ending bot game */
 function endBotGame() {
     timeout = clearTimeout(timeout);
-    var lines = gamearea.getElementsByTagName("polyline");
-    for (var i = lines.length-1; i >= 0; i--) {
-        gamearea.removeChild(lines[0]);
-    }
-    var circles = gamearea.getElementsByTagName("circle");
-    for (var i = circles.length-1; i >= 0; i--) {
-        gamearea.removeChild(circles[0]);
-    }
-    bonuses = new Array();
+    clearGround(); // In menus.js
 }

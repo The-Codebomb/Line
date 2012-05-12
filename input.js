@@ -22,7 +22,7 @@
 
 /* Input system */
 function inputKeyUp(event) {
-    for (i in players) {
+    for (var i in players) {
         if (event.which == players[i].keyDown) {
             players[i].keyDown = false;
             return false;
@@ -30,7 +30,7 @@ function inputKeyUp(event) {
     } return true;
 }
 function inputKeyDown(event) {
-    for (i in players) {
+    for (var i in players) {
         if (event.which == players[i].keyL || event.which == players[i].keyR) {
             players[i].keyDown = event.which;
             return false;
@@ -38,12 +38,14 @@ function inputKeyDown(event) {
     } return true;
 }
 function inputLoop(player) {
-    if (player.keyDown == player.keyL) {
+    if ((!player.keysMirrored && player.keyDown == player.keyL) || 
+            (player.keysMirrored && player.keyDown == player.keyR)) {
         var new_direction = player.direction+TURNINGSPEED;
         if (new_direction > FULLCIRCLE) 
             player.direction = new_direction-FULLCIRCLE;
         else player.direction = new_direction;
-    } else if (player.keyDown == player.keyR) {
+    } else if ((!player.keysMirrored && player.keyDown == player.keyR) || 
+            (player.keysMirrored && player.keyDown == player.keyL)) {
         var new_direction = player.direction-TURNINGSPEED;
         if (new_direction < 0)
             player.direction = new_direction+FULLCIRCLE;

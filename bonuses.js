@@ -35,10 +35,12 @@ var BONUS_R_POW2 = m.pow(BONUS_R,2); // Optimization
  *  - narrow (green,lighter green)
  *  - slowdown (green, darker blue)
  *  - speedup (green,red)
+ *  - turnSharply (green,yellow)
  *  - warp (green,white)
  *  - widen (green,lighter blue)
  *  - mirrorKeys (red, black)
  *  - narrowOthers (red,lighter green)
+ *  - turnOthersSharply (green,yellow)
  *  - slowdownOthers (red,darker blue)
  *  - speedupOthers (red,red)
  *  - warpAll (blue,white)
@@ -66,6 +68,9 @@ function bonus(type,x,y) {
     } else if (type == "speedup") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
             "fill":"FF3300"});
+    } else if (type == "turnSharply") {
+        this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
+            "fill":"FFFF00"});
     } else if (type == "warp") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
             "fill":"FFFFFF"});
@@ -73,7 +78,7 @@ function bonus(type,x,y) {
         this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
             "fill":"00CCFF"});
     } else if (type == "mirrorKeys") {
-        this.circle = elementSetAttributes(this.circle, {"stroke":"blue", 
+        this.circle = elementSetAttributes(this.circle, {"stroke":"red", 
             "fill":"000000"});
     } else if (type == "narrowOthers") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
@@ -84,6 +89,9 @@ function bonus(type,x,y) {
     } else if (type == "speedupOthers") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"red", 
             "fill":"FF3300"});
+    } else if (type == "turnOthersSharply") {
+        this.circle = elementSetAttributes(this.circle, {"stroke":"red", 
+            "fill":"FFFF00"});
     } else if (type == "warpAll") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"blue", 
             "fill":"FFFFFF"});
@@ -106,21 +114,23 @@ function removeBonus() {
 function addBonus() {
     var x = m.floor(m.random()*(game_width-100)+50);
     var y = m.floor(m.random()*(game_height-100)+50);
-    var type = m.ceil(m.random()*13);
+    var type = m.ceil(m.random()*15);
     switch(type) {
         case 1: type = "immortalize"; break;
         case 2: type = "narrow"; break;
         case 3: type = "slowdown"; break;
         case 4: type = "speedup"; break;
-        case 5: type = "warp"; break;
-        case 6: type = "widen"; break;
-        case 7: type = "mirrorKeys"; break;
-        case 8: type = "narrowOthers"; break;
-        case 9: type = "slowdownOthers"; break;
-        case 10: type = "speedupOthers"; break;
-        case 11: type = "warpAll"; break;
-        case 12: type = "widenOthers"; break;
-        case 13: type = "clear"; break;
+        case 5: type = "turnSharply"; break;
+        case 6: type = "warp"; break;
+        case 7: type = "widen"; break;
+        case 8: type = "mirrorKeys"; break;
+        case 9: type = "narrowOthers"; break;
+        case 10: type = "slowdownOthers"; break;
+        case 11: type = "speedupOthers"; break;
+        case 12: type = "turnOthersSharply"; break;
+        case 13: type = "warpAll"; break;
+        case 14: type = "widenOthers"; break;
+        case 15: type = "clear"; break;
     }
     bonuses.push(new bonus(type,x,y));
 }

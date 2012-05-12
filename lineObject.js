@@ -54,6 +54,7 @@ function line(name,colour,keyL,keyR,isBot) {
     this.keyR=keyR;
     this.keysMirrored=false;
     this.name=name;
+    this.sharpTurns=false;
     this.speed=MOVINGSPEED;
     this.oldDirection;
     this.warp=false;

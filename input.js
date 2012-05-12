@@ -40,15 +40,18 @@ function inputKeyDown(event) {
 function inputLoop(player) {
     if ((!player.keysMirrored && player.keyDown == player.keyL) || 
             (player.keysMirrored && player.keyDown == player.keyR)) {
-        var new_direction = player.direction+TURNINGSPEED;
+        if (player.sharpTurns) var new_direction = player.direction+m.PI/2;
+        else var new_direction = player.direction+TURNINGSPEED;
         if (new_direction > FULLCIRCLE) 
             player.direction = new_direction-FULLCIRCLE;
         else player.direction = new_direction;
     } else if ((!player.keysMirrored && player.keyDown == player.keyR) || 
             (player.keysMirrored && player.keyDown == player.keyL)) {
-        var new_direction = player.direction-TURNINGSPEED;
+        if (player.sharpTurns) var new_direction = player.direction-m.PI/2;
+        else var new_direction = player.direction-TURNINGSPEED;
         if (new_direction < 0)
             player.direction = new_direction+FULLCIRCLE;
         else player.direction = new_direction;
     }
+    if (player.sharpTurns) player.keyDown = false;
 }

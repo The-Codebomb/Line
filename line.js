@@ -97,6 +97,7 @@ function startGame() {
         players[1].addPoint(x,y,false); // Add starting point
         players[1].alive = true;
     }
+    wallMode = "deadly";
     timeout = setTimeout("main()",LOOPSPEED); // Start "loop"
     document.body.addEventListener("keydown",function(e){inputKeyDown(e)},
         true); // Begin input ->
@@ -153,6 +154,7 @@ function main(bots) {
                         break;
                     case "slowdown": players[i].slowdown(); break;
                     case "speedup": players[i].speedup(); break;
+                    case "turnSharply": players[i].sharpTurns = true; break;
                     case "warp": players[i].warp = true; break;
                     case "widen": 
                         players[i].widen();
@@ -169,7 +171,7 @@ function main(bots) {
                         break;
                     case "narrowOthers": 
                         for (var k in players) {
-                            if (k != i && players[k] > 1) {
+                            if (k != i) {
                                 players[k].narrow();
                                 players[k].addPoint(old_x,old_y);
                                 players[k].bonus.push({"type":"narrow",
@@ -178,7 +180,7 @@ function main(bots) {
                         } break;
                     case "slowdownOthers": 
                         for (var k in players) {
-                            if (k != i && players[k].speed > 1) 
+                            if (k != i) 
                                 players[k].slowdown();
                                 players[k].bonus.push({"type":"slowdown",
                                     "time":BONUS_TIME});
@@ -191,9 +193,18 @@ function main(bots) {
                                     "time":BONUS_TIME});
                             }
                         } break;
+                    case "turnOthersSharply": 
+                        for (var k in players) {
+                            if (k != i) {
+                                players[k] // FIXME
+                                players[k].bonus.push({"type":"turnSharply",
+                                    "time":BONUS_TIME});
+                            }
+                        }
+                        break;
                     case "widenOthers": 
                         for (var k in players) {
-                            if (k != i) { 
+                            if (k != i) {
                                 players[k].widen();
                                 players[k].addPoint(old_x,old_y);
                                 players[k].bonus.push({"type":"widen",
@@ -210,6 +221,7 @@ function main(bots) {
                         }
                         break;
                 }
+                console.log(bonus.type);
                 bonus.remove();
             } // Handle bonuses that player has got =>
             for (var j = players[i].bonus.length-1; j >= 0; j--) {
@@ -233,6 +245,7 @@ function main(bots) {
                             break;
                         case "slowdown": players[i].speedup(); break;
                         case "speedup": players[i].slowdown(); break;
+                        case "turnSharply": players[i].sharpTurns=true; break;
                         case "warp": players[i].warp = false; break;
                         case "widen": 
                             players[i].narrow();

@@ -29,6 +29,7 @@ function startGameWithBots() {
         var y = m.floor(m.random()*(game_height-200)+100);
         players[i].addPoint(x,y,false); // Add starting point
     }
+    wallMode = "deadly";
     timeout = setTimeout("main(true)",LOOPSPEED); // Start "loop"
 }
 

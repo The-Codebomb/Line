@@ -53,7 +53,6 @@ var border; // Border's SVGrect element
 var timeout;
 var game_width; // Gamearea width
 var game_height; // Gamearea height
-var mainMenuOn; // If main menu is on or not
 var next_bonus_in = m.floor(m.random()*MAX_TIME_BETWEEN_BONUSES);
 var players = new Array(); // Array for line-objects
 
@@ -74,7 +73,7 @@ function init() {
 	menu(); // Display menus
 }
 
-/* Starts the game */
+/* Begins the game */
 function startGame() {
     mainMenuOn = false;
     for (var i = 0; i < players.length; i++) { // Setting up players ->
@@ -103,6 +102,9 @@ function startGame() {
 }
 
 /* Main "loop" */
+/*
+ * This function handles running the game motor
+ */
 function main(bots) {
     var time = (new Date()).getTime(); // To count time of one loop
     if (wallMode == "deadly") // Set the borders if wallMode has changed
@@ -310,7 +312,9 @@ function checkForCollision(dx,dy,cx,cy,player,dopti) {
      *    - If it isn't continue
      * 
      * The calculations and checks are last lines of this part
-     * and all boring stuff is before them.
+     * and all boring stuff is before them. The boring stuff 
+     * means all string manipulations and such things that are 
+     * needed getting other line segments' cordinates
      */
     if ((cx != null && cy != null) && !player.break)  {
         var length = 0;
@@ -358,6 +362,9 @@ function checkForCollision(dx,dy,cx,cy,player,dopti) {
 }
 
 /* Check if the game is over */
+/*
+ * Game ends if only one player is alive
+ */
 function isGameOver() {
     skippedOne = false
     for (var i = 0; i < players.length; i++) {
@@ -368,7 +375,11 @@ function isGameOver() {
     } return true;
 }
 
-/* When a collision happens (cleaning up and informing user) */
+/* Ends game */
+/* 
+ * Called when a collision happens 
+ * Does some cleaning up and informing user (Game Over text)
+ */
 function gameOver() {
     timeout = clearTimeout(timeout);
     document.body.removeEventListener("keyup",function(e){inputKeyUp(e)},true);

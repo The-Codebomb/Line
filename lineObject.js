@@ -21,6 +21,16 @@
 */
 
 /* Line object (each player has one) */
+/*
+ * Methods:
+ *  - addPoint, adds new point
+ *  - mirrorKeys, mirrors players keys
+ *  - moveCircle, moves line's circle (usually used by addPoint)
+ *  - narrow, narrows line
+ *  - slowdown, slows down moving speed
+ *  - speedup, speeds up moving speed
+ *  - widen, widens line
+ */
 function line(name,colour,keyL,keyR,isBot) {
     this.addPoint=addPoint;
     this.mirrorKeys=mirrorPlayerKeys;

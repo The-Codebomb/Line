@@ -20,7 +20,7 @@
    MA 02110-1301, USA.
 */
 
-/* Starts the game with bots */
+/* Begins the game with bots */
 function startGameWithBots() {
     for (var i = 0; i < players.length; i++) { // Setting up players
         players[i] = new line(players[i].name,players[i].colour,
@@ -35,7 +35,10 @@ function startGameWithBots() {
 /* inputLoop replacement for bot players */
 function botControl(bot) { // Needs more intelligent AI(s)
     var keypress=m.random();
-    if (bot.bot_intelligence == "idiot") { // Does whatever she wants
+    /*
+     * Idiot bot that uses random values to decide where to go
+     */
+    if (bot.bot_intelligence == "idiot") {
         if (bot.bot_direction == undefined) bot.bot_direction=0;
         if ((bot.bot_direction > 0 && bot.bot_direction < 10) 
                 || keypress < 0.4) {
@@ -48,7 +51,11 @@ function botControl(bot) { // Needs more intelligent AI(s)
         }
         if (bot.bot_direction >= 10 || bot.bot_direction <= -10) 
             bot.bot_direction=0;
-    } else if (bot.bot_intelligence == "stupid") { // Has (?) some intelligence
+    /*
+     * Stupid bot that looks like it's drunk, not very smart 
+     * but turns when it comes close to a wall
+     */
+    } else if (bot.bot_intelligence == "stupid") {
         if (bot.bot_direction == undefined) bot.bot_direction=0;
         if (bot.bot_phase == undefined) bot.bot_phase=0;
         if ((!bot.bot_wallZone) && ((bot.x < 50) || (bot.x > 750) || 
@@ -72,10 +79,13 @@ function botControl(bot) { // Needs more intelligent AI(s)
                 bot.bot_direction=0;
             }
         }
-    } else if (bot.bot_intelligence == "abitsmart") { // Regonizes obstacles
+    /*
+     * A bit smart bot that regonizes obstacles (poorly)
+     */
+    } else if (bot.bot_intelligence == "abitsmart") { // 
         if (bot.bot_phase == undefined) bot.bot_phase=0;
         if (bot.bot_phase == 0) { // Straight forward
-            // check for future collision and change phase according to that
+            // Check for future collision and change phase according to that
             var ax = bot.x;
             var ay = bot.y;
             var bx = ax + 30*m.sin(bot.direction);
@@ -104,10 +114,15 @@ function botControl(bot) { // Needs more intelligent AI(s)
             if (!checkForCollision(bx,by,ax,ay,bot,true))
                 bot.bot_phase = 0;
         }
-    } else if (bot.bot_intelligence == "cheater") { // What do you think
-        if (bot.bot_phase == undefined) bot.bot_phase=0; // she does?
+    /*
+     * Cheating bot that, well, cheats
+     * All cheating this bot makes is that it turns full 90 degrees
+     * This bot is not currently used
+     */
+    } else if (bot.bot_intelligence == "cheater") {
+        if (bot.bot_phase == undefined) bot.bot_phase=0;
         if (bot.bot_phase == 0) { // Straight forward
-            // check for future collision and change phase according to that
+            // Check for future collision and change phase according to that
             var ax = bot.x;
             var ay = bot.y;
             var bx = ax + 30*m.sin(bot.direction);
@@ -156,14 +171,20 @@ function botInputRight(old_direction,turn) {
     else return new_direction;
 }
 
-/* When all bots are dead */
+/* Ends a bot game */
+/* 
+ * Called when all bots are dead 
+ */
 function botGameOver() {
     timeout = clearTimeout(timeout);
     clearGround(); // In menus.js
     timeout = setTimeout("startGameWithBots()",1000);
 }
 
-/* Force ending bot game */
+/* Forces ending a bot game */
+/*
+ * Called when starting real game from main menu
+ */
 function endBotGame() {
     timeout = clearTimeout(timeout);
     clearGround(); // In menus.js

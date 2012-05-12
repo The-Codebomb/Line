@@ -24,7 +24,7 @@
 function spillBlood(x,y) {
     for (var i = 0; i < 50; i++) {
         var nx = m.random()*30+x-15; // Trying to make some randomness
-        if (nx < x-5) var ny = m.random()*10+y-10; // and a circular shape
+        if (nx < x-5) var ny = m.random()*10+y-10; // and circular shape
         else if (nx > x+5) var ny = m.random()*10+y;
         else var ny = m.random()*30+y-15;
         spill = document.createElementNS(NS,"circle");

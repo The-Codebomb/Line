@@ -20,8 +20,9 @@
    MA 02110-1301, USA.
 */
 var playerAmount = 1;
+var mainMenuOn; // If main menu is on or not
 
-/* Creates menu buttons etc. */
+/* Displays main menu */
 function menu() {
     mainMenuOn = true;
     timeout = clearTimeout(timeout);
@@ -69,7 +70,7 @@ function menu() {
         getKeyFromCode(players[3].keyR));
 }
 
-/* Retry menu, which is showed when all players are dead */
+/* Displays retry menu, which is showed when all players are dead */
 function retryMenu() {
 	var retryButton = createButton(game_width/2-100, game_height/2-125, 200, 
         100, "Play again", "retry");
@@ -77,7 +78,7 @@ function retryMenu() {
         "Main Menu", "rtnMenu");
 }
 
-/* Create button with text and eventlistener */
+/* Creates button with text and eventListener */
 function createButton(x,y,width,height,text,type) {
 	var btn = document.createElementNS(NS,"rect");
     btn = elementSetAttributes(btn,{"x":x, "y":y, "width":width, 
@@ -109,7 +110,7 @@ function createButton(x,y,width,height,text,type) {
     return {"button":btn,"text":btnText}
 }
 
-/* Create new text */
+/* Creates text */
 function createText(x,y,text) {
 	var svgText = document.createElementNS(NS,"text");
     svgText = elementSetAttributes(svgText,{"x":x, "y":y, "font-family":font, 
@@ -119,21 +120,22 @@ function createText(x,y,text) {
     return svgText;
 }
 
-/* Changes rect/text settings back to "bold" when hovering above it */
+/* Changes rect/text to bold when hovering above it */
 function buttonHoverOn(e,btn,btnText) {
 	btnText.setAttributeNS(null, "font-size", fontSize + 2);
 	btn.setAttributeNS(null, "stroke-width", 3);
 }
 
-/* Changes rect/text settings back to normal when not hovering above it */
+/* Changes rect/text back to normal when no longer hovering above it */
 function buttonHoverOff(e,btn,btnText) {
 	btnText.setAttributeNS(null, "font-size", fontSize);
 	btn.setAttributeNS(null, "stroke-width", 2);
 }
 
-/* Checks which button was clicked, and handles what should happen */
+/* Checks which button was clicked and handles what should happen */
 function buttonClick(e,btnType,btn,btnText) {
 	if (btnType == "play") {
+        mainMenuOn = false;
         endBotGame();
 		clearGround();
 		removeButtons();
@@ -169,7 +171,7 @@ function buttonClick(e,btnType,btn,btnText) {
 	}
 }
 
-/* removes ALL polylines and circles from the screen */
+/* Removes all bonuses, polylines and circles from the gamearea */
 function clearGround() {
     for (var i = bonuses.length -1; i >= 0; i--) {
         bonuses[i].remove();
@@ -186,13 +188,13 @@ function clearGround() {
 	}
 }
 
-/* Removes ALL buttons from the screen (and rects and texts) */
+/* Removes all buttons from the menuarea (and rects and texts) */
 function removeButtons() {
-	var rects = menuarea.getElementsByTagName("rect");	// Remove box buttons
+	var rects = menuarea.getElementsByTagName("rect"); // Remove buttons' boxes
 	for (var i = rects.length - 1; i >= 0;i--) {
 		menuarea.removeChild(rects[i]);
 	}		
-	var texts = menuarea.getElementsByTagName("text");	// Remove texts
+	var texts = menuarea.getElementsByTagName("text"); // Remove texts
 	for (var i = texts.length - 1; i >= 0;i--) {
 		menuarea.removeChild(texts[i]);
 	}

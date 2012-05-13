@@ -106,7 +106,19 @@ function startGame() {
 
 /* Main "loop" */
 /*
- * This function handles running the game motor
+ * This function handles running the game motor:
+ *  - Checks wall mode and sets walls according to that
+ *  - Runs player's inputLoop (or bot's botControl) (external)
+ *  - Calculates new line ending
+ *  - Checks if player hit something (external)
+ *  - Warps if needed
+ *  - Checks if player hit bonus (external) and handles it
+ *  - Handles bonuses that player already has
+ *  - Breaks or continues line
+ *  - Draws some new line
+ *  - Adds new bonuses (partially external)
+ *  - Checks if game is over (external)
+ *  - Sets timeout for next iteration
  */
 function main(bots) {
     var time = (new Date()).getTime(); // To count time of one loop
@@ -411,7 +423,11 @@ function elementSetAttributes(element,values) {
     return element;
 }
 
-/* Fixes game height for stupid browser, i.e. Opera and Firefox to name some */
+/* Fixes game height for some (stupid) browsers */
+/*
+ * At least Opera and Firefox need this
+ * Used in init and body.onresize
+ */
 function fixGameHeight() {
     game.setAttributeNS(null,"height",m.floor(window.innerHeight*0.95));
 }

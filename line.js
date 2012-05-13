@@ -77,6 +77,7 @@ function init() {
 
 /* Begins the game */
 function startGame() {
+    document.body.removeEventListener("keydown",startGameKeyHandler,true);
     mainMenuOn = false;
     for (var i = 0; i < players.length; i++) { // Setting up players ->
         if (i < playerAmount) {
@@ -98,10 +99,9 @@ function startGame() {
         players[1].alive = true;
     }*/
     wallMode = "deadly";
-    timeout = setTimeout("main()",LOOPSPEED); // Start "loop"
-    document.body.addEventListener("keydown",function(e){inputKeyDown(e)},
-        true); // Begin input ->
-    document.body.addEventListener("keyup",function(e){inputKeyUp(e)},true);
+    timeout = setTimeout("main()",LOOPSPEED); // Start "loop" and input ->
+    document.body.addEventListener("keydown",inputKeyDownHandler,true);
+    document.body.addEventListener("keyup",inputKeyUpHandler,true);
 }
 
 /* Main "loop" */
@@ -392,8 +392,8 @@ function isGameOver() {
  */
 function gameOver() {
     timeout = clearTimeout(timeout);
-    document.body.removeEventListener("keyup",function(e){inputKeyUp(e)},true);
-    document.body.removeEventListener("keydown",function(e){inputKeyDown(e)},
+    document.body.removeEventListener("keyup",inputKeyUpHandler,true);
+    document.body.removeEventListener("keydown",inputKeyDownHandler,
         true);
     var text = document.createElementNS(NS,"text");
     elementSetAttributes(text,{"x":game_width/2-45,"y":game_height/4,
@@ -414,4 +414,35 @@ function elementSetAttributes(element,values) {
 /* Fixes game height for stupid browser, i.e. Opera and Firefox to name some */
 function fixGameHeight() {
     game.setAttributeNS(null,"height",m.floor(window.innerHeight*0.95));
+}
+
+/* Pauses the game */
+function pauseGame() {
+    timeout = clearTimeout(timeout); // Stop the "loop" and input ->
+    document.body.removeEventListener("keyup",inputKeyUpHandler,true);
+    document.body.removeEventListener("keydown",inputKeyDownHandler,true);
+    var text = document.createElementNS(NS,"text"); // Add informative text ->
+    text = elementSetAttributes(text,{"x":game_width/2-90,"y":game_height/4,
+        "fill":"black","id":"pause_text"});
+    text.textContent="Press space to continue!";    
+    menuarea.appendChild(text); // Key handler for space =>
+    setTimeout('document.body.addEventListener("keyup",keyHandlerPause,true)', 
+        300);
+}
+
+/* Continues the game */
+function continueGame() {
+    document.body.removeEventListener("keyup",keyHandlerPause,true)
+    menuarea.removeChild(menuarea.getElementById("pause_text"));
+    timeout = setTimeout("main()",LOOPSPEED); // Start "loop" and input ->
+    document.body.addEventListener("keydown",inputKeyDownHandler,true);
+    document.body.addEventListener("keyup",inputKeyUpHandler,true);
+}
+
+/* Key handler when paused */
+function keyHandlerPause(event) {
+    if (event.which == 32) {
+        continueGame();
+        return false;
+    } return true;
 }

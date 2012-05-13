@@ -30,7 +30,7 @@
  * about This Game, write about it to code@codebomb.dy.fi .
  * 
  * Code contributions are welcome, when they are made with care and
- * passion. Git commit messages should be written well (nowadays). 
+ * passion. Git commit messages should be well written (nowadays). 
  * Forks are allowed of course.
  * 
  * Check LICENSE file in this directory for more information about 
@@ -39,7 +39,8 @@
  * This Game is allowed distribute in minified form when this and 
  * above comment are included in readable form. Also GPL license 
  * of version 2 or later is recommended to be provided as a separate 
- * file.
+ * file. Remember that non-minified source code has to be always 
+ * provided as GPL requires. 
  * 
  * You may want to check out http://codebomb.dy.fi/
  */

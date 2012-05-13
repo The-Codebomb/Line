@@ -27,7 +27,7 @@ var playerSetButtonText = "1 Player";
 
 /* Displays main menu */
 function menu() {
-	var OFFSETX = game_width/17; //Used to move whole menu
+	var OFFSETX = game_width/17; // Used to move whole menu
 	var OFFSETY = 0;
     mainMenuOn = true;
     timeout = clearTimeout(timeout);
@@ -38,7 +38,7 @@ function menu() {
 	var playersButton = createButton(game_width/3*2-100+OFFSETX,
 		game_height/4-25,200, 50, playerSetButtonText, "plrAmount");
 	
-	//Write "Player x" texts
+	// Write "Player x" texts
     offset = 0;
     for (var i = 0; i < playerAmount; i++) {
         createText(game_width/6+OFFSETX, game_height/2+offset,

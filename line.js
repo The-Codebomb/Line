@@ -46,8 +46,8 @@
  */
 
 /* Some configs */
-var breaksOn = true; // is breaking used or not
-var wallMode = "deadly"; // valid values are "deadly" and "warp"
+var breaksOn = true; // Is breaking used or not
+var wallMode = "deadly"; // Valid values are "deadly" and "warp"
 
 /* Constants */
 m = Math;

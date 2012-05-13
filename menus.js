@@ -21,60 +21,62 @@
 */
 var playerAmount = 1;
 var mainMenuOn; // If main menu is on or not
+var playerSetButtonText = "1 Player";
+
+
 
 /* Displays main menu */
 function menu() {
+	var OFFSETX = game_width/17; //Used to move whole menu
+	var OFFSETY = 0;
     mainMenuOn = true;
     timeout = clearTimeout(timeout);
     clearGround();
     startGameWithBots();
-    var playButton = createButton(game_width/4-100, game_height/4-50, 200, 
-        100, "Play", "play");
-	var playersButton = createButton(game_width/3*2-100, game_height/4-25, 
-        200, 50, "1 Player", "plrAmount");
-	// Button setting functios
-	var player1Set = createButton(game_width/3*2, game_height/2-25, 80, 50, 
-        "Set", "plr1Set");
-	var player2Set = createButton(game_width/3*2, game_height/2+35, 80, 50, 
-        "Set", "plr2Set");
-	var player3Set = createButton(game_width/3*2, game_height/2+95, 80, 50, 
-        "Set", "plr3Set");
-	var player4Set = createButton(game_width/3*2, game_height/2+155, 80, 50, 
-        "Set", "plr4Set");
+    var playButton = createButton(game_width/4-100+OFFSETX, game_height/4-50,
+		200, 100, "Play", "play");
+	var playersButton = createButton(game_width/3*2-100+OFFSETX,
+		game_height/4-25,200, 50, playerSetButtonText, "plrAmount");
 	
+	//Write "Player x" texts
     offset = 0;
-    for (var i in players) {
-        createText(game_width/6, game_height/2+offset , players[i].name);
+    for (var i = 0; i < playerAmount; i++) {
+        createText(game_width/6+OFFSETX, game_height/2+offset,
+			players[i].name);
+		createText(game_width/3+30+OFFSETX, game_height/2+offset,
+			getKeyFromCode(players[i].keyL));
+		createText(game_width/2+30+OFFSETX, game_height/2+offset, 
+			getKeyFromCode(players[i].keyR));
         offset += 60;
     }
 	
-	createText(game_width/3+30, game_height/2-45, "Left");
-	createText(game_width/2+30, game_height/2-45, "Right");
+	// Buttons for setting player keys
+	if (playerAmount > 0) {
+		var player1Set = createButton(game_width/3*2+OFFSETX, game_height/2-25,
+			80, 50, "Set", "plr1Set");
+	}
+	if (playerAmount > 1) {
+		var player2Set = createButton(game_width/3*2+OFFSETX, game_height/2+35,
+			80, 50, "Set", "plr2Set");
+	}
+	if (playerAmount > 2) {
+		var player3Set = createButton(game_width/3*2+OFFSETX, game_height/2+95,
+			80, 50, "Set", "plr3Set");
+	}
+	if (playerAmount > 3) {
+		var player4Set = createButton(game_width/3*2+OFFSETX,
+			game_height/2+155,80, 50, "Set", "plr4Set");
+	}
 	
-	createText(game_width/3+30, game_height/2, 
-        getKeyFromCode(players[0].keyL));
-	createText(game_width/3+30, game_height/2+60, 
-        getKeyFromCode(players[1].keyL));
-	createText(game_width/3+30, game_height/2+120, 
-        getKeyFromCode(players[2].keyL));
-	createText(game_width/3+30, game_height/2+180, 
-        getKeyFromCode(players[3].keyL));
-	
-	createText(game_width/2+30, game_height/2, 
-        getKeyFromCode(players[0].keyR));
-	createText(game_width/2+30, game_height/2+60, 
-        getKeyFromCode(players[1].keyR));
-	createText(game_width/2+30, game_height/2+120, 
-        getKeyFromCode(players[2].keyR));
-	createText(game_width/2+30, game_height/2+180, 
-        getKeyFromCode(players[3].keyR));
+	createText(game_width/3+30+OFFSETX, game_height/2-45, "Left");
+	createText(game_width/2+30+OFFSETX, game_height/2-45, "Right");
 }
 
 /* Displays retry menu, which is showed when all players are dead */
 function retryMenu() {
 	var retryButton = createButton(game_width/2-100, game_height/2-125, 200, 
         100, "Play again", "retry");
-	var menuButton = createButton(game_width/2-100, game_height/2+25, 200, 100, 
+	var menuButton = createButton(game_width/2-100, game_height/2+25, 200, 100,
         "Main Menu", "rtnMenu");
 }
 
@@ -141,17 +143,19 @@ function buttonClick(e,btnType,btn,btnText) {
 		removeButtons();
 		startGame();
 	} else if (btnType == "plrAmount") {
+		removeButtons();
 		playerAmount++;
 		if (playerAmount == 2) {
-			btnText.textContent = "2 Players";
+			playerSetButtonText = "2 Players";
 		} else if (playerAmount == 3) {
-			btnText.textContent = "3 Players";
+			playerSetButtonText = "3 Players";
 		} else if (playerAmount == 4) {
-			btnText.textContent = "4 Players";
+			playerSetButtonText = "4 Players";
 		} else if (playerAmount == 5) {
 			playerAmount = 1;
-			btnText.textContent = "1 Player";
+			playerSetButtonText = "1 Player";
 		}
+		menu();
 	} else if (btnType == "retry") {
         clearGround();
 		removeButtons();
@@ -190,7 +194,7 @@ function clearGround() {
 
 /* Removes all buttons from the menuarea (and rects and texts) */
 function removeButtons() {
-	var rects = menuarea.getElementsByTagName("rect"); // Remove buttons' boxes
+	var rects = menuarea.getElementsByTagName("rect"); // Remove rectangles
 	for (var i = rects.length - 1; i >= 0;i--) {
 		menuarea.removeChild(rects[i]);
 	}		

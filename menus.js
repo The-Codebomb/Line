@@ -19,11 +19,10 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
    MA 02110-1301, USA.
 */
-var playerAmount = 1;
+
+var playerAmount = 1; // How many players are playing
 var mainMenuOn; // If main menu is on or not
 var playerSetButtonText = "1 Player";
-
-
 
 /* Displays main menu */
 function menu(dontClean) {
@@ -215,7 +214,7 @@ function setButtons(playerNum,e,leftOrRight) {
 	if (leftOrRight == null) {
 		createText(game_width/2,game_height/2, 
 			"Press button for left button for player "+(playerNum+1));
-        setButtonsHandler = function(event){setButtons(playerNum,event,"left")}
+        setButtonsHandler = function(event){setButtons(playerNum,event,"left")};
 		document.body.addEventListener("keydown",setButtonsHandler,true);
 	} else if (leftOrRight == "left") {
 		document.body.removeEventListener("keydown",setButtonsHandler,true);
@@ -223,7 +222,7 @@ function setButtons(playerNum,e,leftOrRight) {
 		createText(game_width/2,game_height/2, 
 			"Press button for right button for player "+(playerNum+1));
         setButtonsHandler = function(event){setButtons(playerNum,event,
-            "right")}
+            "right")};
 		document.body.addEventListener("keydown",setButtonsHandler,true);
 	} else if (leftOrRight == "right") {
 		document.body.removeEventListener("keydown",setButtonsHandler,true);

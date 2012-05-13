@@ -111,7 +111,7 @@ function startGame() {
             var x = m.floor(m.random()*(game_width-200)+100);
             var y = m.floor(m.random()*(game_height-200)+100);
             players[i].addPoint(x,y,false); // Add starting point
-        } else { // Hack for non-playing players FIXME
+        } else { // Hack for non-playing players FIXME?
             players[i].alive = false;
         }
     }/*
@@ -156,7 +156,7 @@ function main(bots) {
             var warped = false;
             if (players[i].bot) botControl(players[i]); // Control bots
             else inputLoop(players[i]); // Control players
-            var sameDirection = false; // Assume that players direction changed
+            var sameDirection = false; // Assume that player's direction changed
             if (players[i].direction == players[i].oldDirection) 
                 sameDirection = true;
             var old_x = players[i].x;
@@ -170,7 +170,7 @@ function main(bots) {
                 spillBlood(x,y);
             }
             if ((wallMode == "warp" || players[i].warp) && // Warping ->
-                    (x <= 0 || x >= game_width || y <= 0 || y >= game_height)){
+                    (x <= 0 || x >= game_width || y <= 0 || y >= game_height)) {
                 if (!players[i].break) players[i].addPoint(x,y,sameDirection);
                 if (x <= 0) { x = game_width; }
                 else if (x >= game_width) { x = 0; }

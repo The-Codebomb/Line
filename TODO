@@ -1,5 +1,11 @@
 Tehtävää:
-  x menu kohilleen		-Done. ~Miffy
-  - pisteen lasku
+  - pisteiden lasku
   - pisteiden tulostus
-  - botit uusiksi
+  - valikot hyväksymään vaihteleva maksimimäärä pelaajia 
+    eli looppia voisi käyttää, tavoitteena tukea jopa kuutta pelaajaa
+  - botit uusiksi (yksi hyvä botti riittää)
+  - cache.manifest voisi olla hyvä idea (tietämättömät kuukeloikoon)
+
+Tehdyt hommat voi poistella listasta ja uusia voi lisätä, 
+jos jotain julkaisun estäviä juttuja on tiedossa. Tyhjän 
+tiedoston saa poistaa, kun julkaistaan.

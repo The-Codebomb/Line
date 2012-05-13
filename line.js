@@ -1,7 +1,9 @@
-/*
-   Copyright (c) 2012, Tomi Leppänen
+/**
+   Copyright (c) 2012, Tomi Leppänen aka Tomin
    Copyright (c) 2012, Anssi "Miffyli" Kanervisto
+        members of group 'The Codebomb'
    
+   Line!
    Achtung, die Kurve! clone written in javascript and svg
    
    This program is free software; you can redistribute it and/or modify
@@ -19,6 +21,28 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
    MA 02110-1301, USA.
 */
+
+/**
+ * Achtung, die Kurve! is a game of G. Burg Internet Solutions and
+ * This Game called 'Line!' has nothing to do with them, but is a 
+ * independently developed title that has many similarities with 
+ * the Original Game. If you have something to complain or praise 
+ * about This Game, write about it to code@codebomb.dy.fi .
+ * 
+ * Code contributions are welcome, when they are made with care and
+ * passion. Git commit messages should be written well (nowadays). 
+ * Forks are allowed of course.
+ * 
+ * Check LICENSE file in this directory for more information about 
+ * licensing.
+ * 
+ * This Game is allowed distribute in minified form when this and 
+ * above comment are included in readable form. Also GPL license 
+ * of version 2 or later is recommended to be provided as a separate 
+ * file.
+ * 
+ * You may want to check out http://codebomb.dy.fi/
+ */
 
 /* Some configs */
 var breaksOn = true; // is breaking used or not
@@ -77,6 +101,7 @@ function init() {
 
 /* Begins the game */
 function startGame() {
+    document.body.removeEventListener("keydown",startGameKeyHandler,true);
     mainMenuOn = false;
     for (var i = 0; i < players.length; i++) { // Setting up players ->
         if (i < playerAmount) {
@@ -98,15 +123,26 @@ function startGame() {
         players[1].alive = true;
     }*/
     wallMode = "deadly";
-    timeout = setTimeout("main()",LOOPSPEED); // Start "loop"
-    document.body.addEventListener("keydown",function(e){inputKeyDown(e)},
-        true); // Begin input ->
-    document.body.addEventListener("keyup",function(e){inputKeyUp(e)},true);
+    timeout = setTimeout("main()",LOOPSPEED); // Start "loop" and input ->
+    document.body.addEventListener("keydown",inputKeyDownHandler,true);
+    document.body.addEventListener("keyup",inputKeyUpHandler,true);
 }
 
 /* Main "loop" */
 /*
- * This function handles running the game motor
+ * This function handles running the game motor:
+ *  - Checks wall mode and sets walls according to that
+ *  - Runs player's inputLoop (or bot's botControl) (external)
+ *  - Calculates new line ending
+ *  - Checks if player hit something (external)
+ *  - Warps if needed
+ *  - Checks if player hit bonus (external) and handles it
+ *  - Handles bonuses that player already has
+ *  - Breaks or continues line
+ *  - Draws some new line
+ *  - Adds new bonuses (partially external)
+ *  - Checks if game is over (external)
+ *  - Sets timeout for next iteration
  */
 function main(bots) {
     var time = (new Date()).getTime(); // To count time of one loop
@@ -392,8 +428,8 @@ function isGameOver() {
  */
 function gameOver() {
     timeout = clearTimeout(timeout);
-    document.body.removeEventListener("keyup",function(e){inputKeyUp(e)},true);
-    document.body.removeEventListener("keydown",function(e){inputKeyDown(e)},
+    document.body.removeEventListener("keyup",inputKeyUpHandler,true);
+    document.body.removeEventListener("keydown",inputKeyDownHandler,
         true);
     var text = document.createElementNS(NS,"text");
     elementSetAttributes(text,{"x":game_width/2-45,"y":game_height/4,
@@ -411,7 +447,42 @@ function elementSetAttributes(element,values) {
     return element;
 }
 
-/* Fixes game height for stupid browser, i.e. Opera and Firefox to name some */
+/* Fixes game height for some (stupid) browsers */
+/*
+ * At least Opera and Firefox need this
+ * Used in init and body.onresize
+ */
 function fixGameHeight() {
     game.setAttributeNS(null,"height",m.floor(window.innerHeight*0.95));
+}
+
+/* Pauses the game */
+function pauseGame() {
+    timeout = clearTimeout(timeout); // Stop the "loop" and input ->
+    document.body.removeEventListener("keyup",inputKeyUpHandler,true);
+    document.body.removeEventListener("keydown",inputKeyDownHandler,true);
+    var text = document.createElementNS(NS,"text"); // Add informative text ->
+    text = elementSetAttributes(text,{"x":game_width/2-90,"y":game_height/4,
+        "fill":"black","id":"pause_text"});
+    text.textContent="Press space to continue!";    
+    menuarea.appendChild(text); // Key handler for space =>
+    setTimeout('document.body.addEventListener("keyup",keyHandlerPause,true)', 
+        300);
+}
+
+/* Continues the game */
+function continueGame() {
+    document.body.removeEventListener("keyup",keyHandlerPause,true)
+    menuarea.removeChild(menuarea.getElementById("pause_text"));
+    timeout = setTimeout("main()",LOOPSPEED); // Start "loop" and input ->
+    document.body.addEventListener("keydown",inputKeyDownHandler,true);
+    document.body.addEventListener("keyup",inputKeyUpHandler,true);
+}
+
+/* Key handler when paused */
+function keyHandlerPause(event) {
+    if (event.which == 32) {
+        continueGame();
+        return false;
+    } return true;
 }

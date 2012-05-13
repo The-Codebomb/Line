@@ -70,6 +70,8 @@ function menu() {
 	
 	createText(game_width/3+30+OFFSETX, game_height/2-45, "Left");
 	createText(game_width/2+30+OFFSETX, game_height/2-45, "Right");
+
+    document.body.addEventListener("keydown",startGameKeyHandler,true);
 }
 
 /* Displays retry menu, which is showed when all players are dead */
@@ -78,6 +80,7 @@ function retryMenu() {
         100, "Play again", "retry");
 	var menuButton = createButton(game_width/2-100, game_height/2+25, 200, 100,
         "Main Menu", "rtnMenu");
+    document.body.addEventListener("keydown",startGameKeyHandler,true);
 }
 
 /* Creates button with text and eventListener */
@@ -162,7 +165,6 @@ function buttonClick(e,btnType,btn,btnText) {
 		startGame();
 	} else if (btnType == "rtnMenu") {
 		removeButtons();
-		playerAmount = 1;
 		menu();
 	} else if (btnType == "plr1Set") {
 		setButtons(0);
@@ -259,4 +261,15 @@ function getKeyFromCode(keycode) {
     if (keycode >= 96 && keycode <= 106) // Numpad ->
         return "Numpad "+(String.fromCharCode(keycode-48));
     return "BadKey";
+}
+
+/* Key handler for that begins the game */
+function startGameKeyHandler(event) {
+    if (event.which == 32) {
+        endBotGame();
+        clearGround();
+		removeButtons();
+		startGame();
+        return false;
+    } return true;
 }

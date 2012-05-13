@@ -35,7 +35,11 @@ function inputKeyDown(event) {
             players[i].keyDown = event.which;
             return false;
         } 
-    } return true;
+    } if (event.which == 32) {
+        pauseGame();
+        return false;
+    }
+    return true;
 }
 function inputLoop(player) {
     if ((!player.keysMirrored && player.keyDown == player.keyL) || 
@@ -55,3 +59,5 @@ function inputLoop(player) {
     }
     if (player.sharpTurns) player.keyDown = false;
 }
+var inputKeyDownHandler = function(e){inputKeyDown(e)};
+var inputKeyUpHandler = function(e){inputKeyUp(e)};

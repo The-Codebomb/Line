@@ -26,13 +26,15 @@ var playerSetButtonText = "1 Player";
 
 
 /* Displays main menu */
-function menu() {
+function menu(dontClean) {
 	var OFFSETX = game_width/17; // Used to move whole menu
 	var OFFSETY = 0;
     mainMenuOn = true;
-    timeout = clearTimeout(timeout);
-    clearGround();
-    startGameWithBots();
+    if (!dontClean) {
+        timeout = clearTimeout(timeout);
+        clearGround();
+        startGameWithBots();
+    }
     var playButton = createButton(game_width/4-100+OFFSETX, game_height/4-50,
 		200, 100, "Play", "play");
 	var playersButton = createButton(game_width/3*2-100+OFFSETX,
@@ -158,7 +160,7 @@ function buttonClick(e,btnType,btn,btnText) {
 			playerAmount = 1;
 			playerSetButtonText = "1 Player";
 		}
-		menu();
+		menu(true);
 	} else if (btnType == "retry") {
         clearGround();
 		removeButtons();

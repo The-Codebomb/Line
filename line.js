@@ -1,7 +1,9 @@
-/*
-   Copyright (c) 2012, Tomi Leppänen
+/**
+   Copyright (c) 2012, Tomi Leppänen aka Tomin
    Copyright (c) 2012, Anssi "Miffyli" Kanervisto
+        members of group 'The Codebomb'
    
+   Line!
    Achtung, die Kurve! clone written in javascript and svg
    
    This program is free software; you can redistribute it and/or modify
@@ -19,6 +21,28 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
    MA 02110-1301, USA.
 */
+
+/**
+ * Achtung, die Kurve! is a game of G. Burg Internet Solutions and
+ * This Game called 'Line!' has nothing to do with them, but is a 
+ * independently developed title that has many similarities with 
+ * the Original Game. If you have something to complain or praise 
+ * about This Game, write about it to code@codebomb.dy.fi .
+ * 
+ * Code contributions are welcome, when they are made with care and
+ * passion. Git commit messages should be written well (nowadays). 
+ * Forks are allowed of course.
+ * 
+ * Check LICENSE file in this directory for more information about 
+ * licensing.
+ * 
+ * This Game is allowed distribute in minified form when this and 
+ * above comment are included in readable form. Also GPL license 
+ * of version 2 or later is recommended to be provided as a separate 
+ * file.
+ * 
+ * You may want to check out http://codebomb.dy.fi/
+ */
 
 /* Some configs */
 var breaksOn = true; // is breaking used or not

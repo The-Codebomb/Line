@@ -164,10 +164,13 @@ function main(bots) {
                 players[i].direction);
             var old_y = players[i].y;
             var y = players[i].y + players[i].speed*m.cos(
-                players[i].direction);
+                players[i].direction); // Collision handling =>
             if (checkForCollision(x,y,old_x,old_y,players[i])) {
                 players[i].alive = false;
                 spillBlood(x,y);
+                for (var k in players) { // Give points to other players ->
+                    if (players[k].alive) players[k].points++;
+                }
             }
             if ((wallMode == "warp" || players[i].warp) && // Warping ->
                     (x <= 0 || x >= game_width || y <= 0 || y >= game_height)) {

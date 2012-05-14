@@ -21,7 +21,6 @@
 */
 
 var playerAmount = 1; // How many players are playing
-var maxPlayerAmount = PLAYERS; // Max players in game
 var mainMenuOn; // If main menu is on or not
 var playerSetButtonText = "1 Player";
 var setKeyButtons = new Array();
@@ -135,7 +134,7 @@ function buttonClick(e,btnType,btn,btnText) {
 	} else if (btnType == "plrAmount") {
 		removeButtons();
 		playerAmount++;	
-		if (playerAmount > maxPlayerAmount) {
+		if (playerAmount > PLAYERS) {
 			playerAmount = 1;
 			playerSetButtonText = "1 Player";
 		} else {

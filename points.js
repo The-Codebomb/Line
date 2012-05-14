@@ -59,15 +59,25 @@ function addPointsDisplay() {
 
 /* Updates displayed game status */
 function updatePoints() {
-    var points = new Array(); // Sort points (unfinished) ->
+    var points = new Array(); // Sort points ->
     for (var i = 0; i < PLAYERS; i++) {
         if (players[i]) {
+            if (points.length == 0) { // Add first
+                points.push({"name":players[i].name, 
+                    "points":players[i].points});
+                continue;
+            }
+            for (var j in points) { // Next ones
+                if (points[j].points < players[i].points) {
+                    points.splice(j,0,
+                        {"name":players[i].name, "points":players[i].points});
+                    break;
+                }
+            }
             points.push({"name":players[i].name, "points":players[i].points});
         }
     }
-    for (var i = 0; i < PLAYERS; i++) { // Change texts ->
-        if (players[i] && players[i].alive) {
-            points_texts[i].textContent = points[i].name+": "+points[i].points;
-        }
+    for (var i in points_texts) { // Change texts ->
+        points_texts[i].textContent = points[i].name+": "+points[i].points;
     }
 }

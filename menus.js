@@ -21,7 +21,7 @@
 */
 
 var playerAmount = 1; // How many players are playing
-var maxPlayerAmount = 4; // Max players in game ***WE ALREADY HAVE PLAYERS***
+var maxPlayerAmount = PLAYERS; // Max players in game
 var mainMenuOn; // If main menu is on or not
 var playerSetButtonText = "1 Player";
 var setKeyButtons = new Array();

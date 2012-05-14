@@ -20,10 +20,10 @@
    MA 02110-1301, USA.
 */
 var playerAmount = 1;
+var maxPlayerAmount = 4; // Max players in game
 var mainMenuOn; // If main menu is on or not
 var playerSetButtonText = "1 Player";
-
-
+var setKeyButtons = new Array();
 
 /* Displays main menu */
 function menu(dontClean) {
@@ -40,7 +40,7 @@ function menu(dontClean) {
 	var playersButton = createButton(game_width/3*2-100+OFFSETX,
 		game_height/4-25,200, 50, playerSetButtonText, "plrAmount");
 	
-	// Write "Player x" texts
+	// Write "Player x" texts + keys + set buttons
     offset = 0;
     for (var i = 0; i < playerAmount; i++) {
         createText(game_width/6+OFFSETX, game_height/2+offset,
@@ -49,26 +49,10 @@ function menu(dontClean) {
 			getKeyFromCode(players[i].keyL));
 		createText(game_width/2+30+OFFSETX, game_height/2+offset, 
 			getKeyFromCode(players[i].keyR));
+		setKeyButtons[i]= createButton(game_width/3*2+OFFSETX,
+			game_height/2-25+offset, 80, 50, "Set", "plr"+i+"Set");
         offset += 60;
     }
-	
-	// Buttons for setting player keys
-	if (playerAmount > 0) {
-		var player1Set = createButton(game_width/3*2+OFFSETX, game_height/2-25,
-			80, 50, "Set", "plr1Set");
-	}
-	if (playerAmount > 1) {
-		var player2Set = createButton(game_width/3*2+OFFSETX, game_height/2+35,
-			80, 50, "Set", "plr2Set");
-	}
-	if (playerAmount > 2) {
-		var player3Set = createButton(game_width/3*2+OFFSETX, game_height/2+95,
-			80, 50, "Set", "plr3Set");
-	}
-	if (playerAmount > 3) {
-		var player4Set = createButton(game_width/3*2+OFFSETX,
-			game_height/2+155,80, 50, "Set", "plr4Set");
-	}
 	
 	createText(game_width/3+30+OFFSETX, game_height/2-45, "Left");
 	createText(game_width/2+30+OFFSETX, game_height/2-45, "Right");
@@ -101,13 +85,13 @@ function createButton(x,y,width,height,text,type) {
 	menuarea.appendChild(btn);
 	menuarea.appendChild(btnText);
     
-	btn.addEventListener("click", // two listeners, fix this
+	btn.addEventListener("click", 
         function(e){buttonClick(e,type,btn,btnText)},false);
 	btnText.addEventListener("click",
 		function(e){buttonClick(e,type,btn,btnText)},false);
 	
 	btn.addEventListener("mouseover",function(e){buttonHoverOn(e,btn,btnText)},
-		false);	// for effects when hovering
+		false);	// for effects when hovering ->
 	btnText.addEventListener("mouseover",
 		function(e){buttonHoverOn(e,btn,btnText)},false);	
 	btn.addEventListener("mouseout",function(e){buttonHoverOff(e,btn,btnText)},
@@ -149,16 +133,12 @@ function buttonClick(e,btnType,btn,btnText) {
 		startGame();
 	} else if (btnType == "plrAmount") {
 		removeButtons();
-		playerAmount++;
-		if (playerAmount == 2) {
-			playerSetButtonText = "2 Players";
-		} else if (playerAmount == 3) {
-			playerSetButtonText = "3 Players";
-		} else if (playerAmount == 4) {
-			playerSetButtonText = "4 Players";
-		} else if (playerAmount == 5) {
+		playerAmount++;	
+		if (playerAmount > maxPlayerAmount) {
 			playerAmount = 1;
 			playerSetButtonText = "1 Player";
+		} else {
+			playerSetButtonText = playerAmount + " Players";
 		}
 		menu(true);
 	} else if (btnType == "retry") {
@@ -168,14 +148,12 @@ function buttonClick(e,btnType,btn,btnText) {
 	} else if (btnType == "rtnMenu") {
 		removeButtons();
 		menu();
-	} else if (btnType == "plr1Set") {
-		setButtons(0);
-	} else if (btnType == "plr2Set") {
-		setButtons(1);
-	} else if (btnType == "plr3Set") {
-		setButtons(2);
-	} else if (btnType == "plr4Set") {
-		setButtons(3);
+	} 
+	
+	for (var i = 1; i <= playerAmount; i++) {
+		if (btnType == "plr"+i+"Set") {
+			setButtons(i);
+		}
 	}
 }
 

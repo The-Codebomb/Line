@@ -30,6 +30,7 @@ function startGameWithBots() {
         players[i].addPoint(x,y,false); // Add starting point
     }
     wallMode = "deadly";
+    addPointsDisplay();
     timeout = setTimeout("main(true)",LOOPSPEED); // Start "loop"
 }
 

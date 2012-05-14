@@ -66,33 +66,41 @@ var BREAKLENGTH = 10;
 var MAX_TIME_BETWEEN_BONUSES = 800;
 var MAX_BONUSES = 5;
 var BONUS_TIME = 500; // How many loops bonuses affect
+var POINTS_WIDTH = 200; // Space to display points
 var NS = "http://www.w3.org/2000/svg"; // SVG namespace
 var fontSize = 25;
 var font = "Courier New, monospace";
 
 /* Global variables */
+var border; // SVGrect element
 var game; // SVG element
 var gamearea; // SVG element
+var game_width; // Game width
+var game_height; // Game height
 var menuarea; // SVG element
-var border; // Border's SVGrect element
-var timeout;
-var game_width; // Gamearea width
-var game_height; // Gamearea height
 var next_bonus_in = m.floor(m.random()*MAX_TIME_BETWEEN_BONUSES);
 var players = new Array(); // Array for line-objects
+var pointsarea; // SVG element
+var timeout;
 
 /* Initializing function */
 function init() {
     game = document.getElementById("game"); // Setting up variables ->
     gamearea = document.getElementById("gamearea");
     menuarea = document.getElementById("menu");
-    border = game.getElementById("border"); // Setting up correct height =>
+    pointsarea = document.getElementById("points");
+    border = document.createElementNS(NS,"rect"); 
+    // Setting up correct height =>
     if (game.getBoundingClientRect().height > window.innerHeight) {
         window.addEventListener("resize",function(){fixGameHeight()},false);
         fixGameHeight();
     }
-    game_width = game.viewBox.baseVal.width;
+    game_width = game.viewBox.baseVal.width-POINTS_WIDTH;
     game_height = game.viewBox.baseVal.height;
+    border = elementSetAttributes(border,{"id":"border", 
+        "width":game_width, "height":game_height, "fill":"none", 
+        "stroke":"black", "stroke-width":"1"});
+    gamearea.appendChild(border);
     for (var i = 0; i < PLAYERS; i++) { // Create players ->
         players.push(new line(NAMES[i],COLORS[i],DEFAULT_KEYS_LEFT[i],
         DEFAULT_KEYS_RIGHT[i]));
@@ -124,6 +132,7 @@ function startGame() {
         players[1].alive = true;
     }*/
     wallMode = "deadly";
+    addPointsDisplay();
     timeout = setTimeout("main()",LOOPSPEED); // Start "loop" and input ->
     document.body.addEventListener("keydown",inputKeyDownHandler,true);
     document.body.addEventListener("keyup",inputKeyUpHandler,true);
@@ -142,6 +151,7 @@ function startGame() {
  *  - Breaks or continues line
  *  - Draws some new line
  *  - Adds new bonuses (partially external)
+ *  - Redraws points display (external)
  *  - Checks if game is over (external)
  *  - Sets timeout for next iteration
  */
@@ -173,7 +183,8 @@ function main(bots) {
                 }
             }
             if ((wallMode == "warp" || players[i].warp) && // Warping ->
-                    (x <= 0 || x >= game_width || y <= 0 || y >= game_height)) {
+                    (x <= 0 || x >= game_width ||
+                     y <= 0 || y >= game_height)) {
                 if (!players[i].break) players[i].addPoint(x,y,sameDirection);
                 if (x <= 0) { x = game_width; }
                 else if (x >= game_width) { x = 0; }
@@ -329,6 +340,7 @@ function main(bots) {
         if (bonuses.length < MAX_BONUSES) addBonus();
         next_bonus_in = m.floor(m.random()*MAX_TIME_BETWEEN_BONUSES);
     } else next_bonus_in--;
+    updatePoints(); // Updates points display
     if (isGameOver()) { // When the game is over ->
         if (bots) botGameOver();
         else gameOver();
@@ -404,7 +416,8 @@ function checkForCollision(dx,dy,cx,cy,player,dopti) {
             }
         } // Check if player hit a wall =>
     } if (wallMode == "deadly" && !player.warp) {
-        if (dx <= 0 || dx >= game_width || dy <= 0 || dy >= game_height) {
+        if (dx <= 0 || dx >= game_width ||
+                dy <= 0 || dy >= game_height) {
             return true;
         }
     } return false;

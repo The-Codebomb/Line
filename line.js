@@ -80,6 +80,7 @@ var game_height; // Game height
 var menuarea; // SVG element
 var next_bonus_in = m.floor(m.random()*MAX_TIME_BETWEEN_BONUSES);
 var players = new Array(); // Array for line-objects
+var points_to_end;
 var pointsarea; // SVG element
 var timeout;
 
@@ -112,13 +113,10 @@ function init() {
 function startGame() {
     document.body.removeEventListener("keydown",startGameKeyHandler,true);
     mainMenuOn = false;
-    for (var i = 0; i < players.length; i++) { // Setting up players ->
+    for (var i in players) { // Setting up players ->
         if (i < playerAmount) {
             players[i] = new line(players[i].name,players[i].colour,
                 players[i].keyL,players[i].keyR);
-            var x = m.floor(m.random()*(game_width-200)+100);
-            var y = m.floor(m.random()*(game_height-200)+100);
-            players[i].addPoint(x,y,false); // Add starting point
         } else { // Hack for non-playing players FIXME?
             players[i].alive = false;
         }
@@ -131,11 +129,38 @@ function startGame() {
         players[1].addPoint(x,y,false); // Add starting point
         players[1].alive = true;
     }*/
+    points_to_end = 10*(playerAmount-1);
+    newPointsDisplay();
+    startNewRound();
+}
+
+/* Begins new round */
+function startNewRound() {
+    document.body.removeEventListener("keyup",keyHandlerSpace,true);
+    clearGround();
+    for (var i = 0; i < playerAmount; i++) { // Setting up players -> // FIXME
+        players[i].splitLine();
+        var x = m.floor(m.random()*(game_width-200)+100);
+        var y = m.floor(m.random()*(game_height-200)+100);
+        players[i].alive = true;
+        players[i].addPoint(x,y,false); // Add starting point
+        gamearea.appendChild(players[i].circle); // FIXME?
+    }
     wallMode = "deadly";
-    addPointsDisplay();
-    timeout = setTimeout("main()",LOOPSPEED); // Start "loop" and input ->
-    document.body.addEventListener("keydown",inputKeyDownHandler,true);
-    document.body.addEventListener("keyup",inputKeyUpHandler,true);
+    var text = document.createElementNS(NS,"text");
+    elementSetAttributes(text,{"x":game_width/2-100,"y":game_height/4,
+        "fill":"black","id":"beginround_text"});
+    text.textContent = "Press space to begin game!";
+    menuarea.appendChild(text);
+    spaceHandlerCall=function() {
+        document.body.removeEventListener("keyup",keyHandlerSpace,true);
+        menuarea.removeChild(menuarea.getElementById("beginround_text"));
+        timeout = setTimeout("main()",LOOPSPEED); // Start "loop"
+        document.body.addEventListener("keydown",inputKeyDownHandler,true);
+        document.body.addEventListener("keyup",inputKeyUpHandler,true);
+    }
+    timeout = setTimeout(
+        document.body.addEventListener("keyup",keyHandlerSpace,true),1000);
 }
 
 /* Main "loop" */
@@ -341,9 +366,14 @@ function main(bots) {
         next_bonus_in = m.floor(m.random()*MAX_TIME_BETWEEN_BONUSES);
     } else next_bonus_in--;
     updatePoints(); // Updates points display
-    if (isGameOver()) { // When the game is over ->
-        if (bots) botGameOver();
-        else gameOver();
+    if (isRoundOver()) { // When the round is over ->
+        if (isGameOver()) { // If the game is over ->
+            if (bots) botGameOver();
+            else gameOver();
+        } else {
+            if (bots) botRoundOver();
+            else roundOver();
+        }
         return;
     }
     time = (new Date()).getTime()-time; // Looping ->
@@ -423,11 +453,11 @@ function checkForCollision(dx,dy,cx,cy,player,dopti) {
     } return false;
 }
 
-/* Check if the game is over */
+/* Check if the round is over */
 /*
  * Game ends if only one player is alive
  */
-function isGameOver() {
+function isRoundOver() {
     //skippedOne = false
     skippedOne = true
     for (var i = 0; i < players.length; i++) {
@@ -438,9 +468,31 @@ function isGameOver() {
     } return true;
 }
 
+/* Ends round */
+/*
+ * Called when round ends
+ */
+function roundOver() {
+    timeout = clearTimeout(timeout);
+    document.body.removeEventListener("keyup",inputKeyUpHandler,true);
+    document.body.removeEventListener("keydown",inputKeyDownHandler,
+        true);
+    startNewRound()
+}
+
+/* Check if the game is over */
+/*
+ * Game ends if some one has needed points for points_to_end
+ */
+function isGameOver() {
+    for (var i in players) {
+        if (players[i].points >= points_to_end) return true;
+    } return false;
+}
+
 /* Ends game */
 /* 
- * Called when a collision happens 
+ * Called when a game ends
  * Does some cleaning up and informing user (Game Over text)
  */
 function gameOver() {
@@ -483,23 +535,25 @@ function pauseGame() {
         "fill":"black","id":"pause_text"});
     text.textContent="Press space to continue!";    
     menuarea.appendChild(text); // Key handler for space =>
-    setTimeout('document.body.addEventListener("keyup",keyHandlerPause,true)', 
+    spaceHandlerCall=continueGame;
+    setTimeout('document.body.addEventListener("keyup",keyHandlerSpace,true)', 
         300);
 }
 
 /* Continues the game */
 function continueGame() {
-    document.body.removeEventListener("keyup",keyHandlerPause,true)
+    document.body.removeEventListener("keyup",keyHandlerSpace,true)
     menuarea.removeChild(menuarea.getElementById("pause_text"));
     timeout = setTimeout("main()",LOOPSPEED); // Start "loop" and input ->
     document.body.addEventListener("keydown",inputKeyDownHandler,true);
     document.body.addEventListener("keyup",inputKeyUpHandler,true);
 }
 
+var spaceHandlerCall = null; // Function that space handler calls
 /* Key handler when paused */
-function keyHandlerPause(event) {
+function keyHandlerSpace(event) {
     if (event.which == 32) {
-        continueGame();
+        spaceHandlerCall();
         return false;
     } return true;
 }

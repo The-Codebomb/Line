@@ -18,6 +18,7 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
    MA 02110-1301, USA.
 */
+
 /*
  * Handles drawing points area and updating it
  */
@@ -28,7 +29,7 @@ var points_texts;
 /*
  * Must be called before game begins
  */
-function addPointsDisplay() {
+function newPointsDisplay() {
     points_texts = new Array();
     while (pointsarea.lastChild) { // Clear points area ->
         pointsarea.removeChild(pointsarea.lastChild);
@@ -40,10 +41,22 @@ function addPointsDisplay() {
     pointsarea.appendChild(border);
     var title = document.createElementNS(NS,"text"); // Add title ->
     elementSetAttributes(title,{"x":game_width+POINTS_WIDTH/2, 
-        "y":160, "font-family":font, 
-        "font-size":fontSize, "text-anchor":"middle"});
+        "y":160, "font-family":font, "font-size":fontSize, 
+        "text-anchor":"middle"});
     title.textContent = "Points";
     pointsarea.appendChild(title);
+    var text = document.createElementNS(NS,"text"); // Add "points to finish" ->
+    elementSetAttributes(text,{"x":game_width+POINTS_WIDTH/2, 
+        "y":100, "font-family":font, "font-size":fontSize/2, 
+        "text-anchor":"middle"});
+    text.textContent = "Points needed";
+    pointsarea.appendChild(text);
+    var text2 = document.createElementNS(NS,"text");
+    elementSetAttributes(text2,{"x":game_width+POINTS_WIDTH/2, 
+        "y":100+fontSize/2, "font-family":font, "font-size":fontSize/2, 
+        "text-anchor":"middle"});
+    text2.textContent = "to win: "+points_to_end;
+    pointsarea.appendChild(text2);
     var offset = 0; // Add text for every player ->
     var i = 0;
     while (players[i] && players[i].alive) {
@@ -67,14 +80,18 @@ function updatePoints() {
                     "points":players[i].points});
                 continue;
             }
+            var added = false;
             for (var j in points) { // Next ones
                 if (points[j].points < players[i].points) {
                     points.splice(j,0,
                         {"name":players[i].name, "points":players[i].points});
+                    added = true;
                     break;
                 }
             }
-            points.push({"name":players[i].name, "points":players[i].points});
+            if (!added) 
+                points.push({"name":players[i].name, 
+                    "points":players[i].points});
         }
     }
     for (var i in points_texts) { // Change texts ->

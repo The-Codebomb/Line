@@ -341,7 +341,7 @@ function main(bots) {
 
 /* Check for a collision */
 function checkForCollision(dx,dy,cx,cy,player,dopti) {
-    /*
+    /* ***OBSOLETE DESCRIPTION!!!***
      * Collision between lines is detected by calculating 
      * points that are common to two segments. Segment means
      * here the part of line between two points.
@@ -361,16 +361,19 @@ function checkForCollision(dx,dy,cx,cy,player,dopti) {
      * and all boring stuff is before them. The boring stuff 
      * means all string manipulations and such things that are 
      * needed getting other line segments' cordinates
+     * 
+     * *** cx and cy are not used anymore in calculations ***
+     * *** Must be checked with more speed and even more speed ***
+     * *** Maybe the average of (dx,dy) and (cx,cy) should be used,? ***
      */
     if ((cx != null && cy != null) && !player.break)  {
-        var length = 0;
         var polylines = game.getElementsByTagName("polyline");
         for (var i = 0; i < polylines.length; i++) {
             var points = polylines[i].getAttributeNS(null,"points");
             points = points.split(" ");
             if (polylines[i] == player.polyline) { // Working around the 
-                if (points.length > 2) { // player's own segments
-                    points = points.splice(0,points.length-2);
+                if (points.length > 10) { // player's own segments + optimizing
+                    points = points.splice(0,points.length-10);
                 } else points = points.splice(0,0);
             }
             for (var j = 0; j < points.length-1; j++) {
@@ -381,23 +384,12 @@ function checkForCollision(dx,dy,cx,cy,player,dopti) {
                 var xy = eline[1].split(",");
                 var fx = xy.slice(0,1)[0];
                 var fy = xy.slice(1,2)[0]; // Optimization =>
-                if ((ex > cx && fx > cx && ex > dx && fx > dx) || 
-                    (ex < cx && fx < cx && ex < dx && fx < dx) ||
-                    (ey < cy && fy < cy && ey < dy && fy < dy) ||
-                    (ey < cy && fy < cy && ey < dy && fy < dy))
-                    continue; // Don't calculate unuseful ones
-                if (length == 0) // Optimization ->
-                    var length = m.pow(dx-cx,2)+m.pow(dy-cy,2);
-                if (length > MOVINGSPEED_POW2 && dopti != null) {
-                    cx = dx - player.speed*m.sin(player.direction);
-                    cy = dy - player.speed*m.cos(player.direction);
-                } // Calculations =>
-                var res = (((cx*dy-cy*dx)*(ex-fx)-(cx-dx)*(ex*fy-ey*fx))/
-                    ((cx-dx)*(ey-fy)-(cy-dy)*(ex-fx)));
-                if ((cx <= res && res <= dx)||(cx >= res && res >= dx)) {
-                    if ((ex <= res && res <= fx)||(ex >= res && res >= fx))
-                        return true;
-                }
+                if ((ex > dx && fx > dx) || (ex < dx && fx < dx) ||
+                    (ey < dy && fy < dy) || (ey < dy && fy < dy))
+                    continue; // Don't calculate unuseful ones; Calculations =>
+                var res = (m.abs((fy-ey)*dx-(fx-ex)*dy-ex*fy+fx*ey)/ 
+                    m.sqrt(((fy-ey)*(fy-ey))+((fx-ex)*(fx-ex)),2));
+                if (res < player.d) { console.log(res,player.d,dx,dy,ex,ey,fx,fy); return true; }
             }
         } // Check if player hit a wall =>
     } if (wallMode == "deadly" && !player.warp) {

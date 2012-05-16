@@ -149,6 +149,7 @@ function buttonClick(e,btnType,btn,btnText) {
 		removeButtons();
 		startGame();
 	} else if (btnType == "rtnMenu") {
+        clearGround();
 		removeButtons();
 		menu();
 	} 

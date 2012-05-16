@@ -22,12 +22,26 @@
 
 /* Begins the game with bots */
 function startGameWithBots() {
-    for (var i = 0; i < players.length; i++) { // Setting up players
-        players[i] = new line(players[i].name,players[i].colour,
-            players[i].keyL,players[i].keyR,true);
+    for (var i in players) { // Setting up players ->
+        players[i] = new line(players[i].name,players[i].colour,players[i].keyL,
+            players[i].keyR,true);
+    }
+    points_to_end = 10*(PLAYERS-1);
+    newPointsDisplay();
+    startNewRoundWithBots();
+}
+
+/* Begins new round with bots */
+function startNewRoundWithBots() {
+    clearGround(); // In menus.js
+    timeout = clearTimeout(timeout);
+    for (var i in players) { // Setting up players ->
+        players[i].splitLine();
         var x = m.floor(m.random()*(game_width-200)+100);
         var y = m.floor(m.random()*(game_height-200)+100);
+        players[i].alive = true;
         players[i].addPoint(x,y,false); // Add starting point
+        gamearea.appendChild(players[i].circle); // FIXME?
     }
     wallMode = "deadly";
     timeout = setTimeout("main(true)",LOOPSPEED); // Start "loop"
@@ -172,13 +186,19 @@ function botInputRight(old_direction,turn) {
     else return new_direction;
 }
 
+/* Ends a bot round */
+/*
+ * Called when all bots are dead
+ */
+function botRoundOver() {
+    timeout = setTimeout("startNewRoundWithBots()",1000);
+}
+
 /* Ends a bot game */
 /* 
- * Called when all bots are dead 
+ * Called when bots finish playing
  */
 function botGameOver() {
-    timeout = clearTimeout(timeout);
-    clearGround(); // In menus.js
     timeout = setTimeout("startGameWithBots()",1000);
 }
 

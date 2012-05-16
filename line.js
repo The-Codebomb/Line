@@ -66,33 +66,42 @@ var BREAKLENGTH = 10;
 var MAX_TIME_BETWEEN_BONUSES = 800;
 var MAX_BONUSES = 5;
 var BONUS_TIME = 500; // How many loops bonuses affect
+var POINTS_WIDTH = 200; // Space to display points
 var NS = "http://www.w3.org/2000/svg"; // SVG namespace
 var fontSize = 25;
 var font = "Courier New, monospace";
 
 /* Global variables */
+var border; // SVGrect element
 var game; // SVG element
 var gamearea; // SVG element
+var game_width; // Game width
+var game_height; // Game height
 var menuarea; // SVG element
-var border; // Border's SVGrect element
-var timeout;
-var game_width; // Gamearea width
-var game_height; // Gamearea height
 var next_bonus_in = m.floor(m.random()*MAX_TIME_BETWEEN_BONUSES);
 var players = new Array(); // Array for line-objects
+var points_to_end;
+var pointsarea; // SVG element
+var timeout;
 
 /* Initializing function */
 function init() {
     game = document.getElementById("game"); // Setting up variables ->
     gamearea = document.getElementById("gamearea");
     menuarea = document.getElementById("menu");
-    border = game.getElementById("border"); // Setting up correct height =>
+    pointsarea = document.getElementById("points");
+    border = document.createElementNS(NS,"rect"); 
+    // Setting up correct height =>
     if (game.getBoundingClientRect().height > window.innerHeight) {
         window.addEventListener("resize",function(){fixGameHeight()},false);
         fixGameHeight();
     }
-    game_width = game.viewBox.baseVal.width;
+    game_width = game.viewBox.baseVal.width-POINTS_WIDTH;
     game_height = game.viewBox.baseVal.height;
+    border = elementSetAttributes(border,{"id":"border", 
+        "width":game_width, "height":game_height, "fill":"none", 
+        "stroke":"black", "stroke-width":"1"});
+    gamearea.appendChild(border);
     for (var i = 0; i < PLAYERS; i++) { // Create players ->
         players.push(new line(NAMES[i],COLORS[i],DEFAULT_KEYS_LEFT[i],
         DEFAULT_KEYS_RIGHT[i]));
@@ -104,13 +113,10 @@ function init() {
 function startGame() {
     document.body.removeEventListener("keydown",startGameKeyHandler,true);
     mainMenuOn = false;
-    for (var i = 0; i < players.length; i++) { // Setting up players ->
+    for (var i in players) { // Setting up players ->
         if (i < playerAmount) {
             players[i] = new line(players[i].name,players[i].colour,
                 players[i].keyL,players[i].keyR);
-            var x = m.floor(m.random()*(game_width-200)+100);
-            var y = m.floor(m.random()*(game_height-200)+100);
-            players[i].addPoint(x,y,false); // Add starting point
         } else { // Hack for non-playing players FIXME?
             players[i].alive = false;
         }
@@ -123,10 +129,38 @@ function startGame() {
         players[1].addPoint(x,y,false); // Add starting point
         players[1].alive = true;
     }*/
+    points_to_end = 10*(playerAmount-1);
+    newPointsDisplay();
+    startNewRound();
+}
+
+/* Begins new round */
+function startNewRound() {
+    document.body.removeEventListener("keyup",keyHandlerSpace,true);
+    clearGround();
+    for (var i = 0; i < playerAmount; i++) { // Setting up players -> // FIXME
+        players[i].splitLine();
+        var x = m.floor(m.random()*(game_width-200)+100);
+        var y = m.floor(m.random()*(game_height-200)+100);
+        players[i].alive = true;
+        players[i].addPoint(x,y,false); // Add starting point
+        gamearea.appendChild(players[i].circle); // FIXME?
+    }
     wallMode = "deadly";
-    timeout = setTimeout("main()",LOOPSPEED); // Start "loop" and input ->
-    document.body.addEventListener("keydown",inputKeyDownHandler,true);
-    document.body.addEventListener("keyup",inputKeyUpHandler,true);
+    var text = document.createElementNS(NS,"text");
+    elementSetAttributes(text,{"x":game_width/2-130,"y":game_height/4,
+        "fill":"black","id":"beginround_text"});
+    text.textContent = "Press space to begin the game!";
+    menuarea.appendChild(text);
+    spaceHandlerCall=function() {
+        document.body.removeEventListener("keyup",keyHandlerSpace,true);
+        menuarea.removeChild(menuarea.getElementById("beginround_text"));
+        timeout = setTimeout("main()",LOOPSPEED); // Start "loop"
+        document.body.addEventListener("keydown",inputKeyDownHandler,true);
+        document.body.addEventListener("keyup",inputKeyUpHandler,true);
+    }
+    timeout = setTimeout(
+        document.body.addEventListener("keyup",keyHandlerSpace,true),1000);
 }
 
 /* Main "loop" */
@@ -142,6 +176,7 @@ function startGame() {
  *  - Breaks or continues line
  *  - Draws some new line
  *  - Adds new bonuses (partially external)
+ *  - Redraws points display (external)
  *  - Checks if game is over (external)
  *  - Sets timeout for next iteration
  */
@@ -164,13 +199,17 @@ function main(bots) {
                 players[i].direction);
             var old_y = players[i].y;
             var y = players[i].y + players[i].speed*m.cos(
-                players[i].direction);
+                players[i].direction); // Collision handling =>
             if (checkForCollision(x,y,old_x,old_y,players[i])) {
                 players[i].alive = false;
                 spillBlood(x,y);
+                for (var k in players) { // Give points to other players ->
+                    if (players[k].alive) players[k].points++;
+                }
             }
             if ((wallMode == "warp" || players[i].warp) && // Warping ->
-                    (x <= 0 || x >= game_width || y <= 0 || y >= game_height)) {
+                    (x <= 0 || x >= game_width ||
+                     y <= 0 || y >= game_height)) {
                 if (!players[i].break) players[i].addPoint(x,y,sameDirection);
                 if (x <= 0) { x = game_width; }
                 else if (x >= game_width) { x = 0; }
@@ -326,9 +365,15 @@ function main(bots) {
         if (bonuses.length < MAX_BONUSES) addBonus();
         next_bonus_in = m.floor(m.random()*MAX_TIME_BETWEEN_BONUSES);
     } else next_bonus_in--;
-    if (isGameOver()) { // When the game is over ->
-        if (bots) botGameOver();
-        else gameOver();
+    updatePoints(); // Updates points display
+    if (isRoundOver()) { // When the round is over ->
+        if (isGameOver()) { // If the game is over ->
+            if (bots) botGameOver();
+            else gameOver();
+        } else {
+            if (bots) botRoundOver();
+            else roundOver();
+        }
         return;
     }
     time = (new Date()).getTime()-time; // Looping ->
@@ -402,17 +447,18 @@ function checkForCollision(dx,dy,cx,cy,player,dopti) {
             }
         } // Check if player hit a wall =>
     } if (wallMode == "deadly" && !player.warp) {
-        if (dx <= 0 || dx >= game_width || dy <= 0 || dy >= game_height) {
+        if (dx <= 0 || dx >= game_width ||
+                dy <= 0 || dy >= game_height) {
             return true;
         }
     } return false;
 }
 
-/* Check if the game is over */
+/* Check if the round is over */
 /*
  * Game ends if only one player is alive
  */
-function isGameOver() {
+function isRoundOver() {
     //skippedOne = false
     skippedOne = true
     for (var i = 0; i < players.length; i++) {
@@ -423,9 +469,31 @@ function isGameOver() {
     } return true;
 }
 
+/* Ends round */
+/*
+ * Called when round ends
+ */
+function roundOver() {
+    timeout = clearTimeout(timeout);
+    document.body.removeEventListener("keyup",inputKeyUpHandler,true);
+    document.body.removeEventListener("keydown",inputKeyDownHandler,
+        true);
+    startNewRound()
+}
+
+/* Check if the game is over */
+/*
+ * Game ends if some one has needed points for points_to_end
+ */
+function isGameOver() {
+    for (var i in players) {
+        if (players[i].points >= points_to_end) return true;
+    } return false;
+}
+
 /* Ends game */
 /* 
- * Called when a collision happens 
+ * Called when a game ends
  * Does some cleaning up and informing user (Game Over text)
  */
 function gameOver() {
@@ -464,27 +532,31 @@ function pauseGame() {
     document.body.removeEventListener("keyup",inputKeyUpHandler,true);
     document.body.removeEventListener("keydown",inputKeyDownHandler,true);
     var text = document.createElementNS(NS,"text"); // Add informative text ->
-    text = elementSetAttributes(text,{"x":game_width/2-90,"y":game_height/4,
+    text = elementSetAttributes(text,{"x":game_width/2-100,"y":game_height/4,
         "fill":"black","id":"pause_text"});
-    text.textContent="Press space to continue!";    
+    text.textContent="Press space to continue!";
+    createButton(game_width/2-100,game_height/2-50,200,100,"Main menu",
+        "rtnMenu"); // From menu.js
     menuarea.appendChild(text); // Key handler for space =>
-    setTimeout('document.body.addEventListener("keyup",keyHandlerPause,true)', 
+    spaceHandlerCall=continueGame;
+    setTimeout('document.body.addEventListener("keyup",keyHandlerSpace,true)', 
         300);
 }
 
 /* Continues the game */
 function continueGame() {
-    document.body.removeEventListener("keyup",keyHandlerPause,true)
-    menuarea.removeChild(menuarea.getElementById("pause_text"));
+    document.body.removeEventListener("keyup",keyHandlerSpace,true)
+    removeButtons(); // From menus.js
     timeout = setTimeout("main()",LOOPSPEED); // Start "loop" and input ->
     document.body.addEventListener("keydown",inputKeyDownHandler,true);
     document.body.addEventListener("keyup",inputKeyUpHandler,true);
 }
 
+var spaceHandlerCall = null; // Function that space handler calls
 /* Key handler when paused */
-function keyHandlerPause(event) {
+function keyHandlerSpace(event) {
     if (event.which == 32) {
-        continueGame();
+        spaceHandlerCall();
         return false;
     } return true;
 }

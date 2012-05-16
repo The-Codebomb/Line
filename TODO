@@ -1,6 +1,4 @@
 Tehtävää:
-  - pisteiden lasku (points branch, testausta vaille)
-  - pisteiden tulostus (points branch, testausta vaille)
   - valikot hyväksymään vaihteleva maksimimäärä pelaajia 
     eli looppia voisi käyttää, tavoitteena tukea jopa kuutta pelaajaa
   - botit uusiksi (yksi hyvä botti riittää)

@@ -341,55 +341,64 @@ function main(bots) {
 
 /* Check for a collision */
 function checkForCollision(dx,dy,cx,cy,player,dopti) {
-    /* ***OBSOLETE DESCRIPTION!!!***
-     * Collision between lines is detected by calculating 
-     * points that are common to two segments. Segment means
-     * here the part of line between two points.
-     *
-     * The first segment is the one we just have drawn.
-     * To get the other one we must get all lines,
-     * then split their points and now we get two points
-     * for each segment.
-     *
-     * So we repeat this to nearly all segments of all lines:
-     *  - Calculate x-cordinate that is common to two segments
-     *  - Check that the cordinate is part of both segments
-     *    - If it is return true (player collided)
-     *    - If it isn't continue
+    /*
+     * Collision between lines is detected checking if there 
+     * are intersections of a circle and tested polyline. 
+     * To do that we must first do some tests to ensure 
+     * that it's even possible for tested segment to intersect 
+     * with the circle. Then were are checking if the line of 
+     * tested segment intersects. This testing is highly 
+     * mathematical.
+     * 
+     * The circle's center is players current position (dx,dy) 
+     * and radius is sum of player's polyline's radius and 
+     * tested polyline's radius. To get the segments to test 
+     * we must get all the lines on gamearea, then split 
+     * their points and now we get two points for each line.
+     * Segment means here the part of a line between two points.
+     * 
+     * More about the used method:
+     * http://local.wasp.uwa.edu.au/~pbourke/geometry/sphereline/
+     * Thanks to people who have written this algorithm.
      * 
      * The calculations and checks are last lines of this part
-     * and all boring stuff is before them. The boring stuff 
+     * and all boring stuff is before them. 'The boring stuff' 
      * means all string manipulations and such things that are 
-     * needed getting other line segments' cordinates
+     * needed getting line segments' cordinates.
      * 
-     * *** cx and cy are not used anymore in calculations ***
-     * *** Must be checked with more speed and even more speed ***
-     * *** Maybe the average of (dx,dy) and (cx,cy) should be used,? ***
+     * Notes after the fundamental change:
+     *  - cx and cy are not used anymore in calculations
+     *  - Must be checked with more speed and even more speed
+     *  - We should consider using averages of (cx,cy) and (dx,dy)
      */
-    if ((cx != null && cy != null) && !player.break)  {
-        var polylines = game.getElementsByTagName("polyline");
+    if ((cx != null && cy != null) && !player.break)  { 
+        var polylines = gamearea.getElementsByTagName("polyline");
         for (var i = 0; i < polylines.length; i++) {
             var points = polylines[i].getAttributeNS(null,"points");
             points = points.split(" ");
             if (polylines[i] == player.polyline) { // Working around the 
-                if (points.length > 10) { // player's own segments + optimizing
+                if (points.length > 10) { // player's own segments + optimizing 
                     points = points.splice(0,points.length-10);
                 } else points = points.splice(0,0);
             }
+            var r = player.d/2+polylines[i].getAttributeNS(
+                null,"stroke-width")/2; // Radius
             for (var j = 0; j < points.length-1; j++) {
-                var eline = new Array(points[j], points[j+1]);
-                var xy = eline[0].split(",");
+                var xy = points[j].split(",");
                 var ex = xy.slice(0,1)[0];
                 var ey = xy.slice(1,2)[0];
-                var xy = eline[1].split(",");
+                var xy = points[j+1].split(",");
                 var fx = xy.slice(0,1)[0];
-                var fy = xy.slice(1,2)[0]; // Optimization =>
-                if ((ex > dx && fx > dx) || (ex < dx && fx < dx) ||
-                    (ey < dy && fy < dy) || (ey < dy && fy < dy))
-                    continue; // Don't calculate unuseful ones; Calculations =>
-                var res = (m.abs((fy-ey)*dx-(fx-ex)*dy-ex*fy+fx*ey)/ 
-                    m.sqrt(((fy-ey)*(fy-ey))+((fx-ex)*(fx-ex)),2));
-                if (res < player.d) { console.log(res,player.d,dx,dy,ex,ey,fx,fy); return true; }
+                var fy = xy.slice(1,2)[0]; // Calculations =>
+                var res = ((dx-ex)*(fx-ex) + (dy-ey)*(fy-ey)) / 
+                    ((fx-ex)*(fx-ex) + (fy-ey)*(fy-ey));
+                if (res < 0 || res > 1) continue;
+                var a = (fx-ex)*(fx-ex) + (fy-ey)*(fy-ey);
+                var b = 2*((fx-ex)*(ex-dx) + (fy-ey)*(ey-dy)); 
+                var c = dx*dx + dy*dy + ex*ex + ey*ey - 2*(dx*ex+dy*ey)-(r*r);
+                var res = (b*b-4*a*c); 
+                if (res >= 0)
+                    return true; 
             }
         } // Check if player hit a wall =>
     } if (wallMode == "deadly" && !player.warp) {

@@ -92,7 +92,7 @@ function splitLine() {
     this.polyline = document.createElementNS(NS,"polyline");
     this.polyline = elementSetAttributes(this.polyline, {"points":"", 
         "fill":"none", "stroke":this.colour, "stroke-width":this.d, 
-        "class":name});
+        "class":this.name});
     gamearea.appendChild(this.polyline);
 }
 /* Narrows line */

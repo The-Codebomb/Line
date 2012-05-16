@@ -3,8 +3,6 @@ Tehtävää:
   - pisteiden tulostus (points branch, testausta vaille)
   - valikot hyväksymään vaihteleva maksimimäärä pelaajia 
     eli looppia voisi käyttää, tavoitteena tukea jopa kuutta pelaajaa
-  - collision detection method käyttämään kahden viivan lyhintä 
-    etäisyyttä toisistaan tai pisteen ja viivan lyhintä etäisyyttä
   - botit uusiksi (yksi hyvä botti riittää)
   - cache.manifest voisi olla hyvä idea (tietämättömät kuukeloikoon)
 

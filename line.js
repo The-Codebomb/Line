@@ -148,9 +148,9 @@ function startNewRound() {
     }
     wallMode = "deadly";
     var text = document.createElementNS(NS,"text");
-    elementSetAttributes(text,{"x":game_width/2-100,"y":game_height/4,
+    elementSetAttributes(text,{"x":game_width/2-130,"y":game_height/4,
         "fill":"black","id":"beginround_text"});
-    text.textContent = "Press space to begin game!";
+    text.textContent = "Press space to begin the game!";
     menuarea.appendChild(text);
     spaceHandlerCall=function() {
         document.body.removeEventListener("keyup",keyHandlerSpace,true);
@@ -531,9 +531,11 @@ function pauseGame() {
     document.body.removeEventListener("keyup",inputKeyUpHandler,true);
     document.body.removeEventListener("keydown",inputKeyDownHandler,true);
     var text = document.createElementNS(NS,"text"); // Add informative text ->
-    text = elementSetAttributes(text,{"x":game_width/2-90,"y":game_height/4,
+    text = elementSetAttributes(text,{"x":game_width/2-100,"y":game_height/4,
         "fill":"black","id":"pause_text"});
-    text.textContent="Press space to continue!";    
+    text.textContent="Press space to continue!";
+    createButton(game_width/2-100,game_height/2-50,200,100,"Main menu",
+        "rtnMenu"); // From menu.js
     menuarea.appendChild(text); // Key handler for space =>
     spaceHandlerCall=continueGame;
     setTimeout('document.body.addEventListener("keyup",keyHandlerSpace,true)', 
@@ -543,7 +545,7 @@ function pauseGame() {
 /* Continues the game */
 function continueGame() {
     document.body.removeEventListener("keyup",keyHandlerSpace,true)
-    menuarea.removeChild(menuarea.getElementById("pause_text"));
+    removeButtons(); // From menus.js
     timeout = setTimeout("main()",LOOPSPEED); // Start "loop" and input ->
     document.body.addEventListener("keydown",inputKeyDownHandler,true);
     document.body.addEventListener("keyup",inputKeyUpHandler,true);

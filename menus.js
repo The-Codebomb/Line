@@ -44,7 +44,7 @@ function menu(dontClean) {
     offset = 0;
     for (var i = 0; i < playerAmount; i++) {
         createText(game_width/6+OFFSETX, game_height/2+offset,
-			players[i].name);
+			players[i].name, players[i].colour);
 		createText(game_width/3+30+OFFSETX, game_height/2+offset,
 			getKeyFromCode(players[i].keyL));
 		createText(game_width/2+30+OFFSETX, game_height/2+offset, 
@@ -102,10 +102,13 @@ function createButton(x,y,width,height,text,type) {
 }
 
 /* Creates text */
-function createText(x,y,text) {
+function createText(x,y,text,colour) {
 	var svgText = document.createElementNS(NS,"text");
     svgText = elementSetAttributes(svgText,{"x":x, "y":y, "font-family":font, 
         "font-size":fontSize, "text-anchor":"middle"});
+	if (colour) {
+		svgText = elementSetAttributes(svgText, {"fill":colour});
+	}
 	svgText.textContent = text;
 	menuarea.appendChild(svgText);
     return svgText;

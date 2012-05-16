@@ -210,7 +210,7 @@ function main(bots) {
                         for (var k in players) {
                             if (k != i) {
                                 players[k].narrow(2);
-                                players[k].addPoint(old_x,old_y);
+                                players[k].addPoint(players[k].x,players[k].y);
                                 players[k].bonus.push({"type":"narrow",
                                     "time":BONUS_TIME});
                             }
@@ -233,7 +233,7 @@ function main(bots) {
                     case "turnOthersSharply": 
                         for (var k in players) {
                             if (k != i) {
-                                players[k] // FIXME
+                                players[k].sharpTurns = true;
                                 players[k].bonus.push({"type":"turnSharply",
                                     "time":BONUS_TIME});
                             }
@@ -243,7 +243,7 @@ function main(bots) {
                         for (var k in players) {
                             if (k != i) {
                                 players[k].widen(2);
-                                players[k].addPoint(old_x,old_y);
+                                players[k].addPoint(players[k].x,players[k].y);
                                 players[k].bonus.push({"type":"widen",
                                     "time":BONUS_TIME});
                             }

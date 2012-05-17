@@ -97,6 +97,14 @@ function splitLine() {
 /* Set some players attributes and creates new line and circle */
 function initLine(values) {
     this.alive = this.playing;
+    this.bonus = new Array();
+    this.break = false;
+    this.d = 5;
+    this.keyDown = false;
+    this.keysMirrored = false;
+    this.sharpTurns = false;
+    this.speed = MOVINGSPEED;
+    this.warp = false;
     this.splitLine();
     var x = m.floor(m.random()*(game_width-200)+100);
     var y = m.floor(m.random()*(game_height-200)+100);

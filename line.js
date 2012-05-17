@@ -131,7 +131,7 @@ function startNewRound() {
     document.body.removeEventListener("keyup",keyHandlerSpace,true);
     clearGround();
     for (var i = 0; i < playerAmount; i++) { // Setting up players ->
-        players[i].init({"keyDown":false});
+        players[i].init();
     }
     wallMode = "deadly";
     newPointsDisplay();

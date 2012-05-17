@@ -82,7 +82,7 @@ function bonus(type,x,y) {
     } else if (type == "turnSharply") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
             "fill":"FFFF00"});
-        this.text.textContent = "90";
+        this.text.textContent = "90°";
         this.text = elementSetAttributes(this.text,{"fill":"000000",
             "font-size":BONUS_R,"y":y+BONUS_R/3});
     } else if (type == "warp") {
@@ -118,7 +118,7 @@ function bonus(type,x,y) {
     } else if (type == "turnOthersSharply") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"red", 
             "fill":"FFFF00"});
-        this.text.textContent = "90";
+        this.text.textContent = "90°";
         this.text = elementSetAttributes(this.text,{"fill":"000000",
             "font-size":BONUS_R,"y":y+BONUS_R/3});
     } else if (type == "warpAll") {

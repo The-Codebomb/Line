@@ -1,17 +1,17 @@
 Tehtävää:
-  - pikku säätöjä, esim. nopeudet, ajat ja jotain sellasta
-  - bonuksiin pieniä säätöjä, esim. circlen väri
-  - kunnon botti, jos vaan saadaan aikaseksi...
+  - Pikku säätöjä, esim. nopeudet, ajat ja jotain sellasta?
+  - Tartteeko bonuksiin vielä jotain pieniä säätöjä? Värit, tekstit?
+  - Tarkista voisko timeout olla kuitenkin vähän pitempi
+  - Kunnon botti, jos vaan saadaan aikaseksi...
+  - ...jos ei saada, niin yksinpeli pois käytöstä julkaisuun
 
-Bugeja at the moment:
-	
-	- Nimet menevät väärin piste listassa (esim valitsee Goa'uld pelaajan,
-	  mutta nimi voi olla vaikka Sylar)
+Tunnettuja bugeja:
+  - Pelaajamäärän valitsin nappi ei poista kaikkia tekstejä asiallisesti
 
-Muuta tarpeellista ennen julkasua ei sitten taida olla, 
-mutta se pitää vielä arvioida uudestaan, cache manifest on pikkujuttu, 
-jonka voin hoitaa sitten.
+Muuta tarpeellista ennen julkasua ei sitten taida olla, mutta se pitää 
+vielä arvioida uudestaan, cache manifest on pikkujuttu, jonka voin 
+hoitaa sitten kun sen aika on.
 
-Tehdyt hommat voi poistella listasta ja uusia voi lisätä, 
-jos jotain julkaisun estäviä juttuja on tiedossa. Tyhjän 
-tiedoston saa poistaa, kun julkaistaan.
+Tehdyt hommat voi poistella listasta ja uusia voi lisätä, jos jotain 
+julkaisun estäviä juttuja on tiedossa. Tyhjän tiedoston saa poistaa, 
+kun julkaistaan.

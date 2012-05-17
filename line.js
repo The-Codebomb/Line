@@ -161,7 +161,7 @@ function startNewRound() {
         document.body.addEventListener("keyup",inputKeyUpHandler,true);
     }
     timeout = setTimeout(
-        document.body.addEventListener("keyup",keyHandlerSpace,true),1000);
+        'document.body.addEventListener("keyup",keyHandlerSpace,true)',500);
 }
 
 /* Main "loop" */

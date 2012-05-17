@@ -67,24 +67,28 @@ function updatePoints() {
         if (players[i]) {
             if (points.length == 0) { // Add first
                 points.push({"name":players[i].name, 
-                    "points":players[i].points});
+                    "points":players[i].points,
+					"colour":players[i].colour});
                 continue;
             }
             var added = false;
             for (var j in points) { // Next ones
                 if (points[j].points < players[i].points) {
                     points.splice(j,0,
-                        {"name":players[i].name, "points":players[i].points});
+                        {"name":players[i].name, "points":players[i].points,
+							"colour":players[i].colour});
                     added = true;
                     break;
                 }
             }
             if (!added) 
                 points.push({"name":players[i].name, 
-                    "points":players[i].points});
+                    "points":players[i].points,
+					"colour":players[i].colour});
         }
     }
     for (var i in points_texts) { // Change texts ->
         points_texts[i].textContent = points[i].name+": "+points[i].points;
+		elementSetAttributes(points_texts[i],{"fill":points[i].colour});
     }
 }

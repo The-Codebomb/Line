@@ -118,8 +118,8 @@ function startGame() {
         if (i < playerAmount) {
             players[i] = new line(players[i].name,players[i].colour,
                 players[i].keyL,players[i].keyR);
-        } else { // Hack for non-playing players FIXME?
-            players[i].alive = false;
+        } else { // Lines that aren't used
+            players[i].playing = false;
         }
     }/*
     if (playerAmount == 1) { // On one player game, add one bot
@@ -131,7 +131,6 @@ function startGame() {
         players[1].alive = true;
     }*/
     points_to_end = 10*(playerAmount-1);
-    newPointsDisplay();
     startNewRound();
 }
 
@@ -139,15 +138,11 @@ function startGame() {
 function startNewRound() {
     document.body.removeEventListener("keyup",keyHandlerSpace,true);
     clearGround();
-    for (var i = 0; i < playerAmount; i++) { // Setting up players -> // FIXME
-        players[i].splitLine();
-        var x = m.floor(m.random()*(game_width-200)+100);
-        var y = m.floor(m.random()*(game_height-200)+100);
-        players[i].alive = true;
-        players[i].addPoint(x,y,false); // Add starting point
-        gamearea.appendChild(players[i].circle); // FIXME?
+    for (var i = 0; i < playerAmount; i++) { // Setting up players ->
+        players[i].init();
     }
     wallMode = "deadly";
+    newPointsDisplay();
     var text = document.createElementNS(NS,"text");
     elementSetAttributes(text,{"x":game_width/2-130,"y":game_height/4,
         "fill":"black","id":"beginround_text"});
@@ -188,7 +183,7 @@ function main(bots) {
     else if (wallMode == "warp") 
         border.setAttributeNS(null,"stroke-dasharray","4 4");
     for (var i in players) {
-        if (players[i].alive) {
+        if (players[i].playing && players[i].alive) {
             var warped = false;
             if (players[i].bot) botControl(players[i]); // Control bots
             else inputLoop(players[i]); // Control players
@@ -463,7 +458,7 @@ function isRoundOver() {
     //skippedOne = false
     skippedOne = true
     for (var i = 0; i < players.length; i++) {
-        if (players[i].alive) {
+        if (players[i].playing && players[i].alive) {
             if (!skippedOne) skippedOne = true;
             else return false;
         }

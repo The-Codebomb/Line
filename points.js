@@ -64,7 +64,7 @@ function newPointsDisplay() {
 function updatePoints() {
     var points = new Array(); // Sort points ->
     for (var i = 0; i < PLAYERS; i++) {
-        if (players[i]) {
+        if (players[i] && players[i].playing) {
             if (points.length == 0) { // Add first
                 points.push({"name":players[i].name, 
                     "points":players[i].points,
@@ -87,7 +87,7 @@ function updatePoints() {
 					"colour":players[i].colour});
         }
     }
-    for (var i in points_texts) { // Change texts ->
+    for (var i in points) { // Change texts ->
         points_texts[i].textContent = points[i].name+": "+points[i].points;
 		elementSetAttributes(points_texts[i],{"fill":points[i].colour});
     }

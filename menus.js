@@ -49,9 +49,10 @@ function menu(dontClean) {
 			getKeyFromCode(players[i].keyL));
 		createText(game_width/2+30+OFFSETX, game_height/2+offset, 
 			getKeyFromCode(players[i].keyR));
+		console.log("i = "+i);
 		setKeyButtons[i]= createButton(game_width/3*2+OFFSETX,
-			game_height/2-25+offset, 80, 50, "Set", "plr"+i+"Set");
-        offset += 60;
+			game_height/2-25+offset, 80, 45, "Set", "plr"+(i+1)+"Set");
+        offset += 50;
     }
 	
 	createText(game_width/3+30+OFFSETX, game_height/2-45, "Left");
@@ -67,6 +68,22 @@ function retryMenu() {
 	var menuButton = createButton(game_width/2-100, game_height/2+25, 200, 100,
         "Main Menu", "rtnMenu");
     document.body.addEventListener("keydown",startGameKeyHandler,true);
+}
+
+/* Pauses the game */
+function pauseGame() {
+	var OFFSETX = game_width/17;
+    timeout = clearTimeout(timeout); // Stop the "loop" and input ->
+    document.body.removeEventListener("keyup",inputKeyUpHandler,true);
+    document.body.removeEventListener("keydown",inputKeyDownHandler,true);
+    var text = createText(game_width/2,game_height/4,
+		"Press space to continue!");
+    createButton(game_width/2-100,game_height/2-50,200,100,"Main menu",
+        "rtnMenu"); // From menu.js
+    menuarea.appendChild(text); // Key handler for space =>
+    spaceHandlerCall=continueGame;
+    setTimeout('document.body.addEventListener("keyup",keyHandlerSpace,true)', 
+        300);
 }
 
 /* Creates button with text and eventListener */
@@ -196,20 +213,20 @@ function setButtons(playerNum,e,leftOrRight) {
 	removeButtons();
 	if (leftOrRight == null) {
 		createText(game_width/2,game_height/2, 
-			"Press button for left button for player "+(playerNum+1));
+			"Press button for left button for player "+playerNum);
         setButtonsHandler = function(event){setButtons(playerNum,event,"left")};
 		document.body.addEventListener("keydown",setButtonsHandler,true);
 	} else if (leftOrRight == "left") {
 		document.body.removeEventListener("keydown",setButtonsHandler,true);
-		players[playerNum].keyL = e.which;
+		players[playerNum-1].keyL = e.which;
 		createText(game_width/2,game_height/2, 
-			"Press button for right button for player "+(playerNum+1));
+			"Press button for right button for player "+playerNum);
         setButtonsHandler = function(event){setButtons(playerNum,event,
             "right")};
 		document.body.addEventListener("keydown",setButtonsHandler,true);
 	} else if (leftOrRight == "right") {
 		document.body.removeEventListener("keydown",setButtonsHandler,true);
-		players[playerNum].keyR = e.which;
+		players[playerNum-1].keyR = e.which;
 		menu();
 	}
 }

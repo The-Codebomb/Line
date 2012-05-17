@@ -6,6 +6,11 @@ Tehtävää:
   - bonuksiin pieniä säätöjä, esim. circlen väri
   - kunnon botti, jos vaan saadaan aikaseksi...
 
+Bugeja at the moment:
+	
+	- Nimet menevät väärin piste listassa (esim valitsee Goa'uld pelaajan,
+	  mutta nimi voi olla vaikka Sylar)
+
 Muuta tarpeellista ennen julkasua ei sitten taida olla, 
 mutta se pitää vielä arvioida uudestaan, cache manifest on pikkujuttu, 
 jonka voin hoitaa sitten.

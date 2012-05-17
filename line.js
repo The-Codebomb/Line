@@ -527,23 +527,6 @@ function fixGameHeight() {
     game.setAttributeNS(null,"height",m.floor(window.innerHeight*0.95));
 }
 
-/* Pauses the game */
-function pauseGame() {
-    timeout = clearTimeout(timeout); // Stop the "loop" and input ->
-    document.body.removeEventListener("keyup",inputKeyUpHandler,true);
-    document.body.removeEventListener("keydown",inputKeyDownHandler,true);
-    var text = document.createElementNS(NS,"text"); // Add informative text ->
-    text = elementSetAttributes(text,{"x":game_width/2-100,"y":game_height/4,
-        "fill":"black","id":"pause_text"});
-    text.textContent="Press space to continue!";
-    createButton(game_width/2-100,game_height/2-50,200,100,"Main menu",
-        "rtnMenu"); // From menu.js
-    menuarea.appendChild(text); // Key handler for space =>
-    spaceHandlerCall=continueGame;
-    setTimeout('document.body.addEventListener("keyup",keyHandlerSpace,true)', 
-        300);
-}
-
 /* Continues the game */
 function continueGame() {
     document.body.removeEventListener("keyup",keyHandlerSpace,true)

@@ -1,5 +1,6 @@
 /*
    Copyright (c) 2012, Tomi Leppänen
+   Copyright (c) 2012, Anssi "Miffyli" Kanervisto
    
    Achtung, die Kurve! clone written in javascript and svg
    

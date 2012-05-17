@@ -76,7 +76,7 @@ var font = "Courier New, monospace";
 var border; // SVGrect element
 var game; // SVG element
 var gamearea; // SVG element
-var game_width; // Game width
+var game_width; // Width of the gamearea
 var game_height; // Game height
 var menuarea; // SVG element
 var next_bonus_in = m.floor(m.random()*MAX_TIME_BETWEEN_BONUSES);
@@ -161,7 +161,7 @@ function startNewRound() {
         document.body.addEventListener("keyup",inputKeyUpHandler,true);
     }
     timeout = setTimeout(
-        document.body.addEventListener("keyup",keyHandlerSpace,true),1000);
+        'document.body.addEventListener("keyup",keyHandlerSpace,true)',500);
 }
 
 /* Main "loop" */

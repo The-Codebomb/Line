@@ -188,7 +188,7 @@ function main(bots) {
             var old_y = players[i].y;
             var y = players[i].y + players[i].speed*m.cos(
                 players[i].direction); // Collision handling =>
-            if (checkForCollision(x,y,old_x,old_y,players[i])) {
+            if (checkForCollision(x,y,players[i])) {
                 players[i].alive = false;
                 spillBlood(x,y);
                 for (var k in players) { // Give points to other players ->
@@ -381,7 +381,7 @@ function main(bots) {
 }
 
 /* Check for a collision */
-function checkForCollision(dx,dy,cx,cy,player,dopti) {
+function checkForCollision(dx,dy,player) {
     /*
      * Collision between lines is detected checking if there 
      * are intersections of a circle and tested polyline. 
@@ -406,47 +406,44 @@ function checkForCollision(dx,dy,cx,cy,player,dopti) {
      * and all boring stuff is before them. 'The boring stuff' 
      * means all string manipulations and such things that are 
      * needed getting line segments' cordinates.
-     * 
-     * Notes after the fundamental change:
-     *  - cx and cy are not used anymore in calculations
-     *  - Must be checked with more speed and even more speed
-     *  - We should consider using averages of (cx,cy) and (dx,dy)
      */
-    if ((cx != null && cy != null) && !player.break)  { 
+    if (!player.break)  { 
         var polylines = gamearea.getElementsByTagName("polyline");
         for (var i = 0; i < polylines.length; i++) {
             var points = polylines[i].getAttributeNS(null,"points");
             points = points.split(" ");
             if (polylines[i] == player.polyline) { // Working around the 
-                if (points.length > 10) { // player's own segments + optimizing 
-                    points = points.splice(0,points.length-10);
-                } else points = points.splice(0,0);
+                if (points.length > 20) { // player's own segments + optimizing 
+                    points = points.splice(0,points.length-20);
+                } else continue;
             }
             var r = player.d/2+polylines[i].getAttributeNS(
                 null,"stroke-width")/2; // Radius
             for (var j = 0; j < points.length-1; j++) {
                 var xy = points[j].split(",");
-                var ex = xy.slice(0,1)[0];
-                var ey = xy.slice(1,2)[0];
-                var xy = points[j+1].split(",");
-                var fx = xy.slice(0,1)[0];
-                var fy = xy.slice(1,2)[0]; // Calculations =>
+                var ex = xy[0];
+                var ey = xy[1];
+                xy = points[j+1].split(",");
+                var fx = xy[0];
+                var fy = xy[1];
+                // Optimizing (some lines don't need to be calculated at all) =>
+                if (((dx > ex+r && dx > fx+r) || (dx < ex-r && dx < fx-r)) &&
+                        ((dy > ey+r && dy > fy+r) || (dy < ey-r && dy < fy-r)))
+                    continue;
+                // Calculations =>
                 var res = ((dx-ex)*(fx-ex) + (dy-ey)*(fy-ey)) / 
                     ((fx-ex)*(fx-ex) + (fy-ey)*(fy-ey));
                 if (res < 0 || res > 1) continue;
                 var a = (fx-ex)*(fx-ex) + (fy-ey)*(fy-ey);
                 var b = 2*((fx-ex)*(ex-dx) + (fy-ey)*(ey-dy)); 
                 var c = dx*dx + dy*dy + ex*ex + ey*ey - 2*(dx*ex+dy*ey)-(r*r);
-                var res = (b*b-4*a*c); 
-                if (res >= 0)
+                if ((b*b-4*a*c) >= 0)
                     return true; 
             }
         } // Check if player hit a wall =>
     } if (wallMode == "deadly" && !player.warp) {
-        if (dx <= 0 || dx >= game_width ||
-                dy <= 0 || dy >= game_height) {
+        if (dx <= 0 || dx >= game_width || dy <= 0 || dy >= game_height)
             return true;
-        }
     } return false;
 }
 

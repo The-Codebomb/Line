@@ -244,6 +244,7 @@ function getKeyFromCode(keycode) {
     if (keycode == 145) return "ScrollLock";
     if (keycode >= 96 && keycode <= 106) // Numpad ->
         return "Numpad "+(String.fromCharCode(keycode-48));
+    if (keycode == undefined) return "None"; // Just undefined
     return "BadKey";
 }
 

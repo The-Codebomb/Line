@@ -49,7 +49,6 @@ function menu(dontClean) {
 			getKeyFromCode(players[i].keyL));
 		createText(game_width/2+30+OFFSETX, game_height/2+offset, 
 			getKeyFromCode(players[i].keyR));
-		console.log("i = "+i);
 		setKeyButtons[i]= createButton(game_width/3*2+OFFSETX,
 			game_height/2-25+offset, 80, 45, "Set", "plr"+(i+1)+"Set");
         offset += 50;
@@ -119,15 +118,22 @@ function createButton(x,y,width,height,text,type) {
 }
 
 /* Creates text */
-function createText(x,y,text,colour) {
+function createText(x,y,text,colour,newFontSize,area) {
 	var svgText = document.createElementNS(NS,"text");
     svgText = elementSetAttributes(svgText,{"x":x, "y":y, "font-family":font, 
         "font-size":fontSize, "text-anchor":"middle"});
 	if (colour) {
 		svgText = elementSetAttributes(svgText, {"fill":colour});
 	}
+	if (newFontSize) {
+		svgText = elementSetAttributes(svgText, {"font-size":newFontSize});
+	}
 	svgText.textContent = text;
-	menuarea.appendChild(svgText);
+	if (area = "points") {
+		pointsarea.appendChild(svgText);
+	} else {
+		menuarea.appendChild(svgText);
+	}
     return svgText;
 }
 

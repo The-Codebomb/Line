@@ -40,32 +40,21 @@ function newPointsDisplay() {
         "width":POINTS_WIDTH, "height":game_height, "fill":"white", 
         "stroke":"black", "stroke-width":"1"});
     pointsarea.appendChild(background);
-    var title = document.createElementNS(NS,"text"); // Add title ->
-    elementSetAttributes(title,{"x":game_width+POINTS_WIDTH/2, 
-        "y":160, "font-family":font, "font-size":fontSize, 
-        "text-anchor":"middle"});
-    title.textContent = "Points";
-    pointsarea.appendChild(title);
-    var text = document.createElementNS(NS,"text"); // Add "points to finish" ->
-    elementSetAttributes(text,{"x":game_width+POINTS_WIDTH/2, 
-        "y":100, "font-family":font, "font-size":fontSize/2, 
-        "text-anchor":"middle"});
-    text.textContent = "Points needed";
-    pointsarea.appendChild(text);
-    var text2 = document.createElementNS(NS,"text");
-    elementSetAttributes(text2,{"x":game_width+POINTS_WIDTH/2, 
-        "y":100+fontSize/2, "font-family":font, "font-size":fontSize/2, 
-        "text-anchor":"middle"});
-    text2.textContent = "to win: "+points_to_end;
-    pointsarea.appendChild(text2);
+	
+    var title = createText(game_width+POINTS_WIDTH/2,160,"Points","",
+		"", "points")// Add title ->
+		
+    var text = createText(game_width+POINTS_WIDTH/2,100, "Points needed",
+		"", fontSize/2, "points");
+		
+    var text2 = createText(game_width+POINTS_WIDTH/2,100+fontSize/2,
+		"to win: "+points_to_end, "", fontSize/2, "points");
+		
     var offset = 0; // Add text for every player ->
     var i = 0;
     while (players[i] && players[i].alive) {
-        points_texts[i] = document.createElementNS(NS,"text");
-        elementSetAttributes(points_texts[i],{"x":game_width+POINTS_WIDTH/2, 
-            "y":200+i*30, "font-family":font, "font-size":fontSize/3*2, 
-            "text-anchor":"middle", "fill":players[i].colour});
-        pointsarea.appendChild(points_texts[i]);
+        points_texts[i] = createText(game_width+POINTS_WIDTH/2,200+i*30,"",
+			players[i].colour, fontSize/3*2, "points");
         i++;
     }
     updatePoints(); // Add texts

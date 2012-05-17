@@ -55,7 +55,7 @@ var PLAYERS = 6; // Maximium amount of players
 var COLORS = ["#0000CD","#008000","#FF0000","#FF00FF", // Colors
     "#556B2F","#000000"];
 var NAMES = ["Goa'uld","Dalek","Sylar","Pinkie", // Names 
-    "Boba Fett"];
+    "Boba Fett","Darth Vader"];
 var DEFAULT_KEYS_LEFT = [37,65,74,97,82]; // Default left keys
 var DEFAULT_KEYS_RIGHT = [39,68,76,99,89]; // Default right keys
 var TURNINGSPEED = 0.1;

@@ -51,16 +51,17 @@ var wallMode = "deadly"; // Valid values are "deadly" and "warp"
 
 /* Constants */
 m = Math;
-var PLAYERS = 4; // Default amount of players
-var COLORS = ["#0000CD","#008000","#FF0000","#FF00FF","#556B2F"]; // Colors
-var NAMES = ["Goa'uld","Darlek","Sylar","Pinkie","Boba Fett"]; // Names 
+var PLAYERS = 6; // Maximium amount of players
+var COLORS = ["#0000CD","#008000","#FF0000","#FF00FF", // Colors
+    "#556B2F","#000000"];
+var NAMES = ["Goa'uld","Dalek","Sylar","Pinkie", // Names 
+    "Boba Fett"];
 var DEFAULT_KEYS_LEFT = [37,65,74,97,82]; // Default left keys
 var DEFAULT_KEYS_RIGHT = [39,68,76,99,89]; // Default right keys
 var TURNINGSPEED = 0.1;
 var MOVINGSPEED = 2;
 var LOOPSPEED = 30;
 var FULLCIRCLE = 2*m.PI;
-var MOVINGSPEED_POW2 = m.pow(MOVINGSPEED,2); // Optimization
 var TIME_BETWEEN_BREAKS = 75;
 var BREAKLENGTH = 10;
 var MAX_TIME_BETWEEN_BONUSES = 800;

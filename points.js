@@ -64,7 +64,7 @@ function newPointsDisplay() {
         points_texts[i] = document.createElementNS(NS,"text");
         elementSetAttributes(points_texts[i],{"x":game_width+POINTS_WIDTH/2, 
             "y":200+i*30, "font-family":font, "font-size":fontSize/3*2, 
-            "text-anchor":"middle"});
+            "text-anchor":"middle", "fill":players[i].colour});
         pointsarea.appendChild(points_texts[i]);
         i++;
     }

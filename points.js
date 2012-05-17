@@ -34,11 +34,11 @@ function newPointsDisplay() {
     while (pointsarea.lastChild) { // Clear points area ->
         pointsarea.removeChild(pointsarea.lastChild);
     }
-    var border = document.createElementNS(NS,"rect"); // Add borders ->
-    elementSetAttributes(border,{"id":"border", "x":game_width, 
-        "width":POINTS_WIDTH, "height":game_height, "fill":"none", 
+    var background = document.createElementNS(NS,"rect"); // Add background ->
+    elementSetAttributes(background,{"id":"p_background", "x":game_width, 
+        "width":POINTS_WIDTH, "height":game_height, "fill":"white", 
         "stroke":"black", "stroke-width":"1"});
-    pointsarea.appendChild(border);
+    pointsarea.appendChild(background);
     var title = document.createElementNS(NS,"text"); // Add title ->
     elementSetAttributes(title,{"x":game_width+POINTS_WIDTH/2, 
         "y":160, "font-family":font, "font-size":fontSize, 

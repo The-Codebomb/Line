@@ -131,7 +131,6 @@ function startGame() {
         players[1].alive = true;
     }*/
     points_to_end = 10*(playerAmount-1);
-	clearPointScreen();
     newPointsDisplay();
     startNewRound();
 }

@@ -30,8 +30,8 @@
  * about This Game, write about it to code@codebomb.dy.fi .
  * 
  * Code contributions are welcome, when they are made with care and
- * passion. Git commit messages should be well written (nowadays). 
- * Forks are allowed of course.
+ * passion. Git commit messages should be well written. Forks are 
+ * allowed of course.
  * 
  * Check LICENSE file in this directory for more information about 
  * licensing.
@@ -66,7 +66,7 @@ var TIME_BETWEEN_BREAKS = 75;
 var BREAKLENGTH = 10;
 var MAX_TIME_BETWEEN_BONUSES = 800;
 var MAX_BONUSES = 5;
-var BONUS_TIME = 500; // How many loops bonuses affect
+var BONUS_TIME = 200; // How many loops bonuses affect
 var POINTS_WIDTH = 200; // Space to display points
 var NS = "http://www.w3.org/2000/svg"; // SVG namespace
 var fontSize = 25;
@@ -121,15 +121,7 @@ function startGame() {
         } else { // Lines that aren't used
             players[i].playing = false;
         }
-    }/*
-    if (playerAmount == 1) { // On one player game, add one bot
-        players[1] = new line(players[1].name,players[1].colour,
-            players[1].keyL,players[1].keyR,true);
-        var x = m.floor(m.random()*(game_width-200)+100);
-        var y = m.floor(m.random()*(game_height-200)+100);
-        players[1].addPoint(x,y,false); // Add starting point
-        players[1].alive = true;
-    }*/
+    }
     points_to_end = 10*(playerAmount-1);
     startNewRound();
 }
@@ -139,7 +131,7 @@ function startNewRound() {
     document.body.removeEventListener("keyup",keyHandlerSpace,true);
     clearGround();
     for (var i = 0; i < playerAmount; i++) { // Setting up players ->
-        players[i].init();
+        players[i].init({"keyDown":false});
     }
     wallMode = "deadly";
     newPointsDisplay();
@@ -227,7 +219,11 @@ function main(bots) {
                     case "slowdown": players[i].slowdown(); break;
                     case "speedup": players[i].speedup(); break;
                     case "turnSharply": players[i].sharpTurns = true; break;
-                    case "warp": players[i].warp = true; break;
+                    case "warp": 
+                        players[i].warp = true; 
+                        players[i].circle.setAttributeNS(null,"stroke","black");
+                        players[i].circle.setAttributeNS(null,"stroke-width",1);
+                        break;
                     case "widen": 
                         players[i].widen(2);
                         players[i].addPoint(old_x,old_y);
@@ -318,7 +314,11 @@ function main(bots) {
                         case "slowdown": players[i].speedup(); break;
                         case "speedup": players[i].slowdown(); break;
                         case "turnSharply": players[i].sharpTurns=false; break;
-                        case "warp": players[i].warp = false; break;
+                        case "warp": 
+                            players[i].warp = false; 
+                            players[i].circle.setAttributeNS(null,"stroke",
+                                "none");
+                            break;
                         case "widen": 
                             players[i].narrow(2);
                             players[i].addPoint(old_x,old_y);
@@ -455,8 +455,7 @@ function checkForCollision(dx,dy,cx,cy,player,dopti) {
  * Game ends if only one player is alive
  */
 function isRoundOver() {
-    //skippedOne = false
-    skippedOne = true
+    skippedOne = false
     for (var i = 0; i < players.length; i++) {
         if (players[i].playing && players[i].alive) {
             if (!skippedOne) skippedOne = true;

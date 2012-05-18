@@ -129,7 +129,7 @@ function createText(x,y,text,colour,newFontSize,area) {
 		svgText = elementSetAttributes(svgText, {"font-size":newFontSize});
 	}
 	svgText.textContent = text;
-	if (area = "points") {
+	if (area == "points") {
 		pointsarea.appendChild(svgText);
 	} else {
 		menuarea.appendChild(svgText);

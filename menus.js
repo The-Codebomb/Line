@@ -129,7 +129,7 @@ function createText(x,y,text,colour,newFontSize,area) {
 		svgText = elementSetAttributes(svgText, {"font-size":newFontSize});
 	}
 	svgText.textContent = text;
-	if (area = "points") {
+	if (area == "points") {
 		pointsarea.appendChild(svgText);
 	} else {
 		menuarea.appendChild(svgText);
@@ -185,10 +185,10 @@ function buttonClick(e,btnType,btn,btnText) {
 }
 
 /* Removes all bonuses, polylines and circles from the gamearea */
-function clearGround() {
-    for (var i = bonuses.length -1; i >= 0; i--) {
+function clearGround() { // ***Obsolete***, use clearArea(gamearea) instead
+    /*for (var i = bonuses.length -1; i >= 0; i--) {
         bonuses[i].remove();
-    }
+    }*/
 	
     var lines = gamearea.getElementsByTagName("polyline");
 	for (var i = lines.length - 1; i >= 0; i--) {
@@ -202,7 +202,7 @@ function clearGround() {
 }
 
 /* Removes all buttons from the menuarea (and rects and texts) */
-function removeButtons() {
+function removeButtons() { // ***Obsolete***, use clearArea(menuarea) instead
 	var rects = menuarea.getElementsByTagName("rect"); // Remove rectangles
 	for (var i = rects.length - 1; i >= 0;i--) {
 		menuarea.removeChild(rects[i]);

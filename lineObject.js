@@ -100,6 +100,7 @@ function initLine(values) {
     this.bonus = new Array();
     this.break = false;
     this.d = 5;
+    this.direction=m.random()*FULLCIRCLE;
     this.keyDown = false;
     this.keysMirrored = false;
     this.sharpTurns = false;

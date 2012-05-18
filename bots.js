@@ -33,7 +33,8 @@ function startGameWithBots() {
 
 /* Begins new round with bots */
 function startNewRoundWithBots() {
-    clearGround(); // In menus.js
+    clearArea(gamearea);
+    bonuses = new Array();
     timeout = clearTimeout(timeout);
     for (var i in players) { // Setting up players ->
         players[i].init();
@@ -90,5 +91,5 @@ function botGameOver() {
  */
 function endBotGame() {
     timeout = clearTimeout(timeout);
-    clearGround(); // In menus.js
+    clearArea(gamearea);
 }

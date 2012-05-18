@@ -64,7 +64,7 @@ function newPointsDisplay() {
 function updatePoints() {
     var points = new Array(); // Sort points ->
     for (var i = 0; i < PLAYERS; i++) {
-        if (players[i]) {
+        if (players[i].alive) {
             if (points.length == 0) { // Add first
                 points.push({"name":players[i].name, 
                     "points":players[i].points,

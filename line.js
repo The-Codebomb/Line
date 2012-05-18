@@ -442,7 +442,8 @@ function checkForCollision(dx,dy,player) {
             }
         } // Check if player hit a wall =>
     } if (wallMode == "deadly" && !player.warp) {
-        if (dx <= 0 || dx >= game_width || dy <= 0 || dy >= game_height)
+        if (dx <= player.d/2 || dx >= game_width-player.d/2 
+                || dy <= player.d/2 || dy >= game_height-player.d/2)
             return true;
     } return false;
 }

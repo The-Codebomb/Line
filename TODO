@@ -8,7 +8,6 @@ Tehtävää:
   - ...jos ei saada, niin yksinpeli pois käytöstä julkaisuun
 
 Tunnettuja bugeja:
-  - Pelaajamäärän valitsin nappi ei poista kaikkia tekstejä asiallisesti
 
 Muuta tarpeellista ennen julkasua ei sitten taida olla, mutta se pitää 
 vielä arvioida uudestaan, cache manifest on pikkujuttu, jonka voin 

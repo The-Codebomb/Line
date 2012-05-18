@@ -30,8 +30,8 @@
  * about This Game, write about it to code@codebomb.dy.fi .
  * 
  * Code contributions are welcome, when they are made with care and
- * passion. Git commit messages should be well written (nowadays). 
- * Forks are allowed of course.
+ * passion. Git commit messages should be well written. Forks are 
+ * allowed of course.
  * 
  * Check LICENSE file in this directory for more information about 
  * licensing.
@@ -66,7 +66,7 @@ var TIME_BETWEEN_BREAKS = 75;
 var BREAKLENGTH = 10;
 var MAX_TIME_BETWEEN_BONUSES = 800;
 var MAX_BONUSES = 5;
-var BONUS_TIME = 500; // How many loops bonuses affect
+var BONUS_TIME = 200; // How many loops bonuses affect
 var POINTS_WIDTH = 200; // Space to display points
 var NS = "http://www.w3.org/2000/svg"; // SVG namespace
 var fontSize = 25;
@@ -118,20 +118,11 @@ function startGame() {
         if (i < playerAmount) {
             players[i] = new line(players[i].name,players[i].colour,
                 players[i].keyL,players[i].keyR);
-        } else { // Hack for non-playing players FIXME?
-            players[i].alive = false;
+        } else { // Lines that aren't used
+            players[i].playing = false;
         }
-    }/*
-    if (playerAmount == 1) { // On one player game, add one bot
-        players[1] = new line(players[1].name,players[1].colour,
-            players[1].keyL,players[1].keyR,true);
-        var x = m.floor(m.random()*(game_width-200)+100);
-        var y = m.floor(m.random()*(game_height-200)+100);
-        players[1].addPoint(x,y,false); // Add starting point
-        players[1].alive = true;
-    }*/
+    }
     points_to_end = 10*(playerAmount-1);
-    newPointsDisplay();
     startNewRound();
 }
 
@@ -139,15 +130,11 @@ function startGame() {
 function startNewRound() {
     document.body.removeEventListener("keyup",keyHandlerSpace,true);
     clearGround();
-    for (var i = 0; i < playerAmount; i++) { // Setting up players -> // FIXME
-        players[i].splitLine();
-        var x = m.floor(m.random()*(game_width-200)+100);
-        var y = m.floor(m.random()*(game_height-200)+100);
-        players[i].alive = true;
-        players[i].addPoint(x,y,false); // Add starting point
-        gamearea.appendChild(players[i].circle); // FIXME?
+    for (var i = 0; i < playerAmount; i++) { // Setting up players ->
+        players[i].init();
     }
     wallMode = "deadly";
+    newPointsDisplay();
     var text = document.createElementNS(NS,"text");
     elementSetAttributes(text,{"x":game_width/2-130,"y":game_height/4,
         "fill":"black","id":"beginround_text"});
@@ -188,7 +175,7 @@ function main(bots) {
     else if (wallMode == "warp") 
         border.setAttributeNS(null,"stroke-dasharray","4 4");
     for (var i in players) {
-        if (players[i].alive) {
+        if (players[i].playing && players[i].alive) {
             var warped = false;
             if (players[i].bot) botControl(players[i]); // Control bots
             else inputLoop(players[i]); // Control players
@@ -201,7 +188,7 @@ function main(bots) {
             var old_y = players[i].y;
             var y = players[i].y + players[i].speed*m.cos(
                 players[i].direction); // Collision handling =>
-            if (checkForCollision(x,y,old_x,old_y,players[i])) {
+            if (checkForCollision(x,y,players[i])) {
                 players[i].alive = false;
                 spillBlood(x,y);
                 for (var k in players) { // Give points to other players ->
@@ -232,7 +219,11 @@ function main(bots) {
                     case "slowdown": players[i].slowdown(); break;
                     case "speedup": players[i].speedup(); break;
                     case "turnSharply": players[i].sharpTurns = true; break;
-                    case "warp": players[i].warp = true; break;
+                    case "warp": 
+                        players[i].warp = true; 
+                        players[i].circle.setAttributeNS(null,"stroke","black");
+                        players[i].circle.setAttributeNS(null,"stroke-width",1);
+                        break;
                     case "widen": 
                         players[i].widen(2);
                         players[i].addPoint(old_x,old_y);
@@ -323,7 +314,11 @@ function main(bots) {
                         case "slowdown": players[i].speedup(); break;
                         case "speedup": players[i].slowdown(); break;
                         case "turnSharply": players[i].sharpTurns=false; break;
-                        case "warp": players[i].warp = false; break;
+                        case "warp": 
+                            players[i].warp = false; 
+                            players[i].circle.setAttributeNS(null,"stroke",
+                                "none");
+                            break;
                         case "widen": 
                             players[i].narrow(2);
                             players[i].addPoint(old_x,old_y);
@@ -386,7 +381,7 @@ function main(bots) {
 }
 
 /* Check for a collision */
-function checkForCollision(dx,dy,cx,cy,player,dopti) {
+function checkForCollision(dx,dy,player) {
     /*
      * Collision between lines is detected checking if there 
      * are intersections of a circle and tested polyline. 
@@ -411,47 +406,44 @@ function checkForCollision(dx,dy,cx,cy,player,dopti) {
      * and all boring stuff is before them. 'The boring stuff' 
      * means all string manipulations and such things that are 
      * needed getting line segments' cordinates.
-     * 
-     * Notes after the fundamental change:
-     *  - cx and cy are not used anymore in calculations
-     *  - Must be checked with more speed and even more speed
-     *  - We should consider using averages of (cx,cy) and (dx,dy)
      */
-    if ((cx != null && cy != null) && !player.break)  { 
+    if (!player.break)  { 
         var polylines = gamearea.getElementsByTagName("polyline");
         for (var i = 0; i < polylines.length; i++) {
             var points = polylines[i].getAttributeNS(null,"points");
             points = points.split(" ");
             if (polylines[i] == player.polyline) { // Working around the 
-                if (points.length > 10) { // player's own segments + optimizing 
-                    points = points.splice(0,points.length-10);
-                } else points = points.splice(0,0);
+                if (points.length > 20) { // player's own segments + optimizing 
+                    points = points.splice(0,points.length-20);
+                } else continue;
             }
             var r = player.d/2+polylines[i].getAttributeNS(
                 null,"stroke-width")/2; // Radius
             for (var j = 0; j < points.length-1; j++) {
                 var xy = points[j].split(",");
-                var ex = xy.slice(0,1)[0];
-                var ey = xy.slice(1,2)[0];
-                var xy = points[j+1].split(",");
-                var fx = xy.slice(0,1)[0];
-                var fy = xy.slice(1,2)[0]; // Calculations =>
+                var ex = xy[0];
+                var ey = xy[1];
+                xy = points[j+1].split(",");
+                var fx = xy[0];
+                var fy = xy[1];
+                // Optimizing (some lines don't need to be calculated at all) =>
+                if (((dx > ex+r && dx > fx+r) || (dx < ex-r && dx < fx-r)) &&
+                        ((dy > ey+r && dy > fy+r) || (dy < ey-r && dy < fy-r)))
+                    continue;
+                // Calculations =>
                 var res = ((dx-ex)*(fx-ex) + (dy-ey)*(fy-ey)) / 
                     ((fx-ex)*(fx-ex) + (fy-ey)*(fy-ey));
                 if (res < 0 || res > 1) continue;
                 var a = (fx-ex)*(fx-ex) + (fy-ey)*(fy-ey);
                 var b = 2*((fx-ex)*(ex-dx) + (fy-ey)*(ey-dy)); 
                 var c = dx*dx + dy*dy + ex*ex + ey*ey - 2*(dx*ex+dy*ey)-(r*r);
-                var res = (b*b-4*a*c); 
-                if (res >= 0)
+                if ((b*b-4*a*c) >= 0)
                     return true; 
             }
         } // Check if player hit a wall =>
     } if (wallMode == "deadly" && !player.warp) {
-        if (dx <= 0 || dx >= game_width ||
-                dy <= 0 || dy >= game_height) {
+        if (dx <= 0 || dx >= game_width || dy <= 0 || dy >= game_height)
             return true;
-        }
     } return false;
 }
 
@@ -460,10 +452,9 @@ function checkForCollision(dx,dy,cx,cy,player,dopti) {
  * Game ends if only one player is alive
  */
 function isRoundOver() {
-    //skippedOne = false
-    skippedOne = true
+    skippedOne = false
     for (var i = 0; i < players.length; i++) {
-        if (players[i].alive) {
+        if (players[i].playing && players[i].alive) {
             if (!skippedOne) skippedOne = true;
             else return false;
         }

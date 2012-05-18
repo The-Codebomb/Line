@@ -27,6 +27,7 @@
  *  - mirrorKeys, mirrors players keys
  *  - moveCircle, moves line's circle (usually used by addPoint)
  *  - narrow, narrows line
+ *  - init, changes some values for example
  *  - slowdown, slows down moving speed
  *  - speedup, speeds up moving speed
  *  - widen, widens line
@@ -36,6 +37,7 @@ function line(name,colour,keyL,keyR,isBot) {
     this.mirrorKeys=mirrorPlayerKeys;
     this.moveCircle=moveCircle;
     this.narrow=narrowLine;
+    this.init=initLine;
     this.slowdown=slowdownLine;
     this.speedup=speedupLine;
     this.splitLine=splitLine;
@@ -54,6 +56,7 @@ function line(name,colour,keyL,keyR,isBot) {
     this.keyR=keyR;
     this.keysMirrored=false;
     this.name=name;
+    this.playing=true;
     this.points=0;
     this.sharpTurns=false;
     this.speed=MOVINGSPEED;
@@ -64,11 +67,6 @@ function line(name,colour,keyL,keyR,isBot) {
     this.circle = document.createElementNS(NS,"circle");
     this.circle = elementSetAttributes(this.circle, {"r":(this.d/2), 
         "fill":colour, "class":name});
-    this.polyline = document.createElementNS(NS,"polyline");
-    this.polyline = elementSetAttributes(this.polyline, {"points":"", 
-        "fill":"none", "stroke":colour, "stroke-width":this.d, "class":name});
-    gamearea.appendChild(this.circle);
-    gamearea.appendChild(this.polyline);
 }
 /* Adds a point and moves the circle */
 function addPoint(x,y,replaceOld) { 
@@ -95,6 +93,28 @@ function splitLine() {
         "fill":"none", "stroke":this.colour, "stroke-width":this.d, 
         "class":this.name});
     gamearea.appendChild(this.polyline);
+}
+/* Set some players attributes and creates new line and circle */
+function initLine(values) {
+    this.alive = this.playing;
+    this.bonus = new Array();
+    this.break = false;
+    this.d = 5;
+    this.keyDown = false;
+    this.keysMirrored = false;
+    this.sharpTurns = false;
+    this.speed = MOVINGSPEED;
+    this.warp = false;
+    this.splitLine();
+    var x = m.floor(m.random()*(game_width-200)+100);
+    var y = m.floor(m.random()*(game_height-200)+100);
+    this.addPoint(x,y,false); // Add starting point
+    gamearea.appendChild(this.circle);
+    if (values) { // Additional attributes to set
+        for (var attribute in values) {
+            this[attribute] = values[attribute];
+        }
+    }
 }
 /* Narrows line */
 function narrowLine(amount) {
@@ -126,5 +146,7 @@ function speedupLine(amount) {
 /* Mirror keys */
 function mirrorPlayerKeys() {
     this.keysMirrored = !this.keysMirrored;
+    if (this.keysMirrored) this.circle.setAttributeNS(null,"fill","#00FF00");
+    else this.circle.setAttributeNS(null,"fill",this.colour);
     return this.keysMirrored;
 }

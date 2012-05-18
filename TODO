@@ -2,13 +2,8 @@ Tehtävää:
   - Pikku säätöjä, esim. nopeudet, ajat ja jotain sellasta?
   - Tartteeko bonuksiin vielä jotain pieniä säätöjä? Värit, tekstit?
   - Tarkista voisko timeout olla kuitenkin vähän pitempi
-  - Vuoron loppumiseen välin painamisen odottelu (tekstien koot kuntoon myös)
-  - Pelin loppuun teksti, joka kertoo voittajan
   - Kunnon botti, jos vaan saadaan aikaseksi...
   - ...jos ei saada, niin yksinpeli pois käytöstä julkaisuun
-
-Tunnettuja bugeja:
-  - Pelaajamäärän valitsin nappi ei poista kaikkia tekstejä asiallisesti
 
 Muuta tarpeellista ennen julkasua ei sitten taida olla, mutta se pitää 
 vielä arvioida uudestaan, cache manifest on pikkujuttu, jonka voin 

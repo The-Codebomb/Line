@@ -362,9 +362,10 @@ function main(bots) {
     } else next_bonus_in--;
     updatePoints(); // Updates points display
     if (isRoundOver()) { // When the round is over ->
-        if (isGameOver()) { // If the game is over ->
+        var winner;
+        if (winner = isGameOver()) { // If the game is over ->
             if (bots) botGameOver();
-            else gameOver();
+            else gameOver(winner);
         } else {
             if (bots) botRoundOver();
             else roundOver();
@@ -474,10 +475,11 @@ function roundOver() {
 /* Check if the game is over */
 /*
  * Game ends if some one has needed points for points_to_end
+ * Returns winning player when game is over, otherwise returns false
  */
 function isGameOver() {
     for (var i in players) {
-        if (players[i].points >= points_to_end) return true;
+        if (players[i].points >= points_to_end) return players[i];
     } return false;
 }
 
@@ -485,10 +487,14 @@ function isGameOver() {
 /* 
  * Called when a game ends
  * Does some cleaning up and informing user (Game Over text)
+ * Takes winner as parameter
  */
-function gameOver() {
+function gameOver(winner) {
     timeout = clearTimeout(timeout);
-    createText(game_width/2,game_height/4,"Game Over!");
+    createText(game_width/2,game_height/4,"Game Over!","red");
+    if (winner) 
+        createText(game_width/2,game_height/5,"The winner is "+winner.name,
+            winner.colour);
 	retryMenu();
 }
 

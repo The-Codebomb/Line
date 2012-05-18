@@ -102,7 +102,7 @@ function init() {
     border = elementSetAttributes(border,{"id":"border", 
         "width":game_width, "height":game_height, "fill":"none", 
         "stroke":"black", "stroke-width":"1"});
-    gamearea.appendChild(border);
+    game.appendChild(border);
     for (var i = 0; i < PLAYERS; i++) { // Create players ->
         players.push(new line(NAMES[i],COLORS[i],DEFAULT_KEYS_LEFT[i],
         DEFAULT_KEYS_RIGHT[i]));
@@ -528,11 +528,9 @@ function continueGame() {
     document.body.addEventListener("keyup",inputKeyUpHandler,true);
 }
 
-var spaceHandlerCall = null; // Function that space handler calls
-/* Key handler when paused */
-function keyHandlerSpace(event) {
-    if (event.which == 32) {
-        spaceHandlerCall();
-        return false;
-    } return true;
+/* Removes all elements from specified SVGElement */
+function clearArea(area) {
+    while(area.lastChild) {
+        area.removeChild(area.lastChild);
+    }
 }

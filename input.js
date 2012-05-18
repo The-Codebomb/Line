@@ -59,18 +59,19 @@ function inputLoop(player) {
     if (player.sharpTurns) player.keyDown = false;
 }
 
+var iKHD = function(e){inputKeyDown(e)};
+var iKHU = function(e){inputKeyUp(e)};
+
 /* Adds keyhandlers for input system */
 function addInputKeyHandlers() {
-    document.body.addEventListener("keydown",function(e){inputKeyDown(e)},
-        true);
-    document.body.addEventListener("keyup",function(e){inputKeyUp(e)},true);
+    document.body.addEventListener("keydown",iKHD,true);
+    document.body.addEventListener("keyup",iKHU,true);
 }
 
 /* Removes keyhandlers for input system */
 function removeInputKeyHandlers() {
-    document.body.removeEventListener("keydown",function(e){inputKeyDown(e)},
-        true);
-    document.body.removeEventListener("keyup",function(e){inputKeyUp(e)},true);
+    document.body.removeEventListener("keydown",iKHD,true);
+    document.body.removeEventListener("keyup",iKHU,true);
     for (var i in players) {
         players[i].keyDown=false;
     }

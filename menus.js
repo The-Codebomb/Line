@@ -32,7 +32,9 @@ function menu(dontClean) {
     mainMenuOn = true;
     if (!dontClean) {
         timeout = clearTimeout(timeout);
-        clearGround();
+        clearArea(menuarea);
+        clearArea(gamearea);
+        bonuses = new Array();
         startGameWithBots();
     }
     var playButton = createButton(game_width/4-100+OFFSETX, game_height/4-50,
@@ -56,8 +58,8 @@ function menu(dontClean) {
 	
 	createText(game_width/3+30+OFFSETX, game_height/2-45, "Left");
 	createText(game_width/2+30+OFFSETX, game_height/2-45, "Right");
-
-    document.body.addEventListener("keydown",startGameKeyHandler,true);
+    
+    addSpaceHandler(function(){endBotGame();startGame();});
 }
 
 /* Displays retry menu, which is showed when all players are dead */
@@ -66,23 +68,17 @@ function retryMenu() {
         100, "Play again", "retry");
 	var menuButton = createButton(game_width/2-100, game_height/2+25, 200, 100,
         "Main Menu", "rtnMenu");
-    document.body.addEventListener("keydown",startGameKeyHandler,true);
+    addSpaceHandler(startGame);
 }
 
 /* Pauses the game */
 function pauseGame() {
-	var OFFSETX = game_width/17;
-    timeout = clearTimeout(timeout); // Stop the "loop" and input ->
-    document.body.removeEventListener("keyup",inputKeyUpHandler,true);
-    document.body.removeEventListener("keydown",inputKeyDownHandler,true);
-    var text = createText(game_width/2,game_height/4,
-		"Press space to continue!");
+    timeout = clearTimeout(timeout); // Stop the "loop"
+    removeInputKeyHandlers(); // Stop input system
+    createText(game_width/2,game_height/3,"Press space to continue!");
     createButton(game_width/2-100,game_height/2-50,200,100,"Main menu",
-        "rtnMenu"); // From menu.js
-    menuarea.appendChild(text); // Key handler for space =>
-    spaceHandlerCall=continueGame;
-    setTimeout('document.body.addEventListener("keyup",keyHandlerSpace,true)', 
-        300);
+        "rtnMenu");
+    addSpaceHandler(continueGame);
 }
 
 /* Creates button with text and eventListener */
@@ -154,11 +150,9 @@ function buttonClick(e,btnType,btn,btnText) {
 	if (btnType == "play") {
         mainMenuOn = false;
         endBotGame();
-		clearGround();
-		removeButtons();
 		startGame();
 	} else if (btnType == "plrAmount") {
-		removeButtons();
+		clearArea(menuarea);
 		playerAmount++;	
 		if (playerAmount > PLAYERS) {
 			playerAmount = 1;
@@ -168,12 +162,8 @@ function buttonClick(e,btnType,btn,btnText) {
 		}
 		menu(true);
 	} else if (btnType == "retry") {
-        clearGround();
-		removeButtons();
 		startGame();
 	} else if (btnType == "rtnMenu") {
-        clearGround();
-		removeButtons();
 		menu();
 	} 
 	
@@ -184,39 +174,10 @@ function buttonClick(e,btnType,btn,btnText) {
 	}
 }
 
-/* Removes all bonuses, polylines and circles from the gamearea */
-function clearGround() { // ***Obsolete***, use clearArea(gamearea) instead
-    /*for (var i = bonuses.length -1; i >= 0; i--) {
-        bonuses[i].remove();
-    }*/
-	
-    var lines = gamearea.getElementsByTagName("polyline");
-	for (var i = lines.length - 1; i >= 0; i--) {
-		gamearea.removeChild(lines[i]);
-	}
-			
-	var circles = gamearea.getElementsByTagName("circle");
-	for (var i = circles.length - 1; i >= 0; i--) {
-		gamearea.removeChild(circles[i]);
-	}
-}
-
-/* Removes all buttons from the menuarea (and rects and texts) */
-function removeButtons() { // ***Obsolete***, use clearArea(menuarea) instead
-	var rects = menuarea.getElementsByTagName("rect"); // Remove rectangles
-	for (var i = rects.length - 1; i >= 0;i--) {
-		menuarea.removeChild(rects[i]);
-	}		
-	var texts = menuarea.getElementsByTagName("text"); // Remove texts
-	for (var i = texts.length - 1; i >= 0;i--) {
-		menuarea.removeChild(texts[i]);
-	}
-}
-
 var setButtonsHandler; // Saves event handler
 /* Sets buttons for given player (asks and sets) */
 function setButtons(playerNum,e,leftOrRight) {
-	removeButtons();
+	clearArea(menuarea);
 	if (leftOrRight == null) {
 		createText(game_width/2,game_height/2, 
 			"Press button for left button for player "+playerNum);
@@ -269,15 +230,4 @@ function getKeyFromCode(keycode) {
         return "Numpad "+(String.fromCharCode(keycode-48));
     if (keycode == undefined) return "None"; // Just undefined
     return "BadKey";
-}
-
-/* Key handler for that begins the game */
-function startGameKeyHandler(event) {
-    if (event.which == 32) {
-        endBotGame();
-        clearGround();
-		removeButtons();
-		startGame();
-        return false;
-    } return true;
 }

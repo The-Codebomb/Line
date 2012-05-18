@@ -36,12 +36,7 @@ function startNewRoundWithBots() {
     clearGround(); // In menus.js
     timeout = clearTimeout(timeout);
     for (var i in players) { // Setting up players ->
-        players[i].splitLine();
-        var x = m.floor(m.random()*(game_width-200)+100);
-        var y = m.floor(m.random()*(game_height-200)+100);
-        players[i].alive = true;
-        players[i].addPoint(x,y,false); // Add starting point
-        gamearea.appendChild(players[i].circle); // FIXME?
+        players[i].init();
     }
     wallMode = "deadly";
     timeout = setTimeout("main(true)",LOOPSPEED); // Start "loop"

@@ -27,6 +27,9 @@ function inputKeyUp(event) {
             players[i].keyDown = false;
             return false;
         }
+    } if (event.which == 32) {
+        pauseGame();
+        return false;
     } return true;
 }
 function inputKeyDown(event) {
@@ -35,11 +38,7 @@ function inputKeyDown(event) {
             players[i].keyDown = event.which;
             return false;
         } 
-    } if (event.which == 32) {
-        pauseGame();
-        return false;
-    }
-    return true;
+    } return true;
 }
 function inputLoop(player) {
     if ((!player.keysMirrored && player.keyDown == player.keyL) || 
@@ -59,5 +58,40 @@ function inputLoop(player) {
     }
     if (player.sharpTurns) player.keyDown = false;
 }
-var inputKeyDownHandler = function(e){inputKeyDown(e)};
-var inputKeyUpHandler = function(e){inputKeyUp(e)};
+
+/* Adds keyhandlers for input system */
+function addInputKeyHandlers() {
+    document.body.addEventListener("keydown",function(e){inputKeyDown(e)},
+        true);
+    document.body.addEventListener("keyup",function(e){inputKeyUp(e)},true);
+}
+
+/* Removes keyhandlers for input system */
+function removeInputKeyHandlers() {
+    document.body.removeEventListener("keydown",function(e){inputKeyDown(e)},
+        true);
+    document.body.removeEventListener("keyup",function(e){inputKeyUp(e)},true);
+    for (var i in players) {
+        players[i].keyDown=false;
+    }
+}
+
+var spaceHandlerCall = null; // Function that keyHandlerSpace calls
+/* Key handler for space key */
+function keyHandlerSpace(event) {
+    if (event.which == 32) {
+        spaceHandlerCall();
+        return false;
+    } return true;
+}
+
+/* Adds keyHandlerSpace */
+function addSpaceHandler(call) {
+    if (call) spaceHandlerCall=call;
+    document.body.addEventListener("keyup",keyHandlerSpace,true);
+}
+
+/* Removes keyHandlerSpace */
+function removeSpaceHandler() {
+    document.body.removeEventListener("keyup",keyHandlerSpace,true);
+}

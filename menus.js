@@ -23,7 +23,6 @@
 var playerAmount = 1; // How many players are playing
 var mainMenuOn; // If main menu is on or not
 var playerSetButtonText = "1 Player";
-var setKeyButtons = new Array();
 
 /* Displays main menu */
 function menu(dontClean) {
@@ -37,9 +36,10 @@ function menu(dontClean) {
         bonuses = new Array();
         startGameWithBots();
     }
-    var playButton = createButton(game_width/4-100+OFFSETX, game_height/4-50,
-		200, 100, "Play", "play");
-	var playersButton = createButton(game_width/3*2-100+OFFSETX,
+    createText(game_width/2,60,"Line!","black",48); // Title
+    createButton(game_width/4-100+OFFSETX, game_height/4-50,
+		200, 100, "Play", "play"); // Play
+	createButton(game_width/3*2-100+OFFSETX, // Changes amount of players
 		game_height/4-25,200, 50, playerSetButtonText, "plrAmount");
 	
 	// Write "Player x" texts + keys + set buttons
@@ -51,8 +51,8 @@ function menu(dontClean) {
 			getKeyFromCode(players[i].keyL));
 		createText(game_width/2+30+OFFSETX, game_height/2+offset, 
 			getKeyFromCode(players[i].keyR));
-		setKeyButtons[i]= createButton(game_width/3*2+OFFSETX,
-			game_height/2-25+offset, 80, 45, "Set", "plr"+(i+1)+"Set");
+		createButton(game_width/3*2+OFFSETX,game_height/2-25+offset, 80, 45, 
+            "Set", "plr"+(i+1)+"Set");
         offset += 50;
     }
 	

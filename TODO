@@ -3,7 +3,6 @@ Tehtävää:
   - Tartteeko bonuksiin vielä jotain pieniä säätöjä? Värit, tekstit?
   - Tarkista voisko timeout olla kuitenkin vähän pitempi
   - Kunnon botti, jos vaan saadaan aikaseksi...
-  - ...jos ei saada, niin yksinpeli pois käytöstä julkaisuun
 
 Muuta tarpeellista ennen julkasua ei sitten taida olla, mutta se pitää 
 vielä arvioida uudestaan, cache manifest on pikkujuttu, jonka voin 

@@ -118,15 +118,23 @@ function startGame() {
     bonuses = new Array();
     mainMenuOn = false;
     for (var i in players) { // Setting up players ->
-        if (i < playerAmount) {
-            players[i] = new line(players[i].name,players[i].colour,
-                players[i].keyL,players[i].keyR);
-        } else { // Lines that aren't used
+        players[i] = new line(players[i].name,players[i].colour,
+            players[i].keyL,players[i].keyR);
+        if (i > playerAmount) { // Lines that aren't used
             players[i].playing = false;
         }
     }
-    points_to_end = 10*(playerAmount-1);
-    startNewRound();
+    points_to_end = 10*(playerAmount-1); // Calculate points
+    if (playerAmount == 1) { // Set up bots for single player game ->
+        for (var i in players) {
+            if (!players[i].playing) {
+                players[i].playing=true;
+                players[i].bot=true;
+            }
+        }
+        points_to_end = 10*(players.length-1);
+    }
+    startNewRound(); // Begin the first round
 }
 
 /* Begins new round */
@@ -135,12 +143,12 @@ function startNewRound() {
     clearArea(menuarea);
     clearArea(gamearea);
     bonuses = new Array();
-    for (var i = 0; i < playerAmount; i++) { // Setting up players ->
-        players[i].init();
+    for (var i in players) { // Setting up players ->
+        if (players[i].playing) players[i].init();
     }
     wallMode = "deadly";
     newPointsDisplay();
-    createText(game_width/2,game_height/3,"Press space to begin the game!");
+    createText(game_width/2,game_height/3,"Press space to continue!");
     var call = function() {
         removeSpaceHandler();
         clearArea(menuarea);
@@ -468,7 +476,7 @@ function isRoundOver() {
  */
 function roundOver() {
     removeInputKeyHandlers();
-    createText(game_width/2,game_height/3,"Press space to continue!");
+    createText(game_width/2,game_height/3,"Press space to begin new round!");
     addSpaceHandler(startNewRound);
 }
 

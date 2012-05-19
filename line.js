@@ -220,11 +220,11 @@ function main(bots) {
                 switch(bonus.type) {
                     case "immortalize": players[i].break = true; break;
                     case "narrow": 
-                        players[i].narrow(2);
+                        players[i].narrow(4);
                         players[i].addPoint(old_x,old_y);
                         break;
-                    case "slowdown": players[i].slowdown(); break;
-                    case "speedup": players[i].speedup(); break;
+                    case "slowdown": players[i].slowdown(2); break;
+                    case "speedup": players[i].speedup(2); break;
                     case "turnSharply": players[i].sharpTurns = true; break;
                     case "warp": 
                         players[i].warp = true; 
@@ -232,7 +232,7 @@ function main(bots) {
                         players[i].circle.setAttributeNS(null,"stroke-width",1);
                         break;
                     case "widen": 
-                        players[i].widen(2);
+                        players[i].widen(4);
                         players[i].addPoint(old_x,old_y);
                         break;
                     case "mirrorKeys": 
@@ -247,7 +247,7 @@ function main(bots) {
                     case "narrowOthers": 
                         for (var k in players) {
                             if (k != i) {
-                                players[k].narrow(2);
+                                players[k].narrow(4);
                                 players[k].addPoint(players[k].x,players[k].y);
                                 players[k].bonus.push({"type":"narrow",
                                     "time":BONUS_TIME});
@@ -256,14 +256,14 @@ function main(bots) {
                     case "slowdownOthers": 
                         for (var k in players) {
                             if (k != i) 
-                                players[k].slowdown();
+                                players[k].slowdown(2);
                                 players[k].bonus.push({"type":"slowdown",
                                     "time":BONUS_TIME});
                         } break;
                     case "speedupOthers": 
                         for (var k in players) {
                             if (k != i) {
-                                players[k].speedup();
+                                players[k].speedup(2);
                                 players[k].bonus.push({"type":"speedup",
                                     "time":BONUS_TIME});
                             }
@@ -280,7 +280,7 @@ function main(bots) {
                     case "widenOthers": 
                         for (var k in players) {
                             if (k != i) {
-                                players[k].widen(2);
+                                players[k].widen(4);
                                 players[k].addPoint(players[k].x,players[k].y);
                                 players[k].bonus.push({"type":"widen",
                                     "time":BONUS_TIME});
@@ -315,11 +315,11 @@ function main(bots) {
                             players[i].addPoint();
                             break;
                         case "narrow": 
-                            players[i].widen(2);
+                            players[i].widen(4);
                             players[i].addPoint(old_x,old_y);
                             break;
-                        case "slowdown": players[i].speedup(); break;
-                        case "speedup": players[i].slowdown(); break;
+                        case "slowdown": players[i].speedup(2); break;
+                        case "speedup": players[i].slowdown(2); break;
                         case "turnSharply": players[i].sharpTurns=false; break;
                         case "warp": 
                             players[i].warp = false; 
@@ -327,7 +327,7 @@ function main(bots) {
                                 "none");
                             break;
                         case "widen": 
-                            players[i].narrow(2);
+                            players[i].narrow(4);
                             players[i].addPoint(old_x,old_y);
                             break;
                         case "keysMirrored": players[i].mirrorKeys(); break;

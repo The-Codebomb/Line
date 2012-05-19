@@ -21,7 +21,7 @@
 */
 
 var bonuses // Array to save bonuses
-var BONUS_R = 15; // Radius of bonuses
+var BONUS_R = 30; // Radius of bonuses
 var BONUS_R_POW2 = m.pow(BONUS_R,2); // Optimization
 
 /* Creates bonus object and adds it to gamearea */
@@ -55,7 +55,7 @@ function bonus(type,x,y) {
     this.remove = removeBonus;
     this.circle = document.createElementNS(NS,"circle");
     this.circle = elementSetAttributes(this.circle,{"cx":this.x, "cy":this.y, 
-        "r":BONUS_R, "stroke-width":3, "id":"bonus_"+x+"_"+y});
+        "r":BONUS_R, "stroke-width":6, "id":"bonus_"+x+"_"+y});
     this.text = document.createElementNS(NS,"text");
     this.text = elementSetAttributes(this.text,{"x":x, "y":y+BONUS_R/10, 
         "font-family":font, "font-size":BONUS_R/2, "text-anchor":"middle"});

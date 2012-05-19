@@ -101,7 +101,7 @@ function initLine(values) {
     this.break = false;
     this.breakcounter=TIME_BETWEEN_BREAKS+m.floor(
         m.random()*TIME_BETWEEN_BREAKS);
-    this.d = 5;
+    this.d = 10;
     this.direction=m.random()*FULLCIRCLE;
     this.keyDown = false;
     this.keysMirrored = false;

@@ -37,13 +37,13 @@ function menu(dontClean) {
         startGameWithBots();
     }
     createText(game_width/2,60,"Line!","black",48); // Title
-    createButton(game_width/4-100+OFFSETX, game_height/4-50,
-		200, 100, "Play", "play"); // Play
-	createButton(game_width/3*2-100+OFFSETX, // Changes amount of players
-		game_height/4-25,200, 50, playerSetButtonText, "plrAmount");
+    createButton(game_width/4+OFFSETX, game_height/4,
+		400, 200, "Play", "play"); // Play
+	createButton(game_width/3*2+OFFSETX, // Changes amount of players
+		game_height/4,400, 100, playerSetButtonText, "plrAmount");
 	
 	// Write "Player x" texts + keys + set buttons
-    offset = 0;
+    var offset = 0;
     for (var i = 0; i < playerAmount; i++) {
         createText(game_width/6+OFFSETX, game_height/2+offset,
 			players[i].name, players[i].colour);
@@ -51,22 +51,22 @@ function menu(dontClean) {
 			getKeyFromCode(players[i].keyL));
 		createText(game_width/2+30+OFFSETX, game_height/2+offset, 
 			getKeyFromCode(players[i].keyR));
-		createButton(game_width/3*2+OFFSETX,game_height/2-25+offset, 80, 45, 
+		createButton(game_width/3*2+OFFSETX,game_height/2+offset, 160, 90, 
             "Set", "plr"+(i+1)+"Set");
-        offset += 50;
+        offset += 100;
     }
 	
-	createText(game_width/3+30+OFFSETX, game_height/2-45, "Left");
-	createText(game_width/2+30+OFFSETX, game_height/2-45, "Right");
+	createText(game_width/3+30+OFFSETX, game_height/2-80, "Left");
+	createText(game_width/2+30+OFFSETX, game_height/2-80, "Right");
     
     addSpaceHandler(function(){endBotGame();startGame();});
 }
 
 /* Displays retry menu, which is showed when all players are dead */
 function retryMenu() {
-	var retryButton = createButton(game_width/2-100, game_height/2-125, 200, 
-        100, "Play again", "retry");
-	var menuButton = createButton(game_width/2-100, game_height/2+25, 200, 100,
+	var retryButton = createButton(game_width/2, game_height/2, 400, 
+        200, "Play again", "retry");
+	var menuButton = createButton(game_width/2, game_height/2, 400, 200,
         "Main Menu", "rtnMenu");
     addSpaceHandler(startGame);
 }
@@ -76,7 +76,7 @@ function pauseGame() {
     timeout = clearTimeout(timeout); // Stop the "loop"
     removeInputKeyHandlers(); // Stop input system
     createText(game_width/2,game_height/3,"Press space to continue!");
-    createButton(game_width/2-100,game_height/2-50,200,100,"Main menu",
+    createButton(game_width/2,game_height/2,400,200,"Main menu",
         "rtnMenu");
     addSpaceHandler(continueGame);
 }
@@ -84,14 +84,13 @@ function pauseGame() {
 /* Creates button with text and eventListener */
 function createButton(x,y,width,height,text,type) {
 	var btn = document.createElementNS(NS,"rect");
-    btn = elementSetAttributes(btn,{"x":x, "y":y, "width":width, 
-        "height":height, "fill":"#FFFFFF", "stroke":"black", 
+    btn = elementSetAttributes(btn,{"x":x-width/2, "y":y-height/2, 
+        "width":width, "height":height, "fill":"#FFFFFF", "stroke":"black", 
         "stroke-width":2});
     
 	var btnText = document.createElementNS(NS,"text");
-    btnText = elementSetAttributes(btnText,{"x":x+width/2, 
-        "y":y+height/2+fontSize/4, "font-family":font, "font-size":fontSize, 
-        "text-anchor":"middle"});
+    btnText = elementSetAttributes(btnText,{"x":x, "y":y+fontSize/4, 
+        "font-family":font, "font-size":fontSize, "text-anchor":"middle"});
 	btnText.textContent = text;
 	
 	menuarea.appendChild(btn);

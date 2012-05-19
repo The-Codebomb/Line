@@ -41,19 +41,19 @@ function newPointsDisplay() {
         "stroke":"black", "stroke-width":"1"});
     pointsarea.appendChild(background);
 	
-    var title = createText(game_width+POINTS_WIDTH/2,160,"Points","",
+    var title = createText(game_width+POINTS_WIDTH/2,320,"Points","",
 		"", "points")// Add title ->
 		
-    var text = createText(game_width+POINTS_WIDTH/2,100, "Points needed",
+    var text = createText(game_width+POINTS_WIDTH/2,200, "Points needed",
 		"", fontSize/2, "points");
 		
-    var text2 = createText(game_width+POINTS_WIDTH/2,100+fontSize/2,
+    var text2 = createText(game_width+POINTS_WIDTH/2,200+fontSize/2,
 		"to win: "+points_to_end, "", fontSize/2, "points");
 		
     var offset = 0; // Add text for every player ->
     var i = 0;
     while (players[i] && players[i].alive) {
-        points_texts[i] = createText(game_width+POINTS_WIDTH/2,200+i*30,"",
+        points_texts[i] = createText(game_width+POINTS_WIDTH/2,400+i*60,"",
 			players[i].colour, fontSize/3*2, "points");
         i++;
     }

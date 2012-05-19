@@ -59,7 +59,7 @@ var NAMES = ["Goa'uld","Dalek","Sylar","Pinkie", // Names
 var DEFAULT_KEYS_LEFT = [37,65,74,97,82]; // Default left keys
 var DEFAULT_KEYS_RIGHT = [39,68,76,99,89]; // Default right keys
 var TURNINGSPEED = 0.1;
-var MOVINGSPEED = 2;
+var MOVINGSPEED = 4;
 var LOOPSPEED = 30;
 var FULLCIRCLE = 2*m.PI;
 var TIME_BETWEEN_BREAKS = 75;
@@ -67,9 +67,9 @@ var BREAKLENGTH = 10;
 var MAX_TIME_BETWEEN_BONUSES = 800;
 var MAX_BONUSES = 5;
 var BONUS_TIME = 200; // How many loops bonuses affect
-var POINTS_WIDTH = 200; // Space to display points
+var POINTS_WIDTH = 400; // Space to display points
 var NS = "http://www.w3.org/2000/svg"; // SVG namespace
-var fontSize = 25;
+var fontSize = 50;
 var font = "Courier New, monospace";
 
 /* Global variables */
@@ -180,7 +180,7 @@ function main(bots) {
     if (wallMode == "deadly") // Set the borders if wallMode has changed
         border.setAttributeNS(null,"stroke-dasharray","");
     else if (wallMode == "warp") 
-        border.setAttributeNS(null,"stroke-dasharray","4 4");
+        border.setAttributeNS(null,"stroke-dasharray","8 8");
     for (var i in players) {
         if (players[i].playing && players[i].alive) {
             var warped = false;
@@ -190,12 +190,12 @@ function main(bots) {
             if (players[i].direction == players[i].oldDirection) 
                 sameDirection = true;
             var old_x = players[i].x;
-            var x = players[i].x + players[i].speed*m.sin(
-                players[i].direction);
+            var x = m.round(players[i].x + players[i].speed*m.sin(
+                players[i].direction));
             var old_y = players[i].y;
-            var y = players[i].y + players[i].speed*m.cos(
-                players[i].direction); // Collision handling =>
-            if (checkForCollision(x,y,players[i])) {
+            var y = m.round(players[i].y + players[i].speed*m.cos(
+                players[i].direction));
+            if (checkForCollision(x,y,players[i])) { // Collision handling ->
                 players[i].alive = false;
                 spillBlood(x,y);
                 for (var k in players) { // Give points to other players ->

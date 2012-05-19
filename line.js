@@ -303,7 +303,6 @@ function main(bots) {
                 if (players[i].bonus[j].time > 0) { // Every iteration
                     switch(players[i].bonus[j].type) {
                         case "immortalize": players[i].breakcounter++; break;
-                        case "mirrorKeys": break;
                         case "warpAll": wallMode = "warp"; break;
                     }
                     players[i].bonus[j].time--;

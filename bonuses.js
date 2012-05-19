@@ -101,7 +101,7 @@ function bonus(type,x,y) {
         this.text.textContent = "mirror";
         this.text.setAttributeNS(null,"fill","FFFFFF");
     } else if (type == "narrowOthers") {
-        this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
+        this.circle = elementSetAttributes(this.circle, {"stroke":"red", 
             "fill":"00FF33"});
         this.text.textContent = "narrow";
         this.text.setAttributeNS(null,"fill","000000");
@@ -127,7 +127,7 @@ function bonus(type,x,y) {
         this.text.textContent = "warp";
         this.text.setAttributeNS(null,"fill","000000");
     } else if (type == "widenOthers") {
-        this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
+        this.circle = elementSetAttributes(this.circle, {"stroke":"red", 
             "fill":"00CCFF"});
         this.text.textContent = "widen";
         this.text.setAttributeNS(null,"fill","000000");

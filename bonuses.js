@@ -61,81 +61,81 @@ function bonus(type,x,y) {
         "font-family":font, "font-size":BONUS_R/2, "text-anchor":"middle"});
     if (type == "immortalize") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
-            "fill":"00CC00"});
+            "fill":"#00CC00"});
         this.text.textContent = "immortal";
-        this.text.setAttributeNS(null,"fill","000000");
+        this.text.setAttributeNS(null,"fill","#000000");
     } else if (type == "narrow") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
-            "fill":"00FF33"});
+            "fill":"#00FF33"});
         this.text.textContent = "narrow";
-        this.text.setAttributeNS(null,"fill","000000");
+        this.text.setAttributeNS(null,"fill","#000000");
     } else if (type == "slowdown") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
-            "fill":"3300FF"});
+            "fill":"#3300FF"});
         this.text.textContent = "slow";
-        this.text.setAttributeNS(null,"fill","000000");
+        this.text.setAttributeNS(null,"fill","#000000");
     } else if (type == "speedup") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
-            "fill":"FF3300"});
+            "fill":"#FF3300"});
         this.text.textContent = "speed";
-        this.text.setAttributeNS(null,"fill","000000");
+        this.text.setAttributeNS(null,"fill","#000000");
     } else if (type == "turnSharply") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
-            "fill":"FFFF00"});
+            "fill":"#FFFF00"});
         this.text.textContent = "90°";
-        this.text = elementSetAttributes(this.text,{"fill":"000000",
+        this.text = elementSetAttributes(this.text,{"fill":"#000000",
             "font-size":BONUS_R,"y":y+BONUS_R/3});
     } else if (type == "warp") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
-            "fill":"FFFFFF"});
+            "fill":"#FFFFFF"});
         this.text.textContent = "warp";
-        this.text.setAttributeNS(null,"fill","000000");
+        this.text.setAttributeNS(null,"fill","#000000");
     } else if (type == "widen") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
-            "fill":"00CCFF"});
+            "fill":"#00CCFF"});
         this.text.textContent = "widen";
-        this.text.setAttributeNS(null,"fill","000000");
+        this.text.setAttributeNS(null,"fill","#000000");
     } else if (type == "mirrorKeys") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"red", 
-            "fill":"000000"});
+            "fill":"#000000"});
         this.text.textContent = "mirror";
-        this.text.setAttributeNS(null,"fill","FFFFFF");
+        this.text.setAttributeNS(null,"fill","#FFFFFF");
     } else if (type == "narrowOthers") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"red", 
-            "fill":"00FF33"});
+            "fill":"#00FF33"});
         this.text.textContent = "narrow";
-        this.text.setAttributeNS(null,"fill","000000");
+        this.text.setAttributeNS(null,"fill","#000000");
     } else if (type == "slowdownOthers") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"red", 
-            "fill":"3300FF"});
+            "fill":"#3300FF"});
         this.text.textContent = "slow";
-        this.text.setAttributeNS(null,"fill","000000");
+        this.text.setAttributeNS(null,"fill","#000000");
     } else if (type == "speedupOthers") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"red", 
-            "fill":"FF3300"});
+            "fill":"#FF3300"});
         this.text.textContent = "speed";
         this.text.setAttributeNS(null,"fill","000000");
     } else if (type == "turnOthersSharply") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"red", 
-            "fill":"FFFF00"});
+            "fill":"#FFFF00"});
         this.text.textContent = "90°";
-        this.text = elementSetAttributes(this.text,{"fill":"000000",
+        this.text = elementSetAttributes(this.text,{"fill":"#000000",
             "font-size":BONUS_R,"y":y+BONUS_R/3});
     } else if (type == "warpAll") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"blue", 
-            "fill":"FFFFFF"});
+            "fill":"#FFFFFF"});
         this.text.textContent = "warp";
-        this.text.setAttributeNS(null,"fill","000000");
+        this.text.setAttributeNS(null,"fill","#000000");
     } else if (type == "widenOthers") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"red", 
-            "fill":"00CCFF"});
+            "fill":"#00CCFF"});
         this.text.textContent = "widen";
-        this.text.setAttributeNS(null,"fill","000000");
+        this.text.setAttributeNS(null,"fill","#000000");
     } else if (type == "clear") {
         this.circle = elementSetAttributes(this.circle, {"stroke":"blue", 
-            "fill":"000000"});
+            "fill":"#000000"});
         this.text.textContent = "clear";
-        this.text.setAttributeNS(null,"fill","FFFFFF");
+        this.text.setAttributeNS(null,"fill","#FFFFFF");
     }
     gamearea.appendChild(this.circle);
     gamearea.appendChild(this.text);

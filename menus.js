@@ -64,9 +64,9 @@ function menu(dontClean) {
 
 /* Displays retry menu, which is showed when all players are dead */
 function retryMenu() {
-	var retryButton = createButton(game_width/2, game_height/2, 400, 
-        200, "Play again", "retry");
-	var menuButton = createButton(game_width/2, game_height/2, 400, 200,
+	var retryButton = createButton(game_width/2, game_height/2-150, 400, 200, 
+        "Play again", "retry");
+	var menuButton = createButton(game_width/2, game_height/2+100, 400, 200,
         "Main Menu", "rtnMenu");
     addSpaceHandler(startGame);
 }

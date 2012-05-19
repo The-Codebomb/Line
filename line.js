@@ -94,7 +94,7 @@ function init() {
     border = document.createElementNS(NS,"rect"); 
     // Setting up correct height =>
     if (game.getBoundingClientRect().height > window.innerHeight) {
-        window.addEventListener("resize",function(){fixGameHeight()},false);
+        window.addEventListener("resize",function(){fixGameHeight()},true);
         fixGameHeight();
     }
     game_width = game.viewBox.baseVal.width-POINTS_WIDTH;

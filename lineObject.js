@@ -150,7 +150,7 @@ function speedupLine(amount) {
 /* Mirror keys */
 function mirrorPlayerKeys() {
     this.keysMirrored = !this.keysMirrored;
-    if (this.keysMirrored) this.circle.setAttributeNS(null,"fill","00FF00");
+    if (this.keysMirrored) this.circle.setAttributeNS(null,"fill","#00FF00");
     else this.circle.setAttributeNS(null,"fill",this.colour);
     return this.keysMirrored;
 }

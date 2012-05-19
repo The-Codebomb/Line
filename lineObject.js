@@ -112,6 +112,7 @@ function initLine(values) {
     var x = m.floor(m.random()*(game_width-200)+100);
     var y = m.floor(m.random()*(game_height-200)+100);
     this.addPoint(x,y,false); // Add starting point
+    this.circle.setAttributeNS(null,"stroke","none");
     gamearea.appendChild(this.circle);
     if (values) { // Additional attributes to set
         for (var attribute in values) {

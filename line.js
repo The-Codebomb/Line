@@ -497,6 +497,7 @@ function isGameOver() {
  * Takes winner as parameter
  */
 function gameOver(winner) {
+    removeInputKeyHandlers();
     timeout = clearTimeout(timeout);
     createText(game_width/2,game_height/4,"Game Over!","red");
     if (winner) 

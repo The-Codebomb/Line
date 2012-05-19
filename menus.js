@@ -36,7 +36,7 @@ function menu(dontClean) {
         bonuses = new Array();
         startGameWithBots();
     }
-    createText(game_width/2,60,"Line!","black",fontSize*2); // Title
+    createText(game_width/2,160,"Line!","black",fontSize*2); // Title
     createButton(game_width/4+OFFSETX, game_height/4,
 		400, 200, "Play", "play"); // Play
 	createButton(game_width/3*2+OFFSETX, // Changes amount of players

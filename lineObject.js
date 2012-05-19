@@ -49,7 +49,7 @@ function line(name,colour,keyL,keyR,isBot) {
     this.breakcounter=TIME_BETWEEN_BREAKS+m.floor(
         m.random()*TIME_BETWEEN_BREAKS);
     this.colour=colour;
-    this.d=5;
+    this.d=10;
     this.direction=m.random()*FULLCIRCLE;
     this.keyDown=false;
     this.keyL=keyL;

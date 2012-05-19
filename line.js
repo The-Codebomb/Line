@@ -120,7 +120,7 @@ function startGame() {
     for (var i in players) { // Setting up players ->
         players[i] = new line(players[i].name,players[i].colour,
             players[i].keyL,players[i].keyR);
-        if (i > playerAmount) { // Lines that aren't used
+        if (i >= playerAmount) { // Lines that aren't used
             players[i].playing = false;
         }
     }

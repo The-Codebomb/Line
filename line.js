@@ -199,7 +199,8 @@ function main(bots) {
                 players[i].alive = false;
                 spillBlood(x,y);
                 for (var k in players) { // Give points to other players ->
-                    if (players[k].alive) players[k].points++;
+                    if (players[k].playing && players[k].alive) 
+                        players[k].points++;
                 }
             }
             if ((wallMode == "warp" || players[i].warp) && // Warping ->

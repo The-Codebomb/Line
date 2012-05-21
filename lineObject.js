@@ -109,10 +109,11 @@ function initLine(values) {
     this.speed = MOVINGSPEED;
     this.warp = false;
     this.splitLine();
-    var x = m.floor(m.random()*(game_width-200)+100);
+    var x = m.floor(m.random()*(game_width-200)+100); // Add starting point ->
     var y = m.floor(m.random()*(game_height-200)+100);
-    this.addPoint(x,y,false); // Add starting point
-    this.circle.setAttributeNS(null,"stroke","none");
+    this.addPoint(x,y,false);
+    this.circle = elementSetAttributes(this.circle,{"r":(this.d/2), 
+        "stroke":"none", "fill":this.colour}); // Return circle to defaults
     gamearea.appendChild(this.circle);
     if (values) { // Additional attributes to set
         for (var attribute in values) {
@@ -126,6 +127,7 @@ function narrowLine(amount) {
         if (this.d > amount) this.d -= amount;
     } else if (this.d > 1) this.d--;
     this.splitLine();
+    this.circle.setAttributeNS(null,"r",this.d/2);
     return this.d;
 }
 /* Widens line */
@@ -133,6 +135,7 @@ function widenLine(amount) {
     if (amount) this.d += amount;
     else this.d++;
     this.splitLine();
+    this.circle.setAttributeNS(null,"r",this.d/2);
     return this.d;
 }
 /* Slows down line */

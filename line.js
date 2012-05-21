@@ -45,10 +45,6 @@
  * You may want to check out http://codebomb.dy.fi/
  */
 
-/* Some configs */
-var breaksOn = true; // Is breaking used or not
-var wallMode = "deadly"; // Valid values are "deadly" and "warp"
-
 /* Constants */
 m = Math;
 var PLAYERS = 6; // Maximium amount of players
@@ -58,22 +54,31 @@ var NAMES = ["Goa'uld","Dalek","Sylar","Pinkie", // Names
     "Boba Fett","Darth Vader"];
 var DEFAULT_KEYS_LEFT = [37,65,74,97,82]; // Default left keys
 var DEFAULT_KEYS_RIGHT = [39,68,76,99,89]; // Default right keys
+
 var TURNINGSPEED = 0.1;
-var MOVINGSPEED = 4;
-var LOOPSPEED = 30;
-var FULLCIRCLE = 2*m.PI;
+var MOVINGSPEED = 5;
+var SPEEDSTEP = 4;
+
 var TIME_BETWEEN_BREAKS = 75;
 var BREAKLENGTH = 10;
+
 var MAX_TIME_BETWEEN_BONUSES = 800;
 var MAX_BONUSES = 5;
 var BONUS_TIME = 200; // How many loops bonuses affect
 var POINTS_WIDTH = 400; // Space to display points
-var NS = "http://www.w3.org/2000/svg"; // SVG namespace
+var WIDTHSTEP = 5; // How much line's width is changed
+
+var LOOPSPEED = 30; // Microseconds between loops
+
 var fontSize = 50;
 var font = "Courier New, monospace";
 
+var FULLCIRCLE = 2*m.PI;
+var NS = "http://www.w3.org/2000/svg"; // SVG namespace
+
 /* Global variables */
 var border; // SVGrect element
+var breaksOn = true; // Is breaking used or not
 var game; // SVG element
 var gamearea; // SVG element
 var game_width; // Width of the gamearea
@@ -84,6 +89,7 @@ var players = new Array(); // Array for line-objects
 var points_to_end;
 var pointsarea; // SVG element
 var timeout;
+var wallMode = "deadly"; // Valid values are "deadly" and "warp"
 
 /* Initializing function */
 function init() {
@@ -221,11 +227,11 @@ function main(bots) {
                 switch(bonus.type) {
                     case "immortalize": players[i].break = true; break;
                     case "narrow": 
-                        players[i].narrow(4);
+                        players[i].narrow(WIDTHSTEP);
                         players[i].addPoint(old_x,old_y);
                         break;
-                    case "slowdown": players[i].slowdown(2); break;
-                    case "speedup": players[i].speedup(2); break;
+                    case "slowdown": players[i].slowdown(SPEEDSTEP); break;
+                    case "speedup": players[i].speedup(SPEEDSTEP); break;
                     case "turnSharply": players[i].sharpTurns = true; break;
                     case "warp": 
                         players[i].warp = true; 
@@ -233,7 +239,7 @@ function main(bots) {
                         players[i].circle.setAttributeNS(null,"stroke-width",1);
                         break;
                     case "widen": 
-                        players[i].widen(4);
+                        players[i].widen(WIDTHSTEP);
                         players[i].addPoint(old_x,old_y);
                         break;
                     case "mirrorKeys": 
@@ -248,7 +254,7 @@ function main(bots) {
                     case "narrowOthers": 
                         for (var k in players) {
                             if (k != i) {
-                                players[k].narrow(4);
+                                players[k].narrow(WIDTHSTEP);
                                 players[k].addPoint(players[k].x,players[k].y);
                                 players[k].bonus.push({"type":"narrow",
                                     "time":BONUS_TIME});
@@ -257,14 +263,14 @@ function main(bots) {
                     case "slowdownOthers": 
                         for (var k in players) {
                             if (k != i) 
-                                players[k].slowdown(2);
+                                players[k].slowdown(SPEEDSTEP);
                                 players[k].bonus.push({"type":"slowdown",
                                     "time":BONUS_TIME});
                         } break;
                     case "speedupOthers": 
                         for (var k in players) {
                             if (k != i) {
-                                players[k].speedup(2);
+                                players[k].speedup(SPEEDSTEP);
                                 players[k].bonus.push({"type":"speedup",
                                     "time":BONUS_TIME});
                             }
@@ -276,12 +282,11 @@ function main(bots) {
                                 players[k].bonus.push({"type":"turnSharply",
                                     "time":BONUS_TIME});
                             }
-                        }
-                        break;
+                        } break;
                     case "widenOthers": 
                         for (var k in players) {
                             if (k != i) {
-                                players[k].widen(4);
+                                players[k].widen(WIDTHSTEP);
                                 players[k].addPoint(players[k].x,players[k].y);
                                 players[k].bonus.push({"type":"widen",
                                     "time":BONUS_TIME});
@@ -315,11 +320,15 @@ function main(bots) {
                             players[i].addPoint();
                             break;
                         case "narrow": 
-                            players[i].widen(4);
+                            players[i].widen(WIDTHSTEP);
                             players[i].addPoint(old_x,old_y);
                             break;
-                        case "slowdown": players[i].speedup(2); break;
-                        case "speedup": players[i].slowdown(2); break;
+                        case "slowdown": 
+                            players[i].speedup(SPEEDSTEP); 
+                            break;
+                        case "speedup": 
+                            players[i].slowdown(SPEEDSTEP); 
+                            break;
                         case "turnSharply": players[i].sharpTurns=false; break;
                         case "warp": 
                             players[i].warp = false; 
@@ -327,7 +336,7 @@ function main(bots) {
                                 "none");
                             break;
                         case "widen": 
-                            players[i].narrow(4);
+                            players[i].narrow(WIDTHSTEP);
                             players[i].addPoint(old_x,old_y);
                             break;
                         case "keysMirrored": players[i].mirrorKeys(); break;

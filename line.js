@@ -99,11 +99,11 @@ function init() {
     pointsarea = document.getElementById("points");
     border = document.createElementNS(NS,"rect"); 
     // Setting up correct height =>
-    if (document.body.getBoundingClientRect().height > window.innerHeight) {
-        window.addEventListener("resize",fixGameHeight,true);
-        fixGameHeight();
+    if (document.body.getBoundingClientRect().height > window.innerHeight ||
+            document.body.getBoundingClientRect().width > window.innerWidth) {
+        window.addEventListener("resize",fixGameSize,true);
+        fixGameSize();
     }
-    console.log(document.body.getBoundingClientRect().height,window.innerHeight);
     game_width = game.viewBox.baseVal.width-POINTS_WIDTH;
     game_height = game.viewBox.baseVal.height;
     border = elementSetAttributes(border,{"id":"border", 
@@ -530,8 +530,9 @@ function elementSetAttributes(element,values) {
  * At least Opera and Firefox need this
  * Used in init and body.onresize
  */
-function fixGameHeight() {
+function fixGameSize() {
     game.setAttributeNS(null,"height",m.floor(window.innerHeight*0.95));
+    game.setAttributeNS(null,"width",m.floor(window.innerWidth*0.95));
 }
 
 /* Continues the game */

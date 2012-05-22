@@ -185,7 +185,7 @@ function startNewRound() {
 function main(bots) {
     var time = (new Date()).getTime(); // To count time of one loop
     if (wallMode == "deadly") // Set the borders if wallMode has changed
-        border.setAttributeNS(null,"stroke-dasharray","");
+        border.setAttributeNS(null,"stroke-dasharray","none");
     else if (wallMode == "warp") 
         border.setAttributeNS(null,"stroke-dasharray","8,8");
     for (var i in players) {
@@ -303,7 +303,6 @@ function main(bots) {
                         }
                         break;
                 }
-                console.log(bonus.type);
                 bonus.remove();
             } // Handle bonuses that player has got =>
             for (var j = players[i].bonus.length-1; j >= 0; j--) {
@@ -392,7 +391,10 @@ function main(bots) {
     }
     time = (new Date()).getTime()-time; // Looping ->
     looptime = LOOPSPEED - time;
-    if (looptime < 0) {looptime = 0; console.log("warning: too slow system");}
+    if (looptime < 0) {
+        looptime = 0; 
+        //console.log("Warning: too slow system");
+    } 
     if (bots && timeout && mainMenuOn) timeout = setTimeout("main(true)",
         looptime);
     else if (timeout) timeout = setTimeout("main()",looptime);

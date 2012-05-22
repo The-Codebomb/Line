@@ -99,10 +99,11 @@ function init() {
     pointsarea = document.getElementById("points");
     border = document.createElementNS(NS,"rect"); 
     // Setting up correct height =>
-    if (game.getBoundingClientRect().height > window.innerHeight) {
-        window.addEventListener("resize",function(){fixGameHeight()},true);
+    if (document.body.getBoundingClientRect().height > window.innerHeight) {
+        window.addEventListener("resize",fixGameHeight,true);
         fixGameHeight();
     }
+    console.log(document.body.getBoundingClientRect().height,window.innerHeight);
     game_width = game.viewBox.baseVal.width-POINTS_WIDTH;
     game_height = game.viewBox.baseVal.height;
     border = elementSetAttributes(border,{"id":"border", 

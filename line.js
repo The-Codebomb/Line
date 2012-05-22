@@ -186,7 +186,7 @@ function main(bots) {
     if (wallMode == "deadly") // Set the borders if wallMode has changed
         border.setAttributeNS(null,"stroke-dasharray","");
     else if (wallMode == "warp") 
-        border.setAttributeNS(null,"stroke-dasharray","8 8");
+        border.setAttributeNS(null,"stroke-dasharray","8,8");
     for (var i in players) {
         if (players[i].playing && players[i].alive) {
             var warped = false;

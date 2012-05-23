@@ -13,6 +13,6 @@ about This Game, write about it to code@codebomb.dy.fi .
 
 Code contributions are welcome, when they are made with care and passion. Git commit messages should be well written. Forks are allowed of course.
 
-Check LICENSE file in this directory for more information about licensing. This Game is allowed distribute in minified form when this and above comment are included in readable form. Also GPL license of version 2 or later is recommended to be provided as a separate file. Remember that non-minified source code has to be always provided as GPL requires. 
+Licensed under GPL v2 or later. Check LICENSE file for more information about licensing.
 
 You may want to check out http://codebomb.dy.fi/

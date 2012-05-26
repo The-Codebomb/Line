@@ -74,10 +74,9 @@ function addPoint(x,y,replaceOld) {
     var points = this.polyline.getAttributeNS(null,"points");
     if (replaceOld == true) {
         points = points.replace(/ [\d\.]+,[\d\.]+$/,"");
-        this.polyline.setAttributeNS(null,"points",points);
     }
     if (points) this.polyline.setAttributeNS(null,"points",points+" "+x+","+y);
-    else this.polyline.setAttributeNS(null,"points",points+x+","+y);
+    else this.polyline.setAttributeNS(null,"points",x+","+y);
     this.moveCircle(x,y);
 }
 /* Just moves the circle */

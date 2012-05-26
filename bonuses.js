@@ -48,10 +48,10 @@ var BONUS_R_POW2 = m.pow(BONUS_R,2); // Optimization
  *  - clear (blue,black)
  *  - immortalizeAll (blue,green)
  */
-function bonus(type,x,y) {
+function bonus(name,x,y) {
     this.x = x;
     this.y = y;
-    this.type = type;
+    this.name = name;
     this.remove = removeBonus;
     this.circle = document.createElementNS(NS,"circle");
     this.circle = elementSetAttributes(this.circle,{"cx":this.x, "cy":this.y, 
@@ -59,83 +59,142 @@ function bonus(type,x,y) {
     this.text = document.createElementNS(NS,"text");
     this.text = elementSetAttributes(this.text,{"x":x, "y":y+BONUS_R/10, 
         "font-family":font, "font-size":BONUS_R/2, "text-anchor":"middle"});
-    if (type == "immortalize") {
-        this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
-            "fill":"#00CC00"});
-        this.text.textContent = "immortal";
-        this.text.setAttributeNS(null,"fill","#000000");
-    } else if (type == "narrow") {
-        this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
-            "fill":"#00FF33"});
-        this.text.textContent = "narrow";
-        this.text.setAttributeNS(null,"fill","#000000");
-    } else if (type == "slowdown") {
-        this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
-            "fill":"#3300FF"});
-        this.text.textContent = "slow";
-        this.text.setAttributeNS(null,"fill","#000000");
-    } else if (type == "speedup") {
-        this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
-            "fill":"#FF3300"});
-        this.text.textContent = "speed";
-        this.text.setAttributeNS(null,"fill","#000000");
-    } else if (type == "turnSharply") {
-        this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
-            "fill":"#FFFF00"});
-        this.text.textContent = "90°";
-        this.text = elementSetAttributes(this.text,{"fill":"#000000",
-            "font-size":BONUS_R,"y":y+BONUS_R/3});
-    } else if (type == "warp") {
-        this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
-            "fill":"#FFFFFF"});
-        this.text.textContent = "warp";
-        this.text.setAttributeNS(null,"fill","#000000");
-    } else if (type == "widen") {
-        this.circle = elementSetAttributes(this.circle, {"stroke":"green", 
-            "fill":"#00CCFF"});
-        this.text.textContent = "widen";
-        this.text.setAttributeNS(null,"fill","#000000");
-    } else if (type == "mirrorKeys") {
-        this.circle = elementSetAttributes(this.circle, {"stroke":"red", 
-            "fill":"#000000"});
-        this.text.textContent = "mirror";
-        this.text.setAttributeNS(null,"fill","#FFFFFF");
-    } else if (type == "narrowOthers") {
-        this.circle = elementSetAttributes(this.circle, {"stroke":"red", 
-            "fill":"#00FF33"});
-        this.text.textContent = "narrow";
-        this.text.setAttributeNS(null,"fill","#000000");
-    } else if (type == "slowdownOthers") {
-        this.circle = elementSetAttributes(this.circle, {"stroke":"red", 
-            "fill":"#3300FF"});
-        this.text.textContent = "slow";
-        this.text.setAttributeNS(null,"fill","#000000");
-    } else if (type == "speedupOthers") {
-        this.circle = elementSetAttributes(this.circle, {"stroke":"red", 
-            "fill":"#FF3300"});
-        this.text.textContent = "speed";
-        this.text.setAttributeNS(null,"fill","000000");
-    } else if (type == "turnOthersSharply") {
-        this.circle = elementSetAttributes(this.circle, {"stroke":"red", 
-            "fill":"#FFFF00"});
-        this.text.textContent = "90°";
-        this.text = elementSetAttributes(this.text,{"fill":"#000000",
-            "font-size":BONUS_R,"y":y+BONUS_R/3});
-    } else if (type == "warpAll") {
-        this.circle = elementSetAttributes(this.circle, {"stroke":"blue", 
-            "fill":"#FFFFFF"});
-        this.text.textContent = "warp";
-        this.text.setAttributeNS(null,"fill","#000000");
-    } else if (type == "widenOthers") {
-        this.circle = elementSetAttributes(this.circle, {"stroke":"red", 
-            "fill":"#00CCFF"});
-        this.text.textContent = "widen";
-        this.text.setAttributeNS(null,"fill","#000000");
-    } else if (type == "clear") {
-        this.circle = elementSetAttributes(this.circle, {"stroke":"blue", 
-            "fill":"#000000"});
-        this.text.textContent = "clear";
-        this.text.setAttributeNS(null,"fill","#FFFFFF");
+    switch(name) {
+        case "immortalize":
+            this.circle.setAttributeNS(null,"fill","#00CC00");
+            this.text.textContent = "immortal";
+            this.text.setAttributeNS(null,"fill","#000000");
+            this.effects = "self";
+            this.type = "immortalize";
+            this.time = BONUS_TIME;
+            break;
+        case "narrow":
+            this.circle.setAttributeNS(null,"fill","#00FF33");
+            this.text.textContent = "narrow";
+            this.text.setAttributeNS(null,"fill","#000000");
+            this.effects = "self";
+            this.type = "width";
+            this.time = BONUS_TIME;
+            this.dwidth = 0-WIDTHSTEP;
+            break;
+        case "slowdown":
+            this.circle.setAttributeNS(null,"fill","#3300FF");
+            this.text.textContent = "slow";
+            this.text.setAttributeNS(null,"fill","#000000");
+            this.effects = "self";
+            this.type = "speed";
+            this.time = BONUS_TIME;
+            this.dspeed = 0-SPEEDSTEP;
+            break;
+        case "speedup":
+            this.circle.setAttributeNS(null,"fill","#FF3300");
+            this.text.textContent = "speed";
+            this.text.setAttributeNS(null,"fill","#000000");
+            this.effects = "self";
+            this.type = "speed";
+            this.time = BONUS_TIME;
+            this.dspeed = SPEEDSTEP;
+            break;
+        case "turnSharply":
+            this.circle.setAttributeNS(null,"fill","#FFFF00");
+            this.text.textContent = "90°";
+            this.text = elementSetAttributes(this.text,{"fill":"#000000",
+                "font-size":BONUS_R,"y":y+BONUS_R/3});
+            this.effects = "self";
+            this.type = "turnSharply";
+            this.time = BONUS_TIME;
+            break;
+        case "warp":
+            this.circle.setAttributeNS(null,"fill","#FFFFFF");
+            this.text.textContent = "warp";
+            this.text.setAttributeNS(null,"fill","#000000");
+            this.effects = "self";
+            this.type = "warp";
+            this.time = BONUS_TIME;
+            break;
+        case "widen":
+            this.circle.setAttributeNS(null,"fill","#00CCFF");
+            this.text.textContent = "widen";
+            this.text.setAttributeNS(null,"fill","#000000");
+            this.effects = "self";
+            this.type = "width";
+            this.time = BONUS_TIME;
+            this.dwidth = WIDTHSTEP;
+            break;
+        case "mirrorKeys":
+            this.circle.setAttributeNS(null,"fill","#000000");
+            this.text.textContent = "mirror";
+            this.text.setAttributeNS(null,"fill","#FFFFFF");
+            this.effects = "others";
+            this.type = "mirrorKeys";
+            this.time = BONUS_TIME;
+            break;
+        case "narrowOthers":
+            this.circle.setAttributeNS(null,"fill","#00FF33");
+            this.text.textContent = "narrow";
+            this.text.setAttributeNS(null,"fill","#000000");
+            this.effects = "others";
+            this.type = "width";
+            this.time = BONUS_TIME;
+            this.dwidth = 0-WIDTHSTEP;
+            break;
+        case "slowdownOthers":
+            this.circle.setAttributeNS(null,"fill","#3300FF");
+            this.text.textContent = "slow";
+            this.text.setAttributeNS(null,"fill","#000000");
+            this.effects = "others";
+            this.type = "speed";
+            this.time = BONUS_TIME;
+            this.dspeed = 0-SPEEDSTEP;
+            break;
+        case "speedupOthers":
+            this.circle.setAttributeNS(null,"fill","#FF3300");
+            this.text.textContent = "speed";
+            this.text.setAttributeNS(null,"fill","000000");
+            this.effects = "others";
+            this.type = "speed";
+            this.time = BONUS_TIME;
+            this.dspeed = SPEEDSTEP;
+            break;
+        case "turnOthersSharply":
+            this.circle.setAttributeNS(null,"fill","#FFFF00");
+            this.text.textContent = "90°";
+            this.text = elementSetAttributes(this.text,{"fill":"#000000",
+                "font-size":BONUS_R,"y":y+BONUS_R/3});
+            this.effects = "others";
+            this.type = "turnSharply";
+            this.time = BONUS_TIME;
+            break;
+        case "warpAll":
+            this.circle.setAttributeNS(null,"fill","#FFFFFF");
+            this.text.textContent = "warp";
+            this.text.setAttributeNS(null,"fill","#000000");
+            this.effects = "all";
+            this.type = "warp";
+            this.time = BONUS_TIME;
+            break;
+        case "widenOthers":
+            this.circle.setAttributeNS(null,"fill","#00CCFF");
+            this.text.textContent = "widen";
+            this.text.setAttributeNS(null,"fill","#000000");
+            this.effects = "others";
+            this.type = "width";
+            this.time = BONUS_TIME;
+            this.dwidth = WIDTHSTEP;
+            break;
+        case "clear":
+            this.circle.setAttributeNS(null,"fill","#000000");
+            this.text.textContent = "clear";
+            this.text.setAttributeNS(null,"fill","#FFFFFF");
+            this.effects = "all";
+            this.type = "clear";
+            this.time = BONUS_TIME;
+            break;
+    }
+    switch(this.effects) {
+        case "self": this.circle.setAttributeNS(null,"stroke","green"); break;
+        case "others": this.circle.setAttributeNS(null,"stroke","red"); break;
+        case "all": this.circle.setAttributeNS(null,"stroke","blue"); break;
     }
     gamearea.appendChild(this.circle);
     gamearea.appendChild(this.text);

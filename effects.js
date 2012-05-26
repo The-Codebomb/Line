@@ -31,12 +31,12 @@ function spillBlood(x,y) {
         if (nx < x-5) var ny = m.random()*10+y-10;
         else if (nx > x+5) var ny = m.random()*10+y;
         else var ny = m.random()*30+y-15;
-        if (nx >= game_width) nx = game_width-1;
-        else if(nx <= 0) nx = 1;
-        if (ny >= game_height) ny = game_height-1;
-        if (ny <= 0) ny = 1;
+        if (nx >= game_width) nx = game_width-2;
+        else if(nx <= 0) nx = 2;
+        if (ny >= game_height) ny = game_height-2;
+        if (ny <= 0) ny = 2;
         spill = document.createElementNS(NS,"circle");
-        spill = elementSetAttributes(spill,{"r":m.random(), 
+        spill = elementSetAttributes(spill,{"r":m.random()*2, 
             "fill":"red", "class":"blood", "cx":nx, "cy":ny});
         gamearea.appendChild(spill);
     }

@@ -108,7 +108,7 @@ function init() {
     game_height = game.viewBox.baseVal.height;
     border = elementSetAttributes(border,{"id":"border", 
         "width":game_width, "height":game_height, "fill":"none", 
-        "stroke":"black", "stroke-width":"1"});
+        "stroke":"black", "stroke-width":"5"});
     game.appendChild(border);
     for (var i = 0; i < PLAYERS; i++) { // Create players ->
         players.push(new line(NAMES[i],COLORS[i],DEFAULT_KEYS_LEFT[i],

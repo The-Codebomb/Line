@@ -38,7 +38,7 @@ function newPointsDisplay() {
     var background = document.createElementNS(NS,"rect"); // Add background ->
     elementSetAttributes(background,{"id":"p_background", "x":game_width, 
         "width":POINTS_WIDTH, "height":game_height, "fill":"white", 
-        "stroke":"black", "stroke-width":"1"});
+        "stroke":"black", "stroke-width":"5"});
     pointsarea.appendChild(background);
 	
     var title = createText(game_width+POINTS_WIDTH/2,320,"Points","",

@@ -23,22 +23,22 @@
 var bonuses // Array to save bonuses
 var BONUS_R = 30; // Radius of bonuses
 var BONUS_R_POW2 = m.pow(BONUS_R,2); // Optimization
-var BONUS_NAMES = [ // All valid bonus names (effects, center colour)
-    "clear", // all, black
-    "immortalize", // self, green
-    "mirrorKeys", // others, black
-    "narrow", // self, lighter green
-    "narrowOthers", // others, lighter green
-    "slowdown", // self, darker blue
-    "slowdownOthers",// others, darker blue
-    "speedup", // self, red
-    "speedupOthers", // others, red
-    "turnSharply", // self, yellow
-    "turnOthersSharply", // others, yellow
-    "warp", // self, white
-    "warpAll", // all, white
-    "widen", // self, lighter blue
-    "widenOthers" // others, lighter blue
+var BONUS_TYPES = [ // All valid bonuses
+    {"type":"clear","effects":"all"}, // Clear
+    {"type":"immortalize","effects":"self"}, // Immortalize self
+    {"type":"mirrorKeys","effects":"others"}, // Mirror Keys
+    {"type":"narrow","effects":"self"}, // Narrow self
+    {"type":"narrow","effects":"others"}, // Narrow others
+    {"type":"slowdown","effects":"self"}, // Slow down self
+    {"type":"slowdown","effects":"others"}, // Slow down others
+    {"type":"speedup","effects":"self"}, // Speed up self
+    {"type":"speedup","effects":"others"}, // Speed up others
+    {"type":"turnSharply","effects":"self"}, // Make self turn 90°
+    {"type":"turnSharply","effects":"others"}, // Make others turn 90°
+    {"type":"warp","effects":"self"}, // Allow self to warp
+    {"type":"warp","effects":"all"}, // Allow everyone to warp
+    {"type":"widen","effects":"self"}, // Widen self
+    {"type":"widen","effects":"self"} // Widen others
     ];
 
 /* Creates bonus object and adds it to gamearea */
@@ -48,10 +48,11 @@ var BONUS_NAMES = [ // All valid bonus names (effects, center colour)
  * 
  * Valid names are defined in BONUS_NAMES array
  */
-function bonus(name,x,y) {
+function bonus(info,x,y) {
     this.x = x;
     this.y = y;
-    this.name = name;
+    this.type = info.type;
+    this.effects = info.effects;
     this.remove = removeBonus;
     this.circle = document.createElementNS(NS,"circle");
     this.circle = elementSetAttributes(this.circle,{"cx":this.x, "cy":this.y, 
@@ -59,21 +60,17 @@ function bonus(name,x,y) {
     this.text = document.createElementNS(NS,"text");
     this.text = elementSetAttributes(this.text,{"x":x, "y":y+BONUS_R/10, 
         "font-family":font, "font-size":BONUS_R/2, "text-anchor":"middle"});
-    switch(name) {
+    switch(this.type) {
         case "immortalize":
             this.circle.setAttributeNS(null,"fill","#00CC00");
             this.text.textContent = "immortal";
             this.text.setAttributeNS(null,"fill","#000000");
-            this.effects = "self";
-            this.type = "immortalize";
             this.time = BONUS_TIME;
             break;
         case "narrow":
             this.circle.setAttributeNS(null,"fill","#00FF33");
             this.text.textContent = "narrow";
             this.text.setAttributeNS(null,"fill","#000000");
-            this.effects = "self";
-            this.type = "width";
             this.time = BONUS_TIME;
             this.dwidth = 0-5;
             break;
@@ -81,8 +78,6 @@ function bonus(name,x,y) {
             this.circle.setAttributeNS(null,"fill","#3300FF");
             this.text.textContent = "slow";
             this.text.setAttributeNS(null,"fill","#000000");
-            this.effects = "self";
-            this.type = "speed";
             this.time = BONUS_TIME;
             this.dspeed = 0-5;
             break;
@@ -90,8 +85,6 @@ function bonus(name,x,y) {
             this.circle.setAttributeNS(null,"fill","#FF3300");
             this.text.textContent = "speed";
             this.text.setAttributeNS(null,"fill","#000000");
-            this.effects = "self";
-            this.type = "speed";
             this.time = BONUS_TIME;
             this.dspeed = 5;
             break;
@@ -100,24 +93,18 @@ function bonus(name,x,y) {
             this.text.textContent = "90°";
             this.text = elementSetAttributes(this.text,{"fill":"#000000",
                 "font-size":BONUS_R,"y":y+BONUS_R/3});
-            this.effects = "self";
-            this.type = "turnSharply";
             this.time = BONUS_TIME;
             break;
         case "warp":
             this.circle.setAttributeNS(null,"fill","#FFFFFF");
             this.text.textContent = "warp";
             this.text.setAttributeNS(null,"fill","#000000");
-            this.effects = "self";
-            this.type = "warp";
             this.time = BONUS_TIME;
             break;
         case "widen":
             this.circle.setAttributeNS(null,"fill","#00CCFF");
             this.text.textContent = "widen";
             this.text.setAttributeNS(null,"fill","#000000");
-            this.effects = "self";
-            this.type = "width";
             this.time = BONUS_TIME;
             this.dwidth = 5;
             break;
@@ -125,69 +112,12 @@ function bonus(name,x,y) {
             this.circle.setAttributeNS(null,"fill","#000000");
             this.text.textContent = "mirror";
             this.text.setAttributeNS(null,"fill","#FFFFFF");
-            this.effects = "others";
-            this.type = "mirrorKeys";
             this.time = BONUS_TIME;
-            break;
-        case "narrowOthers":
-            this.circle.setAttributeNS(null,"fill","#00FF33");
-            this.text.textContent = "narrow";
-            this.text.setAttributeNS(null,"fill","#000000");
-            this.effects = "others";
-            this.type = "width";
-            this.time = BONUS_TIME;
-            this.dwidth = 0-5;
-            break;
-        case "slowdownOthers":
-            this.circle.setAttributeNS(null,"fill","#3300FF");
-            this.text.textContent = "slow";
-            this.text.setAttributeNS(null,"fill","#000000");
-            this.effects = "others";
-            this.type = "speed";
-            this.time = BONUS_TIME;
-            this.dspeed = 0-5;
-            break;
-        case "speedupOthers":
-            this.circle.setAttributeNS(null,"fill","#FF3300");
-            this.text.textContent = "speed";
-            this.text.setAttributeNS(null,"fill","000000");
-            this.effects = "others";
-            this.type = "speed";
-            this.time = BONUS_TIME;
-            this.dspeed = 5;
-            break;
-        case "turnOthersSharply":
-            this.circle.setAttributeNS(null,"fill","#FFFF00");
-            this.text.textContent = "90°";
-            this.text = elementSetAttributes(this.text,{"fill":"#000000",
-                "font-size":BONUS_R,"y":y+BONUS_R/3});
-            this.effects = "others";
-            this.type = "turnSharply";
-            this.time = BONUS_TIME;
-            break;
-        case "warpAll":
-            this.circle.setAttributeNS(null,"fill","#FFFFFF");
-            this.text.textContent = "warp";
-            this.text.setAttributeNS(null,"fill","#000000");
-            this.effects = "all";
-            this.type = "warp";
-            this.time = BONUS_TIME;
-            break;
-        case "widenOthers":
-            this.circle.setAttributeNS(null,"fill","#00CCFF");
-            this.text.textContent = "widen";
-            this.text.setAttributeNS(null,"fill","#000000");
-            this.effects = "others";
-            this.type = "width";
-            this.time = BONUS_TIME;
-            this.dwidth = 5;
             break;
         case "clear":
             this.circle.setAttributeNS(null,"fill","#000000");
             this.text.textContent = "clear";
             this.text.setAttributeNS(null,"fill","#FFFFFF");
-            this.effects = "all";
-            this.type = "clear";
             this.time = BONUS_TIME;
             break;
     }
@@ -211,7 +141,7 @@ function addBonus() {
     var x = m.floor(m.random()*(game_width-100)+50);
     var y = m.floor(m.random()*(game_height-100)+50);
     var a = m.floor(m.random()*15);
-    bonuses.push(new bonus(BONUS_NAMES[a],x,y));
+    bonuses.push(new bonus(BONUS_TYPES[a],x,y));
 }
 
 /* Check if given cordinates have a bonus */
@@ -247,7 +177,8 @@ function handleNewBonus(bonus,player) {
                 }
             }
             break;
-        case "speed":
+        case "slowdown":
+        case "speedup":
             if (bonus.effects == "self") {
                 player.bonus.push({"type":"speed","time":bonus.time,
                     "dspeed":player.changeSpeed(bonus.dspeed)});
@@ -285,7 +216,8 @@ function handleNewBonus(bonus,player) {
                 commonBonuses.push({"type":"warp","time":bonus.time});
             }
             break;
-        case "width":
+        case "narrow":
+        case "widen":
             if (bonus.effects == "self") {
                 player.bonus.push({"type":"width","time":bonus.time,
                     "dwidth":player.changeWidth(bonus.dwidth)});

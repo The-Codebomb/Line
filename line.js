@@ -73,7 +73,7 @@ var LOOPSPEED = 30; // Microseconds between loops
 var fontSize = 50;
 var font = "Courier New, monospace";
 
-var FULLCIRCLE = 2*m.PI;
+var FULLCIRCLE = 2*Math.PI;
 var NS = "http://www.w3.org/2000/svg"; // SVG namespace
 
 /* Global variables */
@@ -84,7 +84,7 @@ var gamearea; // SVG element
 var game_width; // Width of the gamearea
 var game_height; // Game height
 var menuarea; // SVG element
-var next_bonus_in = m.floor(m.random()*MAX_TIME_BETWEEN_BONUSES);
+var next_bonus_in = Math.floor(Math.random()*MAX_TIME_BETWEEN_BONUSES);
 var players = new Array(); // Array for line-objects
 var points_to_end;
 var pointsarea; // SVG element

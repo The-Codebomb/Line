@@ -22,7 +22,7 @@
 
 var bonuses // Array to save bonuses
 var BONUS_R = 30; // Radius of bonuses
-var BONUS_R_POW2 = m.pow(BONUS_R,2); // Optimization
+var BONUS_R_POW2 = Math.pow(BONUS_R,2); // Optimization
 
 /* Creates bonus object and adds it to gamearea */
 /*

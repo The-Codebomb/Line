@@ -34,16 +34,15 @@
  */
 function line(name,colour,keyL,keyR,isBot) {
     this.addPoint=addPoint;
+    this.changeSpeed=changeLineSpeed;
+    this.changeWidth=changeLineWidth;
     this.mirrorKeys=mirrorPlayerKeys;
     this.moveCircle=moveCircle;
-    this.narrow=narrowLine;
     this.init=initLine;
-    this.slowdown=slowdownLine;
-    this.speedup=speedupLine;
     this.splitLine=splitLine;
-    this.widen=widenLine;
     this.alive=true;
-    this.bonus=new Array(); // [{"type":type_of_bonus,"time":time_left}, ...]
+    this.bonus=new Array(); // [{"type":type_of_bonus,
+        // "time":time_left, ...}, ...]
     this.bot=(isBot)?true:false;
     this.break=false;
     this.breakcounter=TIME_BETWEEN_BREAKS+m.floor(
@@ -120,39 +119,26 @@ function initLine(values) {
         }
     }
 }
-/* Narrows line */
-function narrowLine(amount) {
-    if (amount) {
-        if (this.d > amount) this.d -= amount;
-    } else if (this.d > 1) this.d--;
+/* Changes line's width */
+function changeLineWidth(amount) {
+    var old_width = this.d;
+    this.d += amount;
+    if (this.d < 1) this.d = 1;
     this.splitLine();
     this.circle.setAttributeNS(null,"r",this.d/2);
-    return this.d;
+    return this.d-old_width;
 }
-/* Widens line */
-function widenLine(amount) {
-    if (amount) this.d += amount;
-    else this.d++;
-    this.splitLine();
-    this.circle.setAttributeNS(null,"r",this.d/2);
-    return this.d;
-}
-/* Slows down line */
-function slowdownLine(amount) {
-    if (amount) {
-        if (this.speed > amount) this.speed -= amount;
-    } else if (this.speed > 1) this.speed--;
-    return this.speed;
-}
-/* Speeds up line */
-function speedupLine(amount) {
-    this.speed++;
-    return this.speed;
+/* Changes line's speed */
+function changeLineSpeed(amount) {
+    var old_speed = this.speed;
+    this.speed += amount;
+    if (this.speed < 1) this.speed = 1;
+    return this.speed-old_speed;
 }
 /* Mirror keys */
 function mirrorPlayerKeys() {
     this.keysMirrored = !this.keysMirrored;
-    if (this.keysMirrored) this.circle.setAttributeNS(null,"fill","#00FF00");
+    if (this.keysMirrored) this.circle.setAttributeNS(null,"fill","yellow");
     else this.circle.setAttributeNS(null,"fill",this.colour);
     return this.keysMirrored;
 }

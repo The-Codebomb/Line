@@ -57,7 +57,6 @@ var DEFAULT_KEYS_RIGHT = [39,68,76,99,89]; // Default right keys
 
 var TURNINGSPEED = 0.1;
 var MOVINGSPEED = 5;
-var SPEEDSTEP = 4;
 
 var TIME_BETWEEN_BREAKS = 75;
 var BREAKLENGTH = 10;
@@ -66,7 +65,6 @@ var MAX_TIME_BETWEEN_BONUSES = 800;
 var MAX_BONUSES = 5;
 var BONUS_TIME = 200; // How many loops bonuses affect
 var POINTS_WIDTH = 400; // Space to display points
-var WIDTHSTEP = 5; // How much line's width is changed
 
 var LOOPSPEED = 30; // Microseconds between loops
 
@@ -79,6 +77,7 @@ var NS = "http://www.w3.org/2000/svg"; // SVG namespace
 /* Global variables */
 var border; // SVGrect element
 var breaksOn = true; // Is breaking used or not
+var commonBonuses = new Array();
 var game; // SVG element
 var gamearea; // SVG element
 var game_width; // Width of the gamearea
@@ -168,13 +167,14 @@ function startNewRound() {
 /* Main "loop" */
 /*
  * This function handles running the game motor:
+ *  - Handles common bonuses (external) 
  *  - Checks wall mode and sets walls according to that
  *  - Runs player's inputLoop (or bot's botControl) (external)
  *  - Calculates new line ending
  *  - Checks if player hit something (external)
  *  - Warps if needed
- *  - Checks if player hit bonus (external) and handles it
- *  - Handles bonuses that player already has
+ *  - Checks if player hit bonus and handles it (external)
+ *  - Handles bonuses that player already has (external)
  *  - Breaks or continues line
  *  - Draws some new line
  *  - Adds new bonuses (partially external)
@@ -184,10 +184,11 @@ function startNewRound() {
  */
 function main(bots) {
     var time = (new Date()).getTime(); // To count time of one loop
+    handleCommonBonuses();
     if (wallMode == "deadly") // Set the borders if wallMode has changed
         border.setAttributeNS(null,"stroke-dasharray","none");
     else if (wallMode == "warp") 
-        border.setAttributeNS(null,"stroke-dasharray","8,8");
+        border.setAttributeNS(null,"stroke-dasharray","8,8")
     for (var i in players) {
         if (players[i].playing && players[i].alive) {
             var warped = false;
@@ -223,129 +224,9 @@ function main(bots) {
                 warped = true;
             } // Bonus system =>
             var bonus = checkForBonus(x,y); // Check if player hit a bonus ->
-            if (bonus) { // When a new bonus is used
-                players[i].bonus.push({"type":bonus.type,"time":BONUS_TIME});
-                switch(bonus.type) {
-                    case "immortalize": players[i].break = true; break;
-                    case "narrow": 
-                        players[i].narrow(WIDTHSTEP);
-                        players[i].addPoint(old_x,old_y);
-                        break;
-                    case "slowdown": players[i].slowdown(SPEEDSTEP); break;
-                    case "speedup": players[i].speedup(SPEEDSTEP); break;
-                    case "turnSharply": players[i].sharpTurns = true; break;
-                    case "warp": 
-                        players[i].warp = true; 
-                        players[i].circle.setAttributeNS(null,"stroke","black");
-                        players[i].circle.setAttributeNS(null,"stroke-width",1);
-                        break;
-                    case "widen": 
-                        players[i].widen(WIDTHSTEP);
-                        players[i].addPoint(old_x,old_y);
-                        break;
-                    case "mirrorKeys": 
-                        for (var k in players) {
-                            if (k != i) {
-                                players[k].mirrorKeys();
-                                players[k].bonus.push({"type":"keysMirrored",
-                                    "time":BONUS_TIME});
-                            }
-                        }
-                        break;
-                    case "narrowOthers": 
-                        for (var k in players) {
-                            if (k != i) {
-                                players[k].narrow(WIDTHSTEP);
-                                players[k].addPoint(players[k].x,players[k].y);
-                                players[k].bonus.push({"type":"narrow",
-                                    "time":BONUS_TIME});
-                            }
-                        } break;
-                    case "slowdownOthers": 
-                        for (var k in players) {
-                            if (k != i) 
-                                players[k].slowdown(SPEEDSTEP);
-                                players[k].bonus.push({"type":"slowdown",
-                                    "time":BONUS_TIME});
-                        } break;
-                    case "speedupOthers": 
-                        for (var k in players) {
-                            if (k != i) {
-                                players[k].speedup(SPEEDSTEP);
-                                players[k].bonus.push({"type":"speedup",
-                                    "time":BONUS_TIME});
-                            }
-                        } break;
-                    case "turnOthersSharply": 
-                        for (var k in players) {
-                            if (k != i) {
-                                players[k].sharpTurns = true;
-                                players[k].bonus.push({"type":"turnSharply",
-                                    "time":BONUS_TIME});
-                            }
-                        } break;
-                    case "widenOthers": 
-                        for (var k in players) {
-                            if (k != i) {
-                                players[k].widen(WIDTHSTEP);
-                                players[k].addPoint(players[k].x,players[k].y);
-                                players[k].bonus.push({"type":"widen",
-                                    "time":BONUS_TIME});
-                            }
-                        } break;
-                    case "clear": 
-                        var lines = gamearea.getElementsByTagName("polyline");
-                        for (var k = lines.length - 1; k >= 0; k--) {
-                            gamearea.removeChild(lines[k]);
-                        }
-                        for (var k in players) {
-                            players[k].splitLine();
-                        }
-                        break;
-                }
-                bonus.remove();
-            } // Handle bonuses that player has got =>
-            for (var j = players[i].bonus.length-1; j >= 0; j--) {
-                if (players[i].bonus[j].time > 0) { // Every iteration
-                    switch(players[i].bonus[j].type) {
-                        case "immortalize": players[i].breakcounter++; break;
-                        case "warpAll": wallMode = "warp"; break;
-                    }
-                    players[i].bonus[j].time--;
-                } else { // Only when bonus ends
-                    switch(players[i].bonus[j].type) {
-                        case "immortalize": 
-                            players[i].break = false;
-                            players[i].splitLine();
-                            players[i].addPoint();
-                            break;
-                        case "narrow": 
-                            players[i].widen(WIDTHSTEP);
-                            players[i].addPoint(old_x,old_y);
-                            break;
-                        case "slowdown": 
-                            players[i].speedup(SPEEDSTEP); 
-                            break;
-                        case "speedup": 
-                            players[i].slowdown(SPEEDSTEP); 
-                            break;
-                        case "turnSharply": players[i].sharpTurns=false; break;
-                        case "warp": 
-                            players[i].warp = false; 
-                            players[i].circle.setAttributeNS(null,"stroke",
-                                "none");
-                            break;
-                        case "widen": 
-                            players[i].narrow(WIDTHSTEP);
-                            players[i].addPoint(old_x,old_y);
-                            break;
-                        case "keysMirrored": players[i].mirrorKeys(); break;
-                        case "warpAll": wallMode = "deadly"; break;
-                    }
-                    players[i].bonus.splice(
-                        players[i].bonus.indexOf(players[i].bonus[j]),1);
-                }
-            }
+            if (bonus)  // When a new bonus is used
+                handleNewBonus(bonus,players[i]);
+            handlePlayersBonuses(players[i]); // Old bonuses
             if (breaksOn) { // Breaking ->
                 if (!players[i].break && players[i].breakcounter <= 0) {
                     players[i].addPoint(x,y,sameDirection);

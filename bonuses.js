@@ -35,6 +35,7 @@ var BONUS_TYPES = [ // All valid bonuses
     {"type":"speedup","effects":"others"}, // Speed up others
     {"type":"turnSharply","effects":"self"}, // Make self turn 90°
     {"type":"turnSharply","effects":"others"}, // Make others turn 90°
+    {"type":"unknown","effects":"unknown"}, // Unknown
     {"type":"warp","effects":"self"}, // Allow self to warp
     {"type":"warp","effects":"all"}, // Allow everyone to warp
     {"type":"widen","effects":"self"}, // Widen self
@@ -49,6 +50,10 @@ var BONUS_TYPES = [ // All valid bonuses
  * Valid names are defined in BONUS_NAMES array
  */
 function bonus(info,x,y) {
+    if (info.type == 'unknown') {
+        info = BONUS_TYPES[m.floor(m.random()*BONUS_TYPES.length)];
+        info.unknown = true;
+    }
     this.x = x;
     this.y = y;
     this.type = info.type;
@@ -126,6 +131,12 @@ function bonus(info,x,y) {
         case "others": this.circle.setAttributeNS(null,"stroke","red"); break;
         case "all": this.circle.setAttributeNS(null,"stroke","blue"); break;
     }
+    if (info.unknown) {
+        this.circle.setAttributeNS(null,"fill","#FFFFFF");
+        this.text.textContent = "???";
+        this.text.setAttributeNS(null,"fill","#000000");
+        this.circle.setAttributeNS(null,"stroke","black");
+    }
     gamearea.appendChild(this.circle);
     gamearea.appendChild(this.text);
 }
@@ -140,7 +151,7 @@ function removeBonus() {
 function addBonus() {
     var x = m.floor(m.random()*(game_width-100)+50);
     var y = m.floor(m.random()*(game_height-100)+50);
-    var a = m.floor(m.random()*15);
+    var a = m.floor(m.random()*BONUS_TYPES.length);
     bonuses.push(new bonus(BONUS_TYPES[a],x,y));
 }
 

@@ -23,6 +23,11 @@
 */
 
 /**
+ * Original source code is available in git:
+ * git://github.com/The-Codebomb/Line.git
+ * Use this command to download it (requires git):
+ * git clone git://github.com/The-Codebomb/Line.git
+ * 
  * Achtung, die Kurve! is a game of G. Burg Internet Solutions and
  * This Game called 'Line!' has nothing to do with them, but is a 
  * independently developed title that has many similarities with 

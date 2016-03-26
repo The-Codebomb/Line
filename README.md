@@ -7,24 +7,19 @@ using only techniques that modern browsers can provide (Javascript
 and SVG in this case).
 
 Most browsers should run this game without any extra plugins. 
-Supported browsers are latest versions of Cromium/Chrome, Firefox 
-and Opera, but also Internet Explorer 9 is known to work.
+Supported browsers are the latest versions of Chromium/Chrome and 
+Firefox.
 
-Achtung, die Kurve! is a game of G. Burg Internet Solutions and
+Achtung, die Kurve! is a game of G. Burg Internet Solutions and 
 This Game called 'Line!' has nothing to do with them, but is a 
 independently developed title that has many similarities with 
-the Original Game. If you have something to complain or praise 
-about This Game, write about it to code@codebomb.dy.fi .
+the Original Game.
 
 Code contributions are welcome, when they are made with care and 
 passion. Git commit messages should be well written. Forks are 
 allowed of course.
 
-Licensed under GPL v2 or later. Check LICENSE file for more 
+Licensed under GPLv2 or later. Check LICENSE file for more 
 information about licensing.
 
-You may want to check out our website: http://codebomb.dy.fi/
-
-Sites that host the game:
- - Our own server: http://codebomb.dy.fi/line/
- - Github: http://the-codebomb.github.com/Line/
+You can try this at: http://the-codebomb.github.com/Line/
